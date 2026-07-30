@@ -6697,3 +6697,41 @@ img,
 .graphic-project-folder {
     -webkit-user-drag: none;
 }
+
+
+/* =========================================================
+   INITIAL MOBILE BACKGROUND — NO TAP REQUIRED
+   Keeps the startup overlay transparent and the CSS motion
+   visible before mobile video autoplay is permitted.
+========================================================= */
+
+html,
+body,
+.wallpaper-vhs {
+    background-color: #09050d !important;
+}
+
+/* The former pale-pink Welcome screen was covering the wallpaper. */
+#startup-settings-screen {
+    background: rgba(9, 5, 13, 0.32) !important;
+    color: #ffffff !important;
+    text-shadow: 0 1px 2px #000000;
+}
+
+/* Guarantee that the fallback animation is already active before a tap. */
+.wallpaper-css-motion {
+    opacity: 1 !important;
+    visibility: visible !important;
+    animation-name: wallpaperRealMotion !important;
+    animation-duration: 4.2s !important;
+    animation-timing-function: ease-in-out !important;
+    animation-iteration-count: infinite !important;
+    animation-direction: alternate !important;
+    animation-play-state: running !important;
+}
+
+@media (max-width: 700px) {
+    #startup-settings-screen {
+        background: rgba(9, 5, 13, 0.18) !important;
+    }
+}
