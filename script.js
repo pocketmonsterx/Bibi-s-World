@@ -2202,3 +2202,47 @@ if (
         }
     );
 }
+// ====================================
+// FINAL MOBILE WINDOW POSITIONING FIX
+// ====================================
+
+function isMobileViewport() {
+    return window.matchMedia("(max-width: 700px)").matches;
+}
+
+function fitWindowToMobileViewport(windowElement) {
+    if (!windowElement || !isMobileViewport()) return;
+
+    windowElement.style.left = "8px";
+    windowElement.style.top = "8px";
+    windowElement.style.transform = "none";
+    windowElement.style.width = "calc(100vw - 16px)";
+    windowElement.style.height = "calc(100dvh - 58px)";
+}
+
+const originalOpenWindowForMobile = openWindow;
+
+openWindow = function(windowElement) {
+    originalOpenWindowForMobile(windowElement);
+
+    if (isMobileViewport()) {
+        requestAnimationFrame(() => {
+            fitWindowToMobileViewport(windowElement);
+        });
+    }
+};
+
+function refitOpenWindowsForViewport() {
+    if (!isMobileViewport()) return;
+
+    document
+        .querySelectorAll(".window:not(.hidden)")
+        .forEach(fitWindowToMobileViewport);
+}
+
+window.addEventListener("resize", refitOpenWindowsForViewport);
+window.addEventListener("orientationchange", () => {
+    window.setTimeout(refitOpenWindowsForViewport, 100);
+});
+
+window.addEventListener("DOMContentLoaded", refitOpenWindowsForViewport);
