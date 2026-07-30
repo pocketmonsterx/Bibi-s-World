@@ -6217,3 +6217,73 @@ body {
         height: 20px;
     }
 }
+
+
+/* =========================================================
+   MOBILE WALLPAPER + TROJAN FINAL FIXES
+   Keep these rules at the absolute end of style.css
+========================================================= */
+
+#wallpaper-video {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+@media (max-width: 700px) {
+    .wallpaper-vhs {
+        background: #2b1238;
+    }
+
+    #wallpaper-video {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        width: 100svw !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        object-fit: cover !important;
+        object-position: center !important;
+        transform: translateZ(0);
+    }
+
+    /* Preserve the exact desktop animation timing on phones. */
+    #trojan-window .trojan-terminal,
+    #trojan-window .trojan-reveal {
+        transition-duration: 1.2s, 1.2s, 1.2s, 0s;
+    }
+
+    #trojan-window .trojan-reveal {
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        background: #000;
+    }
+
+    /* Show the complete final image rather than cropping it. */
+    #trojan-window .trojan-steam-image-link {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        overflow: hidden;
+    }
+
+    #trojan-window .trojan-steam-image-link img {
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+        object-fit: contain !important;
+        object-position: center !important;
+        transform: none !important;
+    }
+
+    #trojan-window .trojan-image-shine {
+        display: none;
+    }
+}

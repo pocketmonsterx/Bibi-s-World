@@ -9,7 +9,30 @@
 
 document.body.classList.add("booting");
 
+// Keep the animated wallpaper playing on desktop and mobile browsers.
+function startWallpaperVideo() {
+    const wallpaperVideo =
+        document.getElementById("wallpaper-video");
+
+    if (!wallpaperVideo) return;
+
+    wallpaperVideo.muted = true;
+    wallpaperVideo.defaultMuted = true;
+    wallpaperVideo.loop = true;
+    wallpaperVideo.playsInline = true;
+
+    const playAttempt = wallpaperVideo.play();
+
+    if (playAttempt && typeof playAttempt.catch === "function") {
+        playAttempt.catch(() => {
+            // A first touch/click will retry playback when a mobile
+            // browser blocks the initial automatic attempt.
+        });
+    }
+}
+
 window.addEventListener("DOMContentLoaded", () => {
+    startWallpaperVideo();
 
     const bootScreen =
         document.getElementById("startup-boot-screen");
@@ -37,9 +60,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
         document.body.classList.remove("booting");
         document.body.classList.add("desktop-loaded");
-document
-    .getElementById("wallpaper-video")
-    .play();
+startWallpaperVideo();
 
     }, 5200);
 
@@ -1883,6 +1904,20 @@ function createFireworkFlash(x, y, colour) {
     );
 }
 
+
+// Retry video playback after the first real user interaction.
+["pointerdown", "touchstart", "click"].forEach(eventName => {
+    document.addEventListener(
+        eventName,
+        startWallpaperVideo,
+        { once: true, passive: true }
+    );
+});
+
+document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) startWallpaperVideo();
+});
+
 // ====================================
 // TROJAN.EXE FAKE CMD SEQUENCE
 // ====================================
@@ -1917,6 +1952,22 @@ const trojanLoaderPercentage =
     );
 
 let trojanSequenceId = 0;
+
+// One timing profile for every screen size.
+// Mobile no longer receives a slower animation.
+const TROJAN_TIMING = Object.freeze({
+    emptyLine: 20,
+    characterMin: 1,
+    characterRange: 4,
+    linePauseMin: 10,
+    linePauseRange: 25,
+    loaderMin: 320,
+    loaderRange: 380,
+    loaderComplete: 500,
+    loaderClose: 260,
+    preGlitch: 120,
+    glitch: 450
+});
 
 const trojanLines = [
     "Bibi's World [Version 6.0.6002]",
@@ -1970,7 +2021,7 @@ async function typeTrojanLine(line, sequenceId) {
         trojanTerminal.scrollTop =
             trojanTerminal.scrollHeight;
 
-        await wait(20);
+        await wait(TROJAN_TIMING.emptyLine);
         return true;
     }
 
@@ -1990,12 +2041,14 @@ async function typeTrojanLine(line, sequenceId) {
             trojanTerminal.scrollHeight;
 
         await wait(
-            1 + Math.random() * 4
+            TROJAN_TIMING.characterMin +
+            Math.random() * TROJAN_TIMING.characterRange
         );
     }
 
     await wait(
-        10 + Math.random() * 25
+        TROJAN_TIMING.linePauseMin +
+        Math.random() * TROJAN_TIMING.linePauseRange
     );
 
     return true;
@@ -2078,11 +2131,12 @@ async function runTrojanLoader(sequenceId) {
             `${stage.progress}%`;
 
         await wait(
-            320 + Math.random() * 380
+            TROJAN_TIMING.loaderMin +
+            Math.random() * TROJAN_TIMING.loaderRange
         );
     }
 
-    await wait(500);
+    await wait(TROJAN_TIMING.loaderComplete);
 
     if (sequenceId !== trojanSequenceId) {
         return false;
@@ -2097,7 +2151,7 @@ async function runTrojanLoader(sequenceId) {
         "true"
     );
 
-    await wait(260);
+    await wait(TROJAN_TIMING.loaderClose);
 
     return true;
 }
@@ -2165,7 +2219,7 @@ if (!loaderCompleted) {
     /*
      * Very short pause before the glitch.
      */
-    await wait(120);
+    await wait(TROJAN_TIMING.preGlitch);
 
     if (currentSequenceId !== trojanSequenceId) {
         return;
@@ -2175,7 +2229,7 @@ if (!loaderCompleted) {
         "trojan-glitch"
     );
 
-    await wait(450);
+    await wait(TROJAN_TIMING.glitch);
 
     if (currentSequenceId !== trojanSequenceId) {
         return;
