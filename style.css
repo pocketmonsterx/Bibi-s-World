@@ -6523,3 +6523,105 @@ body {
 #wallpaper-video.wallpaper-playing {
     opacity: 1 !important;
 }
+
+
+/* =========================================================
+   DESKTOP WINDOW EDGE + CORNER RESIZING
+========================================================= */
+
+.window-resize-handle {
+    position: absolute;
+    z-index: 50;
+    display: block;
+    background: transparent;
+    touch-action: none;
+    user-select: none;
+}
+
+.window-resize-north,
+.window-resize-south {
+    left: 10px;
+    right: 10px;
+    height: 8px;
+}
+
+.window-resize-east,
+.window-resize-west {
+    top: 10px;
+    bottom: 10px;
+    width: 8px;
+}
+
+.window-resize-north {
+    top: 0;
+    cursor: ns-resize;
+}
+
+.window-resize-south {
+    bottom: 0;
+    cursor: ns-resize;
+}
+
+.window-resize-east {
+    right: 0;
+    cursor: ew-resize;
+}
+
+.window-resize-west {
+    left: 0;
+    cursor: ew-resize;
+}
+
+.window-resize-north-east,
+.window-resize-north-west,
+.window-resize-south-east,
+.window-resize-south-west {
+    width: 14px;
+    height: 14px;
+}
+
+.window-resize-north-east {
+    top: 0;
+    right: 0;
+    cursor: nesw-resize;
+}
+
+.window-resize-north-west {
+    top: 0;
+    left: 0;
+    cursor: nwse-resize;
+}
+
+.window-resize-south-east {
+    right: 0;
+    bottom: 0;
+    cursor: nwse-resize;
+}
+
+.window-resize-south-west {
+    left: 0;
+    bottom: 0;
+    cursor: nesw-resize;
+}
+
+.window.is-resizing,
+.window.is-resizing * {
+    user-select: none !important;
+}
+
+body.window-resize-active {
+    cursor: inherit;
+    user-select: none;
+}
+
+.window.is-maximized .window-resize-handle {
+    display: none;
+}
+
+@media (max-width: 700px),
+       (hover: none),
+       (pointer: coarse) {
+    .window-resize-handle {
+        display: none !important;
+    }
+}

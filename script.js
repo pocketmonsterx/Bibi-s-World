@@ -513,6 +513,7 @@ windows.forEach(windowElement=>{
 
                 windowElement.style.height="calc(100vh - 38px)";
 
+                windowElement.classList.add("is-maximized");
                 maximized=true;
 
             }
@@ -531,6 +532,7 @@ windows.forEach(windowElement=>{
                 windowElement.style.height=
                 windowElement.dataset.height || "auto";
 
+                windowElement.classList.remove("is-maximized");
                 maximized=false;
 
             }
@@ -872,6 +874,215 @@ windows.forEach(window => {
     });
 
 });
+
+// ====================================
+// WINDOW EDGE + CORNER RESIZING
+// ====================================
+
+const WINDOW_RESIZE_DIRECTIONS = [
+    "north",
+    "east",
+    "south",
+    "west",
+    "north-east",
+    "north-west",
+    "south-east",
+    "south-west"
+];
+
+function canResizeWindowsWithCursor() {
+    return (
+        !window.matchMedia("(max-width: 700px)").matches &&
+        window.matchMedia("(hover: hover) and (pointer: fine)").matches
+    );
+}
+
+function getResizeMinimum(windowElement, property, fallback) {
+    const computedValue = Number.parseFloat(
+        window.getComputedStyle(windowElement)[property]
+    );
+
+    if (Number.isFinite(computedValue) && computedValue > 0) {
+        return Math.max(fallback, computedValue);
+    }
+
+    return fallback;
+}
+
+function addResizeHandles(windowElement) {
+    if (!windowElement || windowElement.dataset.resizeHandles === "true") {
+        return;
+    }
+
+    windowElement.dataset.resizeHandles = "true";
+
+    WINDOW_RESIZE_DIRECTIONS.forEach(direction => {
+        const handle = document.createElement("div");
+
+        handle.className =
+            `window-resize-handle window-resize-${direction}`;
+
+        handle.dataset.resizeDirection = direction;
+        handle.setAttribute("aria-hidden", "true");
+
+        windowElement.appendChild(handle);
+
+        handle.addEventListener("pointerdown", event => {
+            if (
+                !canResizeWindowsWithCursor() ||
+                windowElement.classList.contains("is-maximized") ||
+                windowElement.classList.contains("hidden")
+            ) {
+                return;
+            }
+
+            if (event.button !== 0) {
+                return;
+            }
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            bringToFront(windowElement);
+
+            const startingRectangle =
+                windowElement.getBoundingClientRect();
+
+            const startingX = event.clientX;
+            const startingY = event.clientY;
+
+            const startingLeft = startingRectangle.left;
+            const startingTop = startingRectangle.top;
+            const startingRight = startingRectangle.right;
+            const startingBottom = startingRectangle.bottom;
+
+            const minimumWidth = getResizeMinimum(
+                windowElement,
+                "minWidth",
+                280
+            );
+
+            const minimumHeight = getResizeMinimum(
+                windowElement,
+                "minHeight",
+                160
+            );
+
+            const screenMargin = 4;
+            const taskbarHeight = 38;
+
+            const maximumRight =
+                window.innerWidth - screenMargin;
+
+            const maximumBottom =
+                window.innerHeight - taskbarHeight - screenMargin;
+
+            const resizeNorth = direction.includes("north");
+            const resizeSouth = direction.includes("south");
+            const resizeEast = direction.includes("east");
+            const resizeWest = direction.includes("west");
+
+            windowElement.classList.add("is-resizing");
+            document.body.classList.add("window-resize-active");
+
+            handle.setPointerCapture(event.pointerId);
+
+            const resizeWindow = moveEvent => {
+                const movementX = moveEvent.clientX - startingX;
+                const movementY = moveEvent.clientY - startingY;
+
+                let left = startingLeft;
+                let top = startingTop;
+                let right = startingRight;
+                let bottom = startingBottom;
+
+                if (resizeEast) {
+                    right = Math.min(
+                        maximumRight,
+                        Math.max(
+                            startingLeft + minimumWidth,
+                            startingRight + movementX
+                        )
+                    );
+                }
+
+                if (resizeWest) {
+                    left = Math.max(
+                        screenMargin,
+                        Math.min(
+                            startingRight - minimumWidth,
+                            startingLeft + movementX
+                        )
+                    );
+                }
+
+                if (resizeSouth) {
+                    bottom = Math.min(
+                        maximumBottom,
+                        Math.max(
+                            startingTop + minimumHeight,
+                            startingBottom + movementY
+                        )
+                    );
+                }
+
+                if (resizeNorth) {
+                    top = Math.max(
+                        screenMargin,
+                        Math.min(
+                            startingBottom - minimumHeight,
+                            startingTop + movementY
+                        )
+                    );
+                }
+
+                const width = Math.max(minimumWidth, right - left);
+                const height = Math.max(minimumHeight, bottom - top);
+
+                windowElement.style.position = "absolute";
+                windowElement.style.transform = "none";
+                windowElement.style.left = `${Math.round(left)}px`;
+                windowElement.style.top = `${Math.round(top)}px`;
+                windowElement.style.width = `${Math.round(width)}px`;
+                windowElement.style.height = `${Math.round(height)}px`;
+                windowElement.style.maxWidth = "none";
+                windowElement.style.maxHeight = "none";
+            };
+
+            const finishResize = finishEvent => {
+                handle.removeEventListener(
+                    "pointermove",
+                    resizeWindow
+                );
+
+                handle.removeEventListener(
+                    "pointerup",
+                    finishResize
+                );
+
+                handle.removeEventListener(
+                    "pointercancel",
+                    finishResize
+                );
+
+                if (handle.hasPointerCapture(finishEvent.pointerId)) {
+                    handle.releasePointerCapture(finishEvent.pointerId);
+                }
+
+                windowElement.classList.remove("is-resizing");
+                document.body.classList.remove("window-resize-active");
+            };
+
+            handle.addEventListener("pointermove", resizeWindow);
+            handle.addEventListener("pointerup", finishResize);
+            handle.addEventListener("pointercancel", finishResize);
+        });
+    });
+}
+
+document
+    .querySelectorAll(".window")
+    .forEach(addResizeHandles);
 
 // ====================================
 // MUSIC TABS
