@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <link rel="icon" href="assets/icons/favicon.ico">
+    
+    <link href="https://fonts.cdnfonts.com/css/micro-5" rel="stylesheet">
+
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>𝕭𝖎𝖇𝖎</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body class="booting">
+
+    <div class="wallpaper-vhs">
+
+    <video id="wallpaper-video" muted loop playsinline>
+
+        <source
+            src="assets/wallpapers/vecteezy_animated-gradient-motion-background-with-purple-color_27618323.mp4"
+            type="video/mp4">
+
+    </video>
+
+</div>
+
+
+
+<!-- ================= STARTUP BOOT SCREEN ================= -->
+
+<div id="startup-boot-screen">
+
+   
+    <div class="startup-boot-logo">
+
+        <div class="startup-windows-name">
+            Beatriz Guimarães<span>®</span>
+        </div>
+
+        <div class="startup-windows-version">
+            1994
+        </div>
+
+    </div>
+
+    <div class="startup-loading-frame">
+
+        <div class="startup-loading-track">
+
+            <div class="startup-loading-blocks">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div id="startup-settings-screen" class="hidden">
+    Welcome!
+</div>
+
+<div class="bibi-title" aria-label="BIBI">
+    <span class="bibi-title__layer bibi-title__shadow" aria-hidden="true">
+        BiBi
+    </span>
+
+    <span class="bibi-title__layer bibi-title__outline" aria-hidden="true">
+        BiBi
+    </span>
+
+    <span class="bibi-title__layer bibi-title__fill" aria-hidden="true">
+        BiBi
+    </span>
+
+    <span class="bibi-title__layer bibi-title__highlight" aria-hidden="true">
+        BiBi
+    </span>
+</div>
+
+
+
+<div id="desktop">
+
+<div class="icon" data-window="home">
+<img src="assets/icons/computer.ico">
+<span>Home</span>
+</div>
+
+<div class="icon" data-window="about">
+<img src="assets/icons/about me.ico">
+<span>About Me.txt</span>
+</div>
+
+<div class="icon" data-window="photography">
+<img src="assets/icons/photography.ico">
+<span>Photography</span>
+</div>
+
+<div class="icon" data-window="graphic-arts">
+<img src="assets/icons/graphic arts.ico">
+<span>Graphic Arts</span>
+</div>
+
+<div class="icon" data-window="music">
+<img src="assets/icons/music.ico">
+<span>Music</span>
+</div>
+
+<div class="icon" data-window="socials">
+    <img src="assets/icons/iexplore.ico">
+    <span>Socials</span>
+</div>
+
+<div class="icon" data-window="contact">
+<img src="assets/icons/contato.ico">
+<span>Contact</span>
+</div>
+
+<div class="icon" data-window="trash">
+<img src="assets/icons/trash.ico">
+<span>Recycle Bin</span>
+</div>
+
+</div>
+
+<div id="taskbar">
+
+    <button id="startButton">
+        ✨Start
+    </button>
+
+    <div id="taskbar-windows"></div>
+
+    <div id="clock-area">
+
+    <div
+        id="clock"
+        tabindex="0"
+        aria-label="Open calendar"
+    ></div>
+
+    <div id="clock-calendar">
+
+        <div class="calendar-topbar">
+
+            <button
+                type="button"
+                id="calendar-previous"
+                class="calendar-arrow"
+                aria-label="Previous month"
+            >
+                ‹
+            </button>
+
+            <div id="calendar-title"></div>
+
+            <button
+                type="button"
+                id="calendar-next"
+                class="calendar-arrow"
+                aria-label="Next month"
+            >
+                ›
+            </button>
+
+        </div>
+
+        <div class="calendar-weekdays">
+            <span>Sun</span>
+            <span>Mon</span>
+            <span>Tue</span>
+            <span>Wed</span>
+            <span>Thu</span>
+            <span>Fri</span>
+            <span>Sat</span>
+        </div>
+
+        <div id="calendar-days"></div>
+
+        <button
+            type="button"
+            id="calendar-today-button"
+        >
+            Today
+        </button>
+
+    </div>
+
+</div>
+    </div>
+
+</div>
+
+<!-- ================= START MENU ================= -->
+
+<div id="start-menu" class="hidden">
+
+    <div class="start-header">
+        <span>𝕭𝖎𝖇𝖎</span>
+    </div>
+
+    <button class="start-item" data-window="about">
+        📄 About Me
+    </button>
+
+    <button class="start-item" data-window="contact">
+        ✉ Contact
+    </button>
+
+    <div class="start-separator"></div>
+
+    <button id="shutdown-button" class="start-item shutdown">
+        ⏻ Shut Down...
+    </button>
+
+</div>
+
+<!-- ================= SHUTDOWN ================= -->
+
+<div id="shutdown-dialog" class="window hidden">
+
+    <div class="title-bar">
+        <span>Shut Down Bibi's World</span>
+
+        <div class="window-controls">
+            <button class="close"></button>
+        </div>
+    </div>
+
+    <div class="window-body shutdown-body">
+
+        <p>Shut Down Bibi's World?</p>
+
+        <button id="shutdown-confirm">
+            Shut Down
+        </button>
+
+        <button id="shutdown-cancel">
+            Cancel
+        </button>
+
+    </div>
+
+</div>
+
+<div id="windows-container">
+
+    <!-- ================= SOCIALS ================= -->
+
+<div class="window hidden"
+     id="socials-window"
+     data-window-id="socials">
+
+    <div class="title-bar">
+
+        <span>Socials</span>
+
+        <div class="window-controls">
+            <button class="minimize"></button>
+            <button class="maximize"></button>
+            <button class="close"></button>
+        </div>
+
+    </div>
+
+    <div class="window-menu">
+        <button type="button">File</button>
+        <button type="button">Edit</button>
+        <button type="button">View</button>
+        <button type="button">Favorites</button>
+        <button type="button">Tools</button>
+        <button type="button">Help</button>
+    </div>
+
+    <div class="window-body socials-body">
+
+        <a class="social-icon"
+           href="https://letterboxd.com/bibihn/"
+           target="_blank">
+
+            <img src="assets/icons/letterboxd.ico">
+
+            <span>Letterboxd</span>
+
+        </a>
+
+        <a class="social-icon"
+           href="https://www.last.fm/user/bibihn"
+           target="_blank">
+
+            <img src="assets/icons/lastfm.ico">
+
+            <span>Last.fm</span>
+
+        </a>
+
+        <a class="social-icon"
+           href="https://open.spotify.com/user/beasita?si=37b482a57a2c48f5"
+           target="_blank">
+
+            <img src="assets/icons/spotify.ico">
+
+            <span>Spotify</span>
+
+        </a>
+
+        <a class="social-icon"
+           href="https://instagram.com/bibiguimaraesz"
+           target="_blank">
+
+            <img src="assets/icons/instagram.ico">
+
+            <span>Instagram</span>
+
+        </a>
+
+    </div>
+
+</div>
+
+    <!-- ================= PHOTOGRAPHY ================= -->
+
+    <div class="window hidden"
+         id="photography-window"
+         data-window-id="photography">
+
+        <div class="title-bar">
+
+            <span>Photography</span>
+
+            <div class="window-controls">
+                <button class="minimize"></button>
+                <button class="maximize"></button>
+                <button class="close"></button>
+            </div>
+
+        </div>
+
+    <div class="window-menu">
+        <button type="button">File</button>
+        <button type="button">Edit</button>
+        <button type="button">View</button>
+        <button type="button">Favorites</button>
+        <button type="button">Tools</button>
+        <button type="button">Help</button>
+    </div>
+
+        <div class="window-body">
+
+            <div class="photo-gallery">
+
+
+    <div class="photo-folder" data-gallery="disney 2010">
+
+        <img src="assets/photos/disney 2010/4.jpg"
+         alt="Disney 2010 project">
+        <span>
+            Disney 2010
+        </span>
+
+    </div>
+
+    <div class="photo-folder" data-gallery="miku 2010">
+
+        <img src="assets/photos/miku 2010/1.jpg"
+         alt="Miku 2010 project">
+        <span>
+            Miku 2010
+        </span>
+
+    </div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ================= DISNEY 2010 GALLERY ================= -->
+
+<div class="window hidden"
+     id="disney-window"
+     data-window-id="disney 2010">
+
+    <div class="title-bar">
+
+        <span>Disney 2010</span>
+
+        <div class="window-controls">
+            <button class="minimize"></button>
+            <button class="maximize"></button>
+            <button class="close"></button>
+        </div>
+
+    </div>
+
+    <div class="window-menu">
+        <button type="button">File</button>
+        <button type="button">Edit</button>
+        <button type="button">View</button>
+        <button type="button">Tools</button>
+        <button type="button">Help</button>
+    </div>
+
+    <div class="window-body">
+
+        <div class="project-gallery">
+
+    <!-- Row 1 (2 images) -->
+    <div class="gallery-row two">
+        <img src="assets/photos/disney 2010/1.jpg"
+         alt="Disney 2010 01">
+        <img src="assets/photos/disney 2010/2.jpg"
+         alt="Disney 2010 02">
+    </div>
+
+    <!-- Row 2 (1 image) -->
+    <div class="gallery-row one">
+        <img src="assets/photos/disney 2010/3.jpg"
+         alt="Disney 2010 03">
+    </div>
+
+    <!-- Row 3 -->
+<div class="gallery-row two">
+
+    <div>
+        <img src="assets/photos/disney 2010/4.jpg"
+             alt="Disney 2010 04">
+    </div>
+
+    <div>
+        <img src="assets/photos/disney 2010/5.jpg"
+             alt="Disney 2010 05">
+
+        <img src="assets/photos/disney 2010/6.jpg"
+             alt="Disney 2010 06"
+             class="stacked-photo">
+    </div>
+
+</div>
+
+
+    <!-- Row 4 (3 images) -->
+    <div class="gallery-row three">
+        <img src="assets/photos/disney 2010/7.jpg"
+         alt="Disney 2010 07">
+        <img src="assets/photos/disney 2010/8.jpg"
+         alt="Disney 2010 08">
+        <img src="assets/photos/disney 2010/9.jpg"
+         alt="Disney 2010 09">
+    </div>
+
+    <!-- Row 5 (1 image) -->
+    <div class="gallery-row one">
+        <img src="assets/photos/disney 2010/10.jpg"
+         alt="Disney 2010 10">
+    </div>
+
+    <!-- Row 6 (2 images) -->
+    <div class="gallery-row two">
+        <img src="assets/photos/disney 2010/11.jpg"
+         alt="Disney 2010 11">
+        <img src="assets/photos/disney 2010/12.jpg"
+         alt="Disney 2010 12">
+    </div>
+
+</div>
+
+</div>
+</div>
+
+<!-- ================= MIKU 2010 GALLERY ================= -->
+
+<div
+    class="window hidden"
+    id="miku-window"
+    data-window-id="miku 2010"
+>
+
+    <div class="title-bar">
+
+        <span>Miku 2010</span>
+
+        <div class="window-controls">
+            <button class="minimize"></button>
+            <button class="maximize"></button>
+            <button class="close"></button>
+        </div>
+
+    </div>
+
+    <div class="window-menu">
+        <button type="button">File</button>
+        <button type="button">Edit</button>
+        <button type="button">View</button>
+        <button type="button">Tools</button>
+        <button type="button">Help</button>
+    </div>
+
+    <div class="window-body">
+
+        <div class="project-gallery">
+
+            <!-- Row 1: 1 image -->
+            <div class="gallery-row one">
+                <img
+                    src="assets/photos/miku 2010/1.jpg"
+                    alt="Miku 2010 01"
+                >
+            </div>
+
+            <!-- Row 2: 2 images -->
+            <div class="gallery-row two">
+                <img
+                    src="assets/photos/miku 2010/2.jpg"
+                    alt="Miku 2010 02"
+                >
+
+                <img
+                    src="assets/photos/miku 2010/3.jpg"
+                    alt="Miku 2010 03"
+                >
+            </div>
+
+            <!-- Row 3: 2 images -->
+            <div class="gallery-row two">
+                <img
+                    src="assets/photos/miku 2010/4.jpg"
+                    alt="Miku 2010 04"
+                >
+
+                <img
+                    src="assets/photos/miku 2010/5.jpg"
+                    alt="Miku 2010 05"
+                >
+            </div>
+
+            <!-- Row 4: 1 image -->
+            <div class="gallery-row one">
+                <img
+                    src="assets/photos/miku 2010/6.jpg"
+                    alt="Miku 2010 06"
+                >
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- ================= IMAGE PREVIEW ================= -->
+
+<div
+    class="window hidden"
+    id="image-preview-window"
+    data-window-id="image-preview"
+>
+
+    <div class="title-bar">
+
+        <span id="preview-title">Photo</span>
+
+        <div class="window-controls">
+            <button class="minimize"></button>
+            <button class="maximize"></button>
+            <button class="close"></button>
+        </div>
+
+    </div>
+
+    <div class="window-menu">
+        <button type="button">File</button>
+        <button type="button">Edit</button>
+        <button type="button">View</button>
+        <button type="button">Image</button>
+        <button type="button">Help</button>
+    </div>
+
+    <div class="window-body image-preview-body">
+
+    <div class="preview-image-area">
+        <img
+            id="preview-image"
+            alt="Selected gallery photo"
+        >
+    </div>
+
+    <div class="photo-navigation">
+
+        <button
+            type="button"
+            id="previous-photo"
+            class="photo-navigation-button"
+            aria-label="Previous photo"
+        >
+            &lt;
+        </button>
+
+        <div
+            class="photo-counter"
+            id="photo-counter"
+        >
+            1 / 12
+        </div>
+
+        <button
+            type="button"
+            id="next-photo"
+            class="photo-navigation-button"
+            aria-label="Next photo"
+        >
+            &gt;
+        </button>
+
+    </div>
+
+</div>
+
+</div>
+
+<!-- ================= NOTEPAD / ABOUT ME ================= -->
+
+<div class="window hidden"
+     id="about-window"
+     data-window-id="about">
+
+    <div class="title-bar">
+
+        <span>About Me.txt - Notepad</span>
+
+        <div class="window-controls">
+            <button class="minimize"></button>
+            <button class="maximize"></button>
+            <button class="close"></button>
+        </div>
+
+    </div>
+
+    <div class="window-menu">
+        <button type="button">File</button>
+        <button type="button">Edit</button>
+        <button type="button">Search</button>
+        <button type="button">Help</button>
+    </div>
+
+    <div class="window-body notepad-body">
+
+        <textarea class="notepad-text" spellcheck="false" readonly>Hi, I'm Beatriz.
+
+I'm a photographer, singer, and creative based in São Paulo.
+
+I work with photography, art direction, music, and visual storytelling.
+</textarea>
+
+    </div>
+
+</div>
+
+<!-- ================= CONTACT ================= -->
+
+<div class="window hidden"
+     id="contact-window"
+     data-window-id="contact">
+
+    <div class="title-bar">
+
+        <span>Contact</span>
+
+        <div class="window-controls">
+            <button class="minimize"></button>
+            <button class="maximize"></button>
+            <button class="close"></button>
+        </div>
+
+    </div>
+
+    <div class="window-menu">
+        <button type="button">File</button>
+        <button type="button">Edit</button>
+        <button type="button">View</button>
+        <button type="button">Tools</button>
+        <button type="button">Help</button>
+    </div>
+
+    <div class="window-body contact-body">
+
+        <form
+    class="contact-form"
+    action="https://formsubmit.co/beatrizgmvic@gmail.com"
+    method="POST"
+>
+
+    <label for="contact-name">Name</label>
+
+    <input
+        type="text"
+        id="contact-name"
+        name="name"
+        placeholder="Your name"
+        required
+    >
+
+    <label for="contact-email">Email Address</label>
+
+    <input
+        type="email"
+        id="contact-email"
+        name="email"
+        placeholder="you@example.com"
+        required
+    >
+
+    <label for="contact-message">Message</label>
+
+    <textarea
+        id="contact-message"
+        name="message"
+        placeholder="Write your message..."
+        required
+    ></textarea>
+
+    <input
+        type="hidden"
+        name="_subject"
+        value="New message from Beatriz.exe"
+    >
+
+    <input
+        type="hidden"
+        name="_template"
+        value="table"
+    >
+
+    <input
+        type="hidden"
+        name="_captcha"
+        value="false"
+    >
+
+    <button type="submit" class="send-button">
+        Send
+    </button>
+
+</form>
+
+    </div>
+
+</div>
+
+<!-- ================= GRAPHIC ARTS ================= -->
+
+<div
+    class="window hidden"
+    id="graphic-arts-window"
+    data-window-id="graphic-arts"
+>
+    <div class="title-bar">
+
+        <span>Graphic Arts</span>
+
+        <div class="window-controls">
+            <button class="minimize"></button>
+            <button class="maximize"></button>
+            <button class="close"></button>
+        </div>
+
+    </div>
+
+    <div class="window-menu">
+        <button type="button">File</button>
+        <button type="button">Edit</button>
+        <button type="button">View</button>
+        <button type="button">Favorites</button>
+        <button type="button">Tools</button>
+        <button type="button">Help</button>
+    </div>
+
+    <div class="window-body graphic-arts-body">
+
+        <div class="graphic-projects">
+
+            <!-- Project 1 -->
+            <div
+                class="graphic-project-folder"
+                data-gallery="graphic-project-one"
+            >
+                <img
+                    src="assets/photos/graphic arts/1207de21569681.563053077b87c.webp"
+                    alt="Snow White Theater Poster"
+                >
+
+                <span>2014 // Snow White Theater Poster</span>
+            </div>
+
+            <!-- Project 2 -->
+            <div
+                class="graphic-project-folder"
+                data-gallery="graphic-project-two"
+            >
+                <img
+                    src="assets/photos/graphic arts/a5e69e21569481.5630531846654.webp"
+                    alt="Pop Art Exposition Poster"
+                >
+
+                <span>2014 // Pop Art Exposition Poster</span>
+            </div>
+
+
+        </div>
+
+    </div>
+</div>
+
+<!-- ================= GRAPHIC ARTS PROJECT ONE ================= -->
+
+<div
+    class="window hidden graphic-project-window"
+    id="graphic-project-one-window"
+    data-window-id="graphic-project-one"
+>
+    <div class="title-bar">
+
+        <span>2014 // Snow White Theater Poster</span>
+
+        <div class="window-controls">
+            <button class="minimize"></button>
+            <button class="maximize"></button>
+            <button class="close"></button>
+        </div>
+
+    </div>
+
+    <div class="window-menu">
+        <button type="button">File</button>
+        <button type="button">Edit</button>
+        <button type="button">View</button>
+        <button type="button">Image</button>
+        <button type="button">Tools</button>
+        <button type="button">Help</button>
+    </div>
+
+    <div class="window-body graphic-project-body">
+
+        <div class="graphic-project-content">
+
+            <div class="graphic-project-gallery">
+
+                <img
+                    src="assets/photos/graphic arts/1207de21569681.563053077b87c.webp"
+                    alt="Snow White Theater Poster"> 
+                    
+                    <p>
+                    Graphic design, art direction and visual identity.
+                    <br>Trabalho acadêmico - Arte & Design
+                    <br>Illustrator + Photoshop
+                    <br>Créditos: http://www.deviantart.com/art/Schneewittchen-335656129
+                    <br>http://ashcanallstars.deviantart.com/art/The-Old-Witch-of-Snow-White-by-Kyle-Strahm-342495779
+                    
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- ================= GRAPHIC ARTS PROJECT TWO ================= -->
+
+<div
+    class="window hidden graphic-project-window"
+    id="graphic-project-two-window"
+    data-window-id="graphic-project-two"
+>
+    <div class="title-bar">
+
+        <span>2014 // Pop Art Exposition Poster</span>
+
+        <div class="window-controls">
+            <button class="minimize"></button>
+            <button class="maximize"></button>
+            <button class="close"></button>
+        </div>
+
+    </div>
+
+    <div class="window-menu">
+        <button type="button">File</button>
+        <button type="button">Edit</button>
+        <button type="button">View</button>
+        <button type="button">Image</button>
+        <button type="button">Tools</button>
+        <button type="button">Help</button>
+    </div>
+
+    <div class="window-body graphic-project-body">
+
+        <div class="graphic-project-content">
+
+            <div class="graphic-project-gallery">
+
+                <img
+                    src="assets/photos/graphic arts/a5e69e21569481.5630531846654.webp"
+                    alt="Pop Art Exposition Poster">
+                    
+                    <p>
+                    Graphic design, art direction and visual identity.
+                    <br>Academic Work - Computação Gráfica I
+                    <br>Photoshop + Illustrator
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ================= MUSIC ================= -->
+
+    <div class="window hidden"
+         id="music-window"
+         data-window-id="music">
+
+        <div class="title-bar">
+
+            <span>Music</span>
+
+            <div class="window-controls">
+                <button class="minimize"></button>
+                <button class="maximize"></button>
+                <button class="close"></button>
+            </div>
+
+        </div>
+
+    <div class="window-menu">
+        <button type="button">File</button>
+        <button type="button">Edit</button>
+        <button type="button">View</button>
+        <button type="button">Playback</button>
+        <button type="button">Help</button>
+    </div>
+
+        <div class="window-body music-window">
+
+    <div class="music-tabs">
+
+        <button class="music-tab active" data-tab="soundcloud">
+            ☁ SoundCloud
+        </button>
+
+        <button class="music-tab" data-tab="bandcamp">
+            Bandcamp
+        </button>
+
+    </div>
+
+    <!-- SOUNDCLOUD -->
+
+    <div class="music-content active" id="soundcloud-tab">
+
+    <!-- Track 1 -->
+
+    <iframe
+        width="100%"
+        height="166"
+        scrolling="no"
+        frameborder="no"
+        allow="autoplay; encrypted-media"
+        src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2164968519">
+    </iframe>
+
+    <!-- Track 2 -->
+
+    <iframe
+        width="100%"
+        height="166"
+        scrolling="no"
+        frameborder="no"
+        allow="autoplay; encrypted-media"
+        src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2162688039">
+    </iframe>
+
+    <!-- Track 3 -->
+
+    <iframe
+        width="100%"
+        height="166"
+        scrolling="no"
+        frameborder="no"
+        allow="autoplay; encrypted-media"
+        src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2043893077">
+    </iframe>
+
+</div>
+
+    <!-- BANDCAMP -->
+
+    <div class="music-content" id="bandcamp-tab">
+
+        <iframe style="border: 0; width: 100%; height: 120px;" src="https://bandcamp.com/EmbeddedPlayer/track=402230461/size=large/bgcol=ffffff/linkcol=f171a2/tracklist=false/artwork=small/transparent=true/" seamless><a href="https://bibiguimaraes.bandcamp.com/track/mushrooms">Mushrooms by Bibi</a></iframe>
+   </div>
+
+ </div>
+
+</div>
+
+<!-- ================= RECYCLE BIN ================= -->
+
+<div
+    class="window hidden"
+    id="trash-window"
+    data-window-id="trash"
+>
+    <div class="title-bar">
+
+        <span>Recycle Bin</span>
+
+        <div class="window-controls">
+            <button
+                type="button"
+                class="minimize"
+                aria-label="Minimize"
+            ></button>
+
+            <button
+                type="button"
+                class="maximize"
+                aria-label="Maximize"
+            ></button>
+
+            <button
+                type="button"
+                class="close"
+                aria-label="Close"
+            ></button>
+        </div>
+
+    </div>
+
+    <!-- Explorer menu -->
+
+    <div class="window-menu">
+        <button type="button">File</button>
+        <button type="button">Edit</button>
+        <button type="button">View</button>
+        <button type="button">Tools</button>
+        <button type="button">Help</button>
+    </div>
+
+
+    <!-- Main Explorer content -->
+
+    <div class="window-body trash-body">
+
+        <div class="trash-content">
+
+            <button
+    type="button"
+    class="recycle-program"
+    id="trojan-program"
+    title="Run trojan.exe"
+>
+    <img
+        src="assets/photos/steam.png"
+        alt=""
+    >
+
+    <span>trojan.exe</span>
+</button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================= TROJAN CMD WINDOW ================= -->
+
+<div
+    class="window hidden"
+    id="trojan-window"
+    data-window-id="trojan"
+>
+    <div class="title-bar">
+
+        <span>C:\WINDOWS\system32\cmd.exe</span>
+
+        <div class="window-controls">
+
+            <button
+                type="button"
+                class="minimize"
+                aria-label="Minimize"
+            ></button>
+
+            <button
+                type="button"
+                class="maximize"
+                aria-label="Maximize"
+            ></button>
+
+            <button
+                type="button"
+                class="close"
+                aria-label="Close"
+            ></button>
+
+        </div>
+
+    </div>
+
+    <!-- Same menu structure as the other website windows -->
+
+    <div class="window-menu">
+        <button type="button">File</button>
+        <button type="button">Edit</button>
+        <button type="button">View</button>
+        <button type="button">Tools</button>
+        <button type="button">Help</button>
+    </div>
+
+    <div class="window-body trojan-body">
+
+        <!-- Hacking text -->
+
+        <div
+            id="trojan-terminal"
+            class="trojan-terminal"
+            aria-live="polite"
+        ></div>
+
+        <!-- Loading dialog -->
+
+        <div
+            id="trojan-loader"
+            class="trojan-loader"
+            aria-hidden="true"
+        >
+            <div class="trojan-loader-window">
+
+                <div class="trojan-loader-titlebar">
+
+                    <span>
+                        Payload Installation Progress
+                    </span>
+
+                    <div
+                        class="trojan-loader-close"
+                        aria-hidden="true"
+                    >
+                        ×
+                    </div>
+
+                </div>
+
+                <div class="trojan-loader-content">
+
+                    <img
+                        class="trojan-loader-cat"
+                        src="assets/stuff/orangecat.gif"
+                        alt=""
+                    >
+
+                    <div class="trojan-loader-information">
+
+                        <div
+                            id="trojan-loader-heading"
+                            class="trojan-loader-heading"
+                        >
+                            Building profile information...
+                        </div>
+
+                        <div
+                            id="trojan-loader-status"
+                            class="trojan-loader-status"
+                        >
+                            Preparing files
+                        </div>
+
+                        <div class="trojan-loader-track">
+
+                            <div
+                                id="trojan-loader-fill"
+                                class="trojan-loader-fill"
+                            ></div>
+
+                        </div>
+
+                        <div
+                            id="trojan-loader-percentage"
+                            class="trojan-loader-percentage"
+                        >
+                            0%
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Final Steam image -->
+
+        <div
+            id="trojan-reveal"
+            class="trojan-reveal"
+        >
+            <a
+                class="trojan-steam-image-link"
+                href="https://steamcommunity.com/id/bibihn/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open Bibi's Steam profile"
+            >
+                <img
+                    src="assets/photos/steam.jpg"
+                    alt="Bibi's Steam profile"
+                >
+
+                <span
+                    class="trojan-image-shine"
+                    aria-hidden="true"
+                ></span>
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- closes #windows-container -->
+ 
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

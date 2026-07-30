@@ -1,0 +1,5912 @@
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+    
+background:black;
+
+font-family:Tahoma, sans-serif;
+
+overflow:hidden;
+
+width: 100vw;
+    height: calc(100vh - 40px);
+
+}
+
+#desktop {
+    position: relative;
+    z-index: 1;
+
+    background: transparent;
+
+    display: grid;
+
+    /* Icons go downward first, then start a new column */
+    grid-auto-flow: column;
+    grid-template-rows: repeat(6, 82px);
+    grid-auto-columns: 90px;
+
+    column-gap: 20px;
+    row-gap: 14px;
+
+    width: max-content;
+    padding: 20px;
+}
+
+.icon{
+
+width:80px;
+
+text-align:center;
+
+color:white;
+
+cursor:pointer;
+
+user-select:none;
+
+}
+
+.icon img{
+
+width:42px;
+
+margin-bottom:5px;
+
+}
+
+.icon span{
+
+font-size:12px;
+
+display:block;
+
+}
+
+.icon:hover{
+
+background:rgba(255,255,255,.2);
+
+}
+
+#taskbar{
+
+position:relative;
+z-index:1;
+
+bottom:0;
+
+left:0;
+
+width:100%;
+
+height:38px;
+
+background:#c0c0c0;
+
+display:flex;
+
+align-items:center;
+
+padding:3px;
+
+border-top:2px solid white;
+
+
+}
+
+#startButton{
+
+height:30px;
+
+padding:0 15px;
+
+font-weight:bold;
+
+}
+
+#clock {
+
+    min-width: 60px;
+    padding: 0 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-family: Tahoma, sans-serif;
+    font-size: 12px;
+    color: black;
+
+    border-left: 1px solid #808080;
+
+    box-shadow:
+        inset 1px 1px white,
+        inset -1px -1px #808080;
+
+}
+
+#wallpaper-video {
+    position: fixed;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    z-index: 0;
+    pointer-events: none;
+}
+
+#windows-container {
+    position: fixed;
+    inset: 0;
+
+    z-index: 2;
+
+    pointer-events: none;
+}
+
+#windows-container .window {
+    pointer-events: auto;
+}
+
+#taskbar,
+#start-menu,
+#shutdown-dialog {
+    z-index: 2;
+}
+
+.hidden{
+    display:none;
+}
+
+.window{
+
+    position:absolute;
+    z-index:1;
+
+    top:120px;
+    left:180px;
+
+    width:620px;
+
+    background:#c0c0c0;
+
+    border:2px solid;
+
+    border-color:white #404040 #404040 white;
+
+    box-shadow:2px 2px 0 black;
+
+}
+
+.title-bar{
+
+    cursor: move;
+
+    height:28px;
+
+    background:linear-gradient(to right,#db98d6,#c5299e);
+
+    color:white;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:0 8px;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+}
+
+.window-controls button{
+
+    width:22px;
+    height:20px;
+
+    padding:0;
+
+    cursor:pointer;
+
+}
+
+.window-body{
+
+    padding:20px;
+
+    background:#c0c0c0;
+
+}
+
+.folder-item{
+
+    padding:8px;
+
+    cursor:pointer;
+
+}
+
+.folder-item:hover{
+
+    background:#000080;
+
+    color:white;
+
+}
+
+.window-controls{
+
+    display:flex;
+    gap:2px;
+
+}
+
+.window-controls button{
+
+    width:18px;
+    height:18px;
+
+    background:#c0c0c0;
+
+    border:2px solid;
+    border-color:white #404040 #404040 white;
+
+    position:relative;
+
+    cursor:pointer;
+
+    padding:0;
+
+}
+
+.window-controls button:active{
+
+    border-color:#404040 white white #404040;
+
+}
+
+.minimize::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:4px;
+    right:4px;
+    bottom:4px;
+
+    height:2px;
+
+    background:black;
+
+}
+
+.maximize::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:4px;
+    top:4px;
+
+    width:8px;
+    height:6px;
+
+    border:2px solid black;
+
+    box-sizing:border-box;
+
+}
+
+.close::before,
+.close::after{
+
+    content:"";
+
+    position:absolute;
+
+    left:7px;
+    top:3px;
+
+    width:2px;
+    height:10px;
+
+    background:black;
+
+}
+
+.close::before{
+
+    transform:rotate(45deg);
+
+}
+
+.close::after{
+
+    transform:rotate(-45deg);
+
+}
+
+#taskbar{
+
+    position:fixed;
+
+    bottom:0;
+    left:0;
+
+    width:100%;
+    height:38px;
+
+    display:flex;
+    align-items:center;
+
+    background:#c0c0c0;
+
+    border-top:2px solid white;
+
+    padding:3px;
+
+}
+
+#taskbar-windows{
+
+    display:flex;
+
+    gap:4px;
+
+    margin-left:10px;
+
+    flex:1;
+
+}
+
+.task-button{
+
+    min-width:140px;
+
+    height:30px;
+
+    background:#c0c0c0;
+
+    border:2px solid;
+    border-color:white #404040 #404040 white;
+
+    font-family:Tahoma;
+
+    cursor:pointer;
+
+}
+
+.task-button.active{
+
+    border-color:#404040 white white #404040;
+
+}
+
+.photo-gallery {
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    align-content:flex-start;
+
+    gap:25px;
+
+    padding:20px;
+
+}
+
+
+
+.photo-folder {
+
+    width:80px;
+
+    text-align:center;
+
+    cursor:pointer;
+
+    user-select:none;
+
+}
+
+
+
+.photo-folder img {
+
+    width:40px;
+
+    height:40px;
+
+    display:block;
+
+    margin:auto;
+
+}
+
+
+
+.photo-folder span {
+
+    display:block;
+
+    margin-top:5px;
+
+    font-size:12px;
+
+    color:black;
+
+    word-wrap:break-word;
+
+}
+
+.photo{
+
+    width:110px;
+
+    text-align:center;
+
+    cursor:pointer;
+
+}
+
+.photo img{
+
+    width:90px;
+
+    height:90px;
+
+    object-fit:cover;
+
+    border:2px solid #808080;
+
+}
+
+.photo span{
+
+    display:block;
+
+    margin-top:6px;
+
+    font-size:12px;
+
+}
+
+.music-window{
+
+    padding:0;
+
+    overflow:hidden;
+
+    display:flex;
+    flex-direction:column;
+
+    height:100%;
+
+}
+
+.music-window iframe{
+
+    width:100%;
+    height:100%;
+
+    border:none;
+
+}
+
+
+.music-tabs{
+
+    display:flex;
+
+    border-bottom:2px solid #808080;
+
+}
+
+.music-tab{
+
+    flex:1;
+
+    padding:10px;
+
+    cursor:pointer;
+
+    font-family:Tahoma;
+
+}
+
+.music-tab.active{
+
+    background:white;
+
+    border-bottom:2px solid white;
+
+}
+
+.music-content{
+
+    display:none;
+
+    padding:10px;
+
+    overflow-y:auto;
+
+    height:430px;
+
+    flex:1;
+
+    overflow-y:auto;
+
+}
+
+.music-content.active{
+
+    display:block;
+
+}
+
+.music-content iframe{
+
+    width:100%;
+
+    margin-bottom:15px;
+
+}
+
+.spotify-profile-button {
+
+    display: inline-block;
+
+    margin-bottom: 15px;
+
+    padding: 6px 14px;
+
+    background: #d4d0c8;
+
+    color: black;
+
+    text-decoration: none;
+
+    font-family: "MS Sans Serif", Arial, sans-serif;
+
+    font-size: 14px;
+
+    border-top: 2px solid white;
+    border-left: 2px solid white;
+    border-right: 2px solid #808080;
+    border-bottom: 2px solid #808080;
+
+    cursor: pointer;
+
+}
+
+
+.spotify-profile-button {
+
+    display: block;
+
+    width: fit-content;
+
+    margin: 15px auto; /* this centers it */
+
+    padding: 6px 14px;
+
+    background: #d4d0c8;
+
+    color: black;
+
+    text-decoration: none;
+
+    font-family: "MS Sans Serif", Arial, sans-serif;
+
+    font-size: 14px;
+
+    border-top: 2px solid white;
+    border-left: 2px solid white;
+    border-right: 2px solid #808080;
+    border-bottom: 2px solid #808080;
+
+    cursor: pointer;
+
+}
+
+
+.photo-folder:hover img {
+    outline: 1px dotted #000080;
+    outline-offset: 2px;
+}
+
+/* ================= PROJECT GALLERY ================= */
+
+.project-gallery {
+    width: 100%;
+    padding: 18px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+
+    box-sizing: border-box;
+}
+
+.gallery-row {
+    width: 100%;
+
+    display: grid;
+    gap: 18px;
+
+    align-items: start;
+}
+
+.gallery-row.one {
+    grid-template-columns: 1fr;
+}
+
+.gallery-row.one img {
+    width: 100%;
+    max-width: 900px;
+
+    margin: 0 auto;
+}
+
+.gallery-row.two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.gallery-row.two img {
+    align-self: start;
+}
+
+.gallery-row.three {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.gallery-row.four {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.gallery-row.two > div {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.stacked-photo {
+    width: 100%;
+    height: auto;
+}
+
+.gallery-row img {
+    display: block;
+
+    width: 100%;
+    height: auto;
+
+    max-width: 100%;
+    max-height: none;
+
+    object-fit: contain;
+
+    background: transparent;
+}
+
+
+#disney-window,
+#miku-window {
+    width: min(1100px, calc(100vw - 40px));
+    height: min(900px, calc(100vh - 60px));
+}
+
+#disney-window .window-body,
+#miku-window .window-body {
+    height: calc(100% - 28px);
+
+    padding: 0;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+@media (max-width: 760px) {
+    .gallery-row.four {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .gallery-row.four {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* ================= GRAPHIC ARTS WINDOW ================= */
+
+#graphic-arts-window {
+    width: 720px;
+    height: 520px;
+
+    max-width: calc(100vw - 20px);
+    max-height: calc(100vh - 58px);
+}
+
+.graphic-arts-body {
+    height: calc(100% - 28px);
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.graphic-projects {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+
+    gap: 24px;
+}
+
+.graphic-project-folder:hover span {
+    color: white;
+    background: #000080;
+}
+
+
+/* ================= GRAPHIC ARTS PROJECT ================= */
+
+.graphic-project-window {
+    width: min(1100px, calc(100vw - 40px));
+    height: min(900px, calc(100vh - 60px));
+}
+
+.graphic-project-body {
+    height: calc(100% - 28px);
+
+    padding: 0;
+
+    background: #ffffff;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.graphic-project-content {
+    width: 100%;
+    max-width: 1050px;
+
+    margin: 0 auto;
+    padding: 36px;
+
+    background: white;
+}
+
+.graphic-project-header {
+    max-width: 760px;
+
+    margin: 0 auto 36px;
+
+    color: black;
+}
+
+.graphic-project-header h1 {
+    margin-bottom: 12px;
+
+    font-family: Arial, sans-serif;
+    font-size: 30px;
+    line-height: 1.1;
+}
+
+.graphic-project-header p {
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.graphic-project-gallery {
+    display: flex;
+    flex-direction: column;
+
+    gap: 24px;
+}
+
+.graphic-project-gallery img {
+    display: block;
+
+    width: 100%;
+    height: auto;
+
+    max-width: 100%;
+    max-height: none;
+
+    object-fit: contain;
+
+    cursor: pointer;
+}
+
+
+
+/* ================= IMAGE PREVIEW ================= */
+
+#image-preview-window {
+    width: 900px;
+    height: min(800px, calc(100vh - 58px));
+    max-width: calc(100vw - 20px);
+}
+
+.image-preview-body {
+    height: calc(100% - 30px);
+    padding: 0;
+
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) 48px;
+
+    overflow: hidden;
+}
+
+.preview-image-area {
+    min-height: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 12px;
+    overflow: auto;
+}
+
+#preview-image {
+    display: block;
+
+    max-width: 100%;
+    max-height: 100%;
+
+    object-fit: contain;
+}
+
+.photo-navigation {
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+
+    background: #c0c0c0;
+    border-top: 2px solid #808080;
+
+    flex-shrink: 0;
+}
+
+.photo-navigation-button {
+    width: 42px;
+    height: 28px;
+
+    background: #c0c0c0;
+    color: #000;
+
+    border: 2px solid;
+    border-color: #fff #404040 #404040 #fff;
+
+    font-family: Tahoma, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.photo-navigation-button:active {
+    border-color: #404040 #fff #fff #404040;
+}
+
+.photo-counter {
+    min-width: 65px;
+
+    text-align: center;
+
+    font-family: Tahoma, sans-serif;
+    font-size: 12px;
+}
+
+/* =========================================
+   PHOTOGRAPHY + GRAPHIC ARTS FOLDERS
+========================================= */
+
+.photo-folder,
+.graphic-project-folder {
+    width: 150px;
+
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.photo-folder img,
+.graphic-project-folder img {
+    display: block;
+
+    width: 150px;
+    height: 110px;
+
+    margin: 0 auto 8px;
+
+    object-fit: cover;
+    background: white;
+
+    border: 2px solid;
+    border-color: #808080 white white #808080;
+}
+
+.photo-folder span,
+.graphic-project-folder span {
+    display: block;
+
+    padding: 3px;
+
+    color: black;
+    background: transparent;
+
+    font-family: Tahoma, sans-serif;
+    font-size: 12px;
+
+    overflow-wrap: anywhere;
+}
+
+/* Identical Windows blue hover */
+
+.photo-folder:hover span,
+.graphic-project-folder:hover span {
+    color: white;
+    background: #000080;
+}
+
+/* ================= NOTEPAD ================= */
+
+#about-window {
+    width: 650px;
+    height: 500px;
+}
+
+.notepad-menu {
+    height: 26px;
+    display: flex;
+    align-items: center;
+    padding: 0 4px;
+    background: #c0c0c0;
+    border-bottom: 1px solid #808080;
+}
+
+.notepad-menu button {
+    padding: 3px 8px;
+    background: transparent;
+    border: none;
+    font-family: Tahoma, sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.notepad-menu button:hover {
+    background: #000080;
+    color: white;
+}
+
+.notepad-body {
+    height: calc(100% - 54px);
+    padding: 2px;
+    background: #c0c0c0;
+}
+
+.notepad-text {
+    width: 100%;
+    height: 100%;
+    resize: none;
+    padding: 8px;
+
+    background: white;
+    color: black;
+
+    border: 2px solid;
+    border-color: #808080 white white #808080;
+
+    font-family: "Courier New", monospace;
+    font-size: 14px;
+    line-height: 1.5;
+
+    outline: none;
+    overflow: auto;
+}
+
+/* ================= CONTACT ================= */
+
+#contact-window{
+    width:500px;
+    height:470px;
+}
+
+.contact-body{
+    padding:20px;
+}
+
+.contact-form{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.contact-form label{
+    font-family:Tahoma, sans-serif;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.contact-form input,
+.contact-form textarea{
+
+    width:100%;
+
+    font-family:Tahoma, sans-serif;
+    font-size:13px;
+
+    padding:6px;
+
+    border:2px solid;
+    border-color:#808080 white white #808080;
+
+    background:white;
+
+    outline:none;
+}
+
+.contact-form textarea{
+    height:180px;
+    resize:none;
+}
+
+.send-button{
+
+    align-self:flex-end;
+
+    padding:6px 18px;
+
+    background:#c0c0c0;
+
+    border:2px solid;
+    border-color:white #404040 #404040 white;
+
+    font-family:Tahoma,sans-serif;
+
+    cursor:pointer;
+}
+
+.send-button:active{
+
+    border-color:#404040 white white #404040;
+
+}
+
+#music-window,
+#image-preview-window,
+#about-window,
+#contact-window {
+    max-width: calc(100vw - 20px);
+    max-height: calc(100vh - 58px);
+}
+
+/* START MENU */
+
+#start-menu{
+
+    position:fixed;
+
+    bottom:38px;
+
+    left:3px;
+
+    width:230px;
+
+    background:#c0c0c0;
+
+    border:2px solid;
+
+    border-color:white #404040 #404040 white;
+
+    box-shadow:3px 3px black;
+
+    z-index:9999;
+
+}
+
+.start-header{
+
+    height:42px;
+
+    background:linear-gradient(to top,#8a1f77,#db98d6);
+
+    color:white;
+
+    display:flex;
+
+    align-items:center;
+
+    padding-left:12px;
+
+    font-weight:bold;
+
+    font-size:18px;
+
+}
+
+.start-item{
+
+    width:100%;
+
+    padding:10px;
+
+    border:none;
+
+    background:#c0c0c0;
+
+    text-align:left;
+
+    cursor:pointer;
+
+    font-family:Tahoma;
+
+    font-size:13px;
+
+}
+
+.start-item:hover{
+
+    background:#000080;
+
+    color:white;
+
+}
+
+.start-separator{
+
+    height:2px;
+
+    background:#808080;
+
+    margin:4px;
+
+}
+
+.shutdown{
+
+    font-weight:bold;
+
+}
+
+
+/* SHUTDOWN */
+
+#shutdown-dialog{
+
+    position:fixed;
+
+    width:320px;
+
+    left:50%;
+    top:50%;
+
+    transform:translate(-50%, -50%);
+
+    z-index:10000;
+
+}
+
+.shutdown-body{
+
+    text-align:center;
+
+}
+
+.shutdown-body p{
+
+    margin-bottom:20px;
+
+}
+
+.shutdown-body button{
+
+    margin:5px;
+
+    padding:6px 18px;
+
+}
+
+/* ================= BOOT SEQUENCE ================= */
+
+#power-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    background: black;
+    color: white;
+
+    font-family: Tahoma, sans-serif;
+}
+
+.power-message {
+    margin-bottom: 24px;
+    font-size: 22px;
+    text-align: center;
+}
+
+.power-button {
+    padding: 8px 22px;
+
+    background: #c0c0c0;
+    color: black;
+
+    border: 2px solid;
+    border-color: white #404040 #404040 white;
+
+    font-family: Tahoma, sans-serif;
+    font-size: 14px;
+
+    cursor: pointer;
+}
+
+.power-button:active {
+    border-color: #404040 white white #404040;
+}
+
+
+
+/* ====================================
+   AUTOMATIC STARTUP BOOT SCREEN
+==================================== */
+
+body.booting #desktop,
+body.booting #taskbar,
+body.booting #windows-container,
+body.booting #start-menu,
+body.booting #shutdown-dialog {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* Black Windows boot screen */
+
+#startup-boot-screen {
+    position: fixed;
+    inset: 0;
+
+    z-index: 999999;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    background: #000;
+    color: #fff;
+
+    font-family: Tahoma, Arial, sans-serif;
+}
+
+#startup-boot-screen.hidden {
+    display: none;
+}
+
+.startup-boot-logo {
+    margin-bottom: 45px;
+    text-align: center;
+}
+
+.startup-windows-name {
+    font-family: Arial, sans-serif;
+    font-size: 42px;
+    font-weight: bold;
+    letter-spacing: -2px;
+}
+
+.startup-windows-name span {
+    margin-left: 3px;
+
+    font-size: 13px;
+    font-weight: normal;
+
+    vertical-align: top;
+}
+
+.startup-windows-version {
+    margin-top: 5px;
+
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    letter-spacing: 4px;
+}
+
+/* Loading bar */
+
+.startup-loading-frame {
+    width: 250px;
+    height: 22px;
+
+    padding: 3px;
+
+    background: #c0c0c0;
+
+    border: 2px solid;
+    border-color: #404040 #fff #fff #404040;
+
+    overflow: hidden;
+}
+
+.startup-loading-track {
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+    background: #000;
+}
+
+.startup-loading-blocks {
+    position: absolute;
+    top: 2px;
+    left: -65px;
+
+    display: flex;
+    gap: 4px;
+
+    animation: startupLoading 1.15s linear infinite;
+}
+
+.startup-loading-blocks span {
+    display: block;
+
+    width: 12px;
+    height: 12px;
+
+    background: #b584d7;
+}
+
+@keyframes startupLoading {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(315px);
+    }
+}
+
+/* Loading personal settings screen */
+
+#startup-settings-screen {
+    position: fixed;
+    inset: 0;
+
+    z-index: 999999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #ead8ff;
+    color: #000;
+
+    font-family: Tahoma, Arial, sans-serif;
+    font-size: 18px;
+}
+
+#startup-settings-screen.hidden {
+    display: none;
+}
+
+/* Desktop fade */
+
+body.desktop-loaded #desktop,
+body.desktop-loaded #taskbar,
+body.desktop-loaded #windows-container {
+    visibility: visible;
+
+    animation: desktopFadeIn 1.2s ease forwards;
+}
+
+@keyframes desktopFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+
+/* ====================================
+   BIG BIBI BACKGROUND TITLE
+==================================== */
+
+@font-face {
+    font-family: "DreamerTM-Regular";
+    src: url("assets/fonts/DreamerTM-Regular.woff2") format("woff2"),
+         url("assets/fonts/DreamerTM-Regular.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+.bibi-title {
+    position: fixed;
+
+    top: 40%;
+    left: 50%;
+
+    width: max-content;
+
+    transform:
+    translate(-50%, -50%)
+    perspective(900px)
+    rotateX(var(--bibi-rotate-x, 0deg))
+    rotateY(var(--bibi-rotate-y, 0deg))
+    scale(var(--bibi-scale, 1));
+
+    transform-style: preserve-3d;
+    will-change: transform;
+
+    transition:
+    transform 120ms ease-out,
+    filter 200ms ease;
+
+    font-family: "DreamerTM-Regular", sans-serif;
+    font-size: clamp(190px, 30vw, 520px);
+    font-weight: 400;
+    line-height: 0.75;
+    letter-spacing: 0.025em;
+
+    white-space: nowrap;
+
+    pointer-events: none;
+    user-select: none;
+
+    z-index: 1;
+}
+
+.bibi-title__layer {
+    display: block;
+}
+
+/* All layers occupy the exact same position */
+.bibi-title__layer:not(:first-child) {
+    position: absolute;
+    inset: 0;
+}
+
+
+/* DARK PURPLE PIXEL SHADOW */
+
+.bibi-title__shadow {
+    color: #79518f;
+
+    transform: translate(14px, 16px);
+
+    opacity: 0.45;
+
+    filter: blur(0.2px);
+}
+
+
+/* THICK WHITE PIXEL BORDER */
+
+.bibi-title__outline {
+    color: #ffffff;
+
+    text-shadow:
+        -8px -8px 0 #ffffff,
+         0   -8px 0 #ffffff,
+         8px -8px 0 #ffffff,
+
+        -8px  0   0 #ffffff,
+         8px  0   0 #ffffff,
+
+        -8px  8px 0 #ffffff,
+         0    8px 0 #ffffff,
+         8px  8px 0 #ffffff,
+
+        -12px 0 0 #ffffff,
+         12px 0 0 #ffffff,
+
+         0 -12px 0 #ffffff,
+         0  12px 0 #ffffff;
+
+    filter:
+        drop-shadow(0 0 5px rgba(255, 255, 255, 0.8))
+        drop-shadow(0 0 14px rgba(231, 203, 255, 0.45));
+}
+
+
+/* MAIN LAVENDER FACE */
+
+.bibi-title__fill {
+    color: #caa1ed;
+
+    transform: translate(-1px, -1px);
+
+    text-shadow:
+        /* light upper-left bevel */
+        -3px -3px 0 #ead8ff,
+        -5px -5px 0 rgba(255, 255, 255, 0.42),
+
+        /* middle lavender depth */
+         3px  3px 0 #b584d7,
+
+        /* darker lower-right bevel */
+         6px  6px 0 #9364b0,
+         8px  8px 0 rgba(92, 48, 121, 0.35);
+
+    filter:
+        drop-shadow(0 0 4px rgba(255, 255, 255, 0.4))
+        drop-shadow(0 0 16px rgba(204, 156, 240, 0.3));
+}
+
+
+/* SMALL GLOSSY TOP HIGHLIGHT */
+
+.bibi-title__highlight {
+    color: rgba(255, 255, 255, 0.42);
+
+    transform: translate(-4px, -5px);
+
+    clip-path: polygon(
+        0 0,
+        100% 0,
+        100% 37%,
+        0 53%
+    );
+
+    text-shadow:
+        2px 2px 0 rgba(255, 255, 255, 0.18);
+
+    opacity: 0.75;
+}
+
+
+/* Keep desktop icons and windows above the title */
+
+#desktop {
+    position: relative;
+    z-index: 2;
+}
+
+
+/* Mobile adjustment */
+
+@media (max-width: 700px) {
+    .bibi-title {
+        top: 44%;
+
+        font-size: clamp(130px, 40vw, 280px);
+        letter-spacing: 0;
+    }
+
+    .bibi-title__shadow {
+        transform: translate(8px, 10px);
+    }
+
+    .bibi-title__outline {
+        text-shadow:
+            -5px -5px 0 #ffffff,
+             0   -5px 0 #ffffff,
+             5px -5px 0 #ffffff,
+
+            -5px  0   0 #ffffff,
+             5px  0   0 #ffffff,
+
+            -5px  5px 0 #ffffff,
+             0    5px 0 #ffffff,
+             5px  5px 0 #ffffff;
+    }
+}
+
+/* ====================================
+   BIBI 3D DEPTH
+==================================== */
+
+.bibi-title__shadow {
+    transform: translate3d(14px, 16px, -35px);
+}
+
+.bibi-title__outline {
+    transform: translateZ(0);
+}
+
+.bibi-title__fill {
+    transform: translate3d(-1px, -1px, 18px);
+}
+
+.bibi-title__highlight {
+    transform: translate3d(-4px, -5px, 34px);
+}
+
+
+/* ====================================
+   CLICK SPARKLES
+==================================== */
+
+.click-sparkle{
+
+    position:fixed;
+
+    width:5px;
+    height:5px;
+
+    pointer-events:none;
+    user-select:none;
+
+    overflow:visible;
+
+    z-index:999999;
+
+    transform:translate(-50%,-50%);
+
+    animation:clickSparkleBurst .65s forwards;
+
+}
+
+.sparkle-vertical,
+.sparkle-horizontal{
+
+    position:absolute;
+
+    background:#ffffff;
+
+    box-shadow:
+        0 0 2px #fff,
+        0 0 5px #fff,
+        0 0 8px #fff;
+
+}
+
+.sparkle-vertical{
+
+    width:1px;
+    height:5px;
+
+    left:2px;
+    top:0;
+
+}
+
+.sparkle-horizontal{
+
+    width:5px;
+    height:1px;
+
+    left:0;
+    top:2px;
+
+}
+
+@keyframes clickSparkleBurst{
+
+    0%{
+
+        opacity:1;
+
+        transform:
+            translate(-50%,-50%)
+            scale(0);
+
+    }
+
+    25%{
+
+        opacity:1;
+
+        transform:
+            translate(
+                calc(-50% + var(--sparkle-x)*0.4),
+                calc(-50% + var(--sparkle-y)*0.4)
+            )
+            scale(1.8);
+
+    }
+
+    70%{
+
+        opacity:1;
+
+        transform:
+            translate(
+                calc(-50% + var(--sparkle-x)),
+                calc(-50% + var(--sparkle-y))
+            )
+            scale(1);
+
+    }
+
+    100%{
+
+        opacity:0;
+
+        transform:
+            translate(
+                calc(-50% + var(--sparkle-x)),
+                calc(-50% + var(--sparkle-y) + 15px)
+            )
+            scale(.3);
+
+    }
+
+}
+
+/* ====================================
+   SOCIALS WINDOW
+==================================== */
+
+#socials-window{
+
+    width:430px;
+    height:260px;
+
+}
+
+.socials-body{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,80px);
+
+    justify-content:center;
+
+    align-content:center;
+
+    gap:30px 50px;
+
+    padding:30px;
+
+}
+
+.social-icon{
+
+    width:80px;
+
+    text-align:center;
+
+    text-decoration:none;
+
+    color:black;
+
+    cursor:pointer;
+
+    user-select:none;
+
+}
+
+.social-icon img{
+
+    width:42px;
+
+    display:block;
+
+    margin:0 auto 8px;
+
+}
+
+.social-icon span{
+
+    display:block;
+
+    font-family:Tahoma,sans-serif;
+
+    font-size:12px;
+
+}
+
+.social-icon:hover{
+
+    background:#000080;
+
+    color:white;
+
+}
+/* =========================================================
+   HALF-OPACITY GLASS SKIN
+   This section only changes the visual skin.
+   Your original layout, dimensions and JavaScript stay intact.
+========================================================= */
+
+:root {
+    --glass-window: rgba(224, 220, 232, 0.50);
+    --glass-window-body: rgba(239, 236, 244, 0.50);
+    --glass-taskbar: rgba(30, 20, 42, 0.50);
+    --glass-menu: rgba(53, 38, 67, 0.56);
+    --glass-border: rgba(255, 255, 255, 0.58);
+    --glass-highlight: rgba(255, 255, 255, 0.26);
+    --glass-shadow: rgba(0, 0, 0, 0.38);
+    --glass-blur: 14px;
+}
+
+/* ---------- WINDOWS ---------- */
+
+.window {
+    background: var(--glass-window);
+
+    border: 1px solid var(--glass-border);
+    border-radius: 9px 9px 6px 6px;
+
+    box-shadow:
+        0 14px 34px var(--glass-shadow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.10);
+
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(135%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(135%);
+
+    overflow: hidden;
+}
+
+.title-bar {
+    height: 30px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.30),
+            rgba(255, 255, 255, 0.05) 48%,
+            rgba(80, 12, 70, 0.14) 49%,
+            rgba(80, 12, 70, 0.24)
+        ),
+        linear-gradient(
+            to right,
+            rgba(219, 152, 214, 0.68),
+            rgba(197, 41, 158, 0.58)
+        );
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.34);
+
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.72);
+
+    padding: 0 7px 0 10px;
+}
+
+.window > .window-body {
+    background: var(--glass-window-body);
+}
+
+/* Small glass shine around an active window */
+.window:focus-within {
+    box-shadow:
+        0 16px 38px rgba(0, 0, 0, 0.44),
+        0 0 15px rgba(231, 147, 222, 0.20),
+        inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+/* ---------- WINDOW BUTTONS ---------- */
+
+.window-controls {
+    gap: 4px;
+}
+
+.window-controls button {
+    width: 22px;
+    height: 19px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.42),
+            rgba(255, 255, 255, 0.10)
+        );
+
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 3px;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.42),
+        0 1px 2px rgba(0, 0, 0, 0.30);
+}
+
+.window-controls button:hover {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.62),
+            rgba(255, 255, 255, 0.22)
+        );
+}
+
+.window-controls button:active {
+    border-color: rgba(255, 255, 255, 0.42);
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+.window-controls .close {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 150, 160, 0.86),
+            rgba(184, 31, 58, 0.78)
+        );
+
+    border-color: rgba(255, 220, 225, 0.72);
+}
+
+.window-controls .close:hover {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 185, 190, 0.96),
+            rgba(222, 42, 67, 0.90)
+        );
+
+    box-shadow:
+        0 0 8px rgba(255, 75, 100, 0.62),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+.minimize::before,
+.close::before,
+.close::after {
+    background: white;
+
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.70);
+}
+
+.maximize::before {
+    border-color: white;
+
+    filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.65));
+}
+
+/* ---------- TASKBAR ---------- */
+
+#taskbar {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.20),
+            rgba(255, 255, 255, 0.05) 42%,
+            rgba(0, 0, 0, 0.12) 44%,
+            rgba(0, 0, 0, 0.22)
+        ),
+        var(--glass-taskbar);
+
+    border-top: 1px solid rgba(255, 255, 255, 0.60);
+
+    box-shadow:
+        0 -6px 22px rgba(0, 0, 0, 0.24),
+        inset 0 1px 0 rgba(255, 255, 255, 0.32);
+
+    -webkit-backdrop-filter: blur(16px) saturate(145%);
+    backdrop-filter: blur(16px) saturate(145%);
+
+    padding: 4px 6px;
+}
+
+#startButton {
+    height: 29px;
+    padding: 0 15px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.38),
+            rgba(255, 255, 255, 0.10)
+        );
+
+    color: white;
+
+    border: 1px solid rgba(255, 255, 255, 0.50);
+    border-radius: 6px;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.38),
+        0 1px 3px rgba(0, 0, 0, 0.36);
+
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.78);
+    cursor: pointer;
+}
+
+#startButton:hover {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.52),
+            rgba(229, 143, 219, 0.24)
+        );
+
+    box-shadow:
+        0 0 9px rgba(229, 143, 219, 0.34),
+        inset 0 1px 0 rgba(255, 255, 255, 0.52);
+}
+
+#taskbar-windows {
+    gap: 6px;
+    margin-left: 8px;
+}
+
+.task-button {
+    min-width: 140px;
+    height: 29px;
+    padding: 0 10px;
+
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
+
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 5px;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.18),
+        0 1px 3px rgba(0, 0, 0, 0.30);
+
+    font-family: Tahoma, sans-serif;
+    font-size: 12px;
+    text-align: left;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.78);
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.task-button:hover {
+    background: rgba(255, 255, 255, 0.22);
+}
+
+.task-button.active {
+    background: rgba(255, 255, 255, 0.32);
+
+    border-color: rgba(255, 255, 255, 0.55);
+
+    box-shadow:
+        0 0 9px rgba(229, 143, 219, 0.26),
+        inset 0 1px 0 rgba(255, 255, 255, 0.34),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.20);
+}
+
+#clock {
+    min-width: 68px;
+    height: 29px;
+
+    background: rgba(255, 255, 255, 0.09);
+    color: white;
+
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 5px;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.15),
+        0 1px 3px rgba(0, 0, 0, 0.22);
+
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.76);
+}
+
+/* ---------- START MENU ---------- */
+
+#start-menu {
+    background: var(--glass-menu);
+
+    border: 1px solid rgba(255, 255, 255, 0.54);
+    border-radius: 9px 9px 0 0;
+
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35);
+
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    backdrop-filter: blur(16px) saturate(140%);
+
+    overflow: hidden;
+}
+
+.start-header {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.24),
+            rgba(255, 255, 255, 0.03)
+        ),
+        linear-gradient(
+            to right,
+            rgba(219, 152, 214, 0.62),
+            rgba(138, 31, 119, 0.56)
+        );
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.30);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.72);
+}
+
+.start-item {
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.68);
+}
+
+.start-item:hover {
+    background: rgba(255, 255, 255, 0.24);
+    color: white;
+}
+
+.start-separator {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* ---------- INTERNAL WINDOW BARS ---------- */
+
+.notepad-menu,
+.music-tabs,
+.photo-navigation {
+    background: rgba(230, 225, 236, 0.48);
+    border-color: rgba(255, 255, 255, 0.35);
+
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+}
+
+.music-tab,
+.spotify-profile-button,
+.send-button,
+.photo-navigation-button,
+#shutdown-confirm,
+#shutdown-cancel {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.52),
+            rgba(225, 219, 232, 0.42)
+        );
+
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    border-radius: 4px;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.48),
+        0 1px 2px rgba(0, 0, 0, 0.24);
+}
+
+.music-tab.active {
+    background: rgba(255, 255, 255, 0.70);
+}
+
+/* Fallback for browsers that do not support backdrop-filter */
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    .window {
+        background: rgba(224, 220, 232, 0.88);
+    }
+
+    .window > .window-body {
+        background: rgba(239, 236, 244, 0.88);
+    }
+
+    #taskbar {
+        background: rgba(30, 20, 42, 0.88);
+    }
+
+    #start-menu {
+        background: rgba(53, 38, 67, 0.92);
+    }
+}
+
+/* =========================================================
+   WINDOWS VISTA INTERIOR SKIN — ALL WINDOWS
+   Paste at the very bottom of style.css
+========================================================= */
+
+/* Main interior of every window */
+
+.window > .window-body {
+    color: #111;
+
+    background: linear-gradient(
+        to bottom,
+        rgba(236, 245, 253, 0.82) 0%,
+        rgba(215, 230, 242, 0.78) 100%
+    );
+
+    border-top: 1px solid rgba(255, 255, 255, 0.75);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.7),
+        inset 0 0 16px rgba(109, 151, 184, 0.12);
+
+    font-family: "Segoe UI", Tahoma, sans-serif;
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+
+/* Make internal content backgrounds blend with the skin */
+
+.window .contact-body,
+.window .socials-body,
+.window .graphic-arts-body,
+.window .music-window,
+.window .shutdown-body,
+.window .photo-gallery,
+.window .graphic-projects {
+    background: transparent;
+}
+
+
+/* Vista-style toolbar areas */
+
+.window .notepad-menu,
+.window .music-tabs,
+.window .photo-navigation {
+    background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.96) 0%,
+        rgba(236, 245, 253, 0.94) 48%,
+        rgba(211, 228, 243, 0.94) 49%,
+        rgba(229, 239, 248, 0.94) 100%
+    );
+
+    border-top: 1px solid rgba(255, 255, 255, 0.85);
+    border-bottom: 1px solid #9baebe;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.95),
+        0 1px 0 rgba(255, 255, 255, 0.55);
+
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+
+/* Notepad menu */
+
+.window .notepad-menu {
+    height: 30px;
+    padding: 0 5px;
+
+    display: flex;
+    align-items: center;
+}
+
+
+/* Vista buttons used inside windows */
+
+.window .notepad-menu button,
+.window .music-tab,
+.window .send-button,
+.window .photo-navigation-button,
+.window .spotify-profile-button,
+.window .shutdown-body button {
+    color: #111;
+
+    background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.98) 0%,
+        rgba(235, 244, 251, 0.98) 48%,
+        rgba(205, 224, 239, 0.98) 49%,
+        rgba(228, 239, 247, 0.98) 100%
+    );
+
+    border: 1px solid #7d9eb7;
+    border-radius: 3px;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.7),
+        0 1px 1px rgba(47, 79, 105, 0.16);
+
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.75);
+
+    cursor: pointer;
+}
+
+
+/* Menu buttons need flatter spacing */
+
+.window .notepad-menu button {
+    min-width: 40px;
+    height: 23px;
+
+    padding: 1px 9px 2px;
+
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+
+/* Blue Vista hover for internal buttons */
+
+.window .notepad-menu button:hover,
+.window .music-tab:hover,
+.window .send-button:hover,
+.window .photo-navigation-button:hover,
+.window .spotify-profile-button:hover,
+.window .shutdown-body button:hover {
+    color: #111;
+
+    background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.98),
+        rgba(205, 231, 250, 0.98) 48%,
+        rgba(167, 211, 243, 0.98) 49%,
+        rgba(205, 232, 250, 0.98)
+    );
+
+    border-color: #5f98c1;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.72),
+        0 0 4px rgba(67, 153, 218, 0.35);
+}
+
+
+/* Pressed buttons */
+
+.window .notepad-menu button:active,
+.window .music-tab:active,
+.window .send-button:active,
+.window .photo-navigation-button:active,
+.window .shutdown-body button:active {
+    background: linear-gradient(
+        to bottom,
+        rgba(165, 207, 237, 0.98),
+        rgba(213, 235, 250, 0.98)
+    );
+
+    border-color: #587f9e;
+
+    box-shadow:
+        inset 0 1px 3px rgba(45, 78, 105, 0.26);
+}
+
+
+/* Active music tab */
+
+.window .music-tab.active {
+    color: #111;
+
+    background: linear-gradient(
+        to bottom,
+        #ffffff,
+        #e5f2fc
+    );
+
+    border-color: #7198b7;
+    border-bottom-color: #e5f2fc;
+
+    font-weight: 600;
+}
+
+
+/* Forms and text areas */
+
+.window input,
+.window textarea,
+.window select {
+    color: #111;
+    background: rgba(255, 255, 255, 0.95);
+
+    border: 1px solid #7f9db9;
+    border-radius: 2px;
+
+    box-shadow:
+        inset 1px 1px 2px rgba(52, 76, 99, 0.14),
+        0 0 0 1px rgba(255, 255, 255, 0.42);
+
+    font-family: "Segoe UI", Tahoma, sans-serif;
+
+    outline: none;
+}
+
+
+/* Focus glow for forms */
+
+.window input:focus,
+.window textarea:focus,
+.window select:focus {
+    border-color: #3c8dcc;
+
+    box-shadow:
+        inset 1px 1px 2px rgba(52, 76, 99, 0.12),
+        0 0 4px rgba(45, 145, 220, 0.45);
+}
+
+
+/* Notepad writing area */
+
+.window .notepad-body {
+    height: calc(100% - 58px);
+    min-height: 0;
+
+    padding: 3px 3px 0;
+
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) 22px;
+
+    overflow: hidden;
+}
+
+
+.window .notepad-text {
+    grid-row: 1;
+
+    width: 100%;
+    height: auto;
+    min-height: 0;
+
+    margin: 0;
+    padding: 10px 11px;
+
+    resize: none;
+    overflow: auto;
+
+    background: rgba(255, 255, 255, 0.97);
+
+    border: 1px solid #7f9db9;
+    border-radius: 0;
+
+    font-family: "Lucida Console", Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+
+/* Notepad status bar */
+
+.window .notepad-body::after {
+    content: "Ln 1, Col 1     100%     Windows (CRLF)     UTF-8";
+
+    grid-row: 2;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    padding: 0 8px;
+
+    color: #303030;
+
+    background: linear-gradient(
+        to bottom,
+        rgba(252, 253, 254, 0.95),
+        rgba(222, 231, 239, 0.95)
+    );
+
+    border-top: 1px solid #aebdca;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-size: 11px;
+
+    white-space: nowrap;
+}
+
+
+/* Folder and gallery labels */
+
+.window .photo-folder span,
+.window .graphic-project-folder span,
+.window .social-icon span {
+    color: #17202a;
+
+    font-family: "Segoe UI", Tahoma, sans-serif;
+
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+
+/* Vista selection effect */
+
+.window .photo-folder:hover span,
+.window .graphic-project-folder:hover span {
+    color: #111;
+
+    background: linear-gradient(
+        to bottom,
+        rgba(218, 239, 254, 0.9),
+        rgba(174, 216, 246, 0.9)
+    );
+
+    border: 1px solid #6ca4ca;
+    border-radius: 3px;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.65);
+}
+
+
+/* Photo and project thumbnails */
+
+.window .photo-folder img,
+.window .graphic-project-folder img,
+.window .photo img {
+    border: 1px solid #819bad;
+
+    box-shadow:
+        0 1px 3px rgba(33, 55, 72, 0.28),
+        0 0 0 1px rgba(255, 255, 255, 0.55);
+
+    border-radius: 2px;
+}
+
+
+/* Large portfolio projects remain easy to read */
+
+.window .graphic-project-body {
+    background: rgba(238, 246, 252, 0.8);
+}
+
+
+.window .graphic-project-content {
+    background: rgba(255, 255, 255, 0.93);
+
+    border: 1px solid rgba(124, 157, 181, 0.65);
+
+    box-shadow:
+        0 2px 8px rgba(34, 60, 80, 0.18);
+}
+
+
+/* Photo preview */
+
+.window .image-preview-body {
+    background: rgba(218, 231, 241, 0.82);
+}
+
+
+.window .preview-image-area {
+    background: rgba(40, 48, 55, 0.78);
+
+    border: 1px solid rgba(255, 255, 255, 0.34);
+
+    box-shadow:
+        inset 0 0 16px rgba(0, 0, 0, 0.28);
+}
+
+
+/* Scrollbars in Chrome and Edge */
+
+.window *::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+}
+
+
+.window *::-webkit-scrollbar-track {
+    background: #e6edf3;
+
+    border-left: 1px solid #b1c1ce;
+}
+
+
+.window *::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+        to right,
+        #dceaf4,
+        #adc9dd
+    );
+
+    border: 1px solid #7d9cb3;
+    border-radius: 2px;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+}
+
+
+.window *::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(
+        to right,
+        #cce6f8,
+        #8fc4e8
+    );
+}
+
+
+/* Mobile adjustment */
+
+@media (max-width: 560px) {
+    .window .notepad-body::after {
+        content: "Ln 1, Col 1     UTF-8";
+        font-size: 10px;
+    }
+}
+
+/* Remove blinking text caret from Start, clock and loading screens */
+
+#startButton,
+#clock,
+#startup-boot-screen,
+#startup-settings-screen,
+.startup-boot-logo,
+.startup-windows-name,
+.startup-windows-version,
+.startup-loading-frame {
+    caret-color: transparent;
+
+    user-select: none;
+    -webkit-user-select: none;
+
+    cursor: default;
+}
+
+#startButton {
+    cursor: pointer;
+}
+
+/* ====================================
+   WELCOME SCREEN FIREWORKS
+==================================== */
+
+.welcome-firework-flash {
+    position: fixed;
+
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    pointer-events: none;
+    user-select: none;
+
+    z-index: 1000002;
+
+    transform: translate(-50%, -50%);
+
+    animation: welcomeFireworkFlash 0.5s ease-out forwards;
+}
+
+
+@keyframes welcomeFireworkFlash {
+    0% {
+        opacity: 0;
+        transform:
+            translate(-50%, -50%)
+            scale(0);
+    }
+
+    20% {
+        opacity: 1;
+        transform:
+            translate(-50%, -50%)
+            scale(1.7);
+    }
+
+    100% {
+        opacity: 0;
+        transform:
+            translate(-50%, -50%)
+            scale(0.25);
+    }
+}
+
+
+/* Keep the fireworks closer to Welcome on small screens */
+
+@media (max-width: 600px) {
+    .welcome-firework-flash {
+        width: 6px;
+        height: 6px;
+    }
+}
+
+/* ====================================
+   TASKBAR-MATCHING AERO CALENDAR
+==================================== */
+
+#clock-area {
+    position: relative;
+
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+
+    user-select: none;
+    -webkit-user-select: none;
+
+    caret-color: transparent;
+}
+
+
+/* White clock matching the taskbar */
+
+#clock {
+    min-width: 72px;
+    height: 30px;
+
+    padding: 0 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #ffffff;
+
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-size: 12px;
+
+    text-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.9);
+
+    cursor: default;
+
+    border-left:
+        1px solid rgba(255, 255, 255, 0.18);
+
+    outline: none;
+}
+
+
+#clock:focus-visible {
+    box-shadow:
+        inset 0 0 0 1px
+        rgba(255, 255, 255, 0.48);
+}
+
+
+/* Calendar uses the exact taskbar glass color */
+
+#clock-calendar {
+    position: absolute;
+
+    right: 2px;
+    bottom: 40px;
+
+    width: 330px;
+
+    padding: 12px;
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.20),
+            rgba(255, 255, 255, 0.05) 42%,
+            rgba(0, 0, 0, 0.12) 44%,
+            rgba(0, 0, 0, 0.22)
+        ),
+        var(--glass-taskbar);
+
+    border:
+        1px solid rgba(255, 255, 255, 0.60);
+
+    border-radius: 8px 8px 3px 3px;
+
+    box-shadow:
+        inset 0 1px 0
+            rgba(255, 255, 255, 0.38),
+
+        inset 0 0 18px
+            rgba(255, 255, 255, 0.06),
+
+        0 0 0 1px
+            rgba(17, 9, 28, 0.68),
+
+        0 10px 28px
+            rgba(0, 0, 0, 0.48);
+
+    backdrop-filter:
+        blur(var(--glass-blur))
+        saturate(135%);
+
+    -webkit-backdrop-filter:
+        blur(var(--glass-blur))
+        saturate(135%);
+
+    opacity: 0;
+    visibility: hidden;
+
+    transform:
+        translateY(8px)
+        scale(0.98);
+
+    transform-origin: bottom right;
+
+    transition:
+        opacity 0.18s ease,
+        visibility 0.18s ease,
+        transform 0.18s ease;
+
+    pointer-events: auto;
+
+    z-index: 999999;
+}
+
+
+/* Glass shine */
+
+#clock-calendar::before {
+    content: "";
+
+    position: absolute;
+
+    top: 1px;
+    left: 1px;
+    right: 1px;
+
+    height: 43%;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.20),
+            rgba(255, 255, 255, 0.02)
+        );
+
+    border-radius:
+        7px 7px 50% 50%;
+
+    pointer-events: none;
+}
+
+
+#clock-calendar > * {
+    position: relative;
+    z-index: 1;
+}
+
+
+/* Show popup */
+
+#clock-area:hover #clock-calendar,
+#clock-area:focus-within #clock-calendar {
+    opacity: 1;
+    visibility: visible;
+
+    transform:
+        translateY(0)
+        scale(1);
+}
+
+
+/* Month navigation row */
+
+.calendar-topbar {
+    height: 38px;
+
+    display: grid;
+    grid-template-columns: 38px 1fr 38px;
+
+    align-items: center;
+
+    margin-bottom: 7px;
+    padding-bottom: 6px;
+
+    border-bottom:
+        1px solid rgba(255, 255, 255, 0.16);
+
+    box-shadow:
+        0 1px 0
+        rgba(0, 0, 0, 0.24);
+}
+
+
+/* Month and year */
+
+#calendar-title {
+    text-align: center;
+
+    color: #ffffff;
+
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+
+    text-transform: capitalize;
+
+    text-shadow:
+        0 1px 2px
+        rgba(0, 0, 0, 0.85);
+}
+
+
+/* Previous and next buttons */
+
+.calendar-arrow {
+    width: 31px;
+    height: 29px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.18),
+            rgba(255, 255, 255, 0.05)
+        );
+
+    border:
+        1px solid rgba(255, 255, 255, 0.22);
+
+    border-radius: 4px;
+
+    box-shadow:
+        inset 0 1px 0
+            rgba(255, 255, 255, 0.22),
+
+        0 1px 2px
+            rgba(0, 0, 0, 0.26);
+
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-size: 22px;
+    line-height: 1;
+
+    text-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.9);
+
+    cursor: pointer;
+}
+
+
+.calendar-arrow:hover {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.34),
+            rgba(213, 157, 255, 0.18)
+        );
+
+    border-color:
+        rgba(255, 255, 255, 0.42);
+
+    box-shadow:
+        inset 0 1px 0
+            rgba(255, 255, 255, 0.42),
+
+        0 0 7px
+            rgba(214, 137, 255, 0.42);
+}
+
+
+.calendar-arrow:active {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0.20),
+            rgba(255, 255, 255, 0.12)
+        );
+
+    box-shadow:
+        inset 0 2px 4px
+        rgba(0, 0, 0, 0.34);
+}
+
+
+/* Weekday headings */
+
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+
+    margin-bottom: 3px;
+}
+
+
+.calendar-weekdays span {
+    height: 27px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: rgba(255, 255, 255, 0.64);
+
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+
+    text-shadow:
+        0 1px 2px
+        rgba(0, 0, 0, 0.75);
+}
+
+
+/* Calendar grid */
+
+#calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+
+    gap: 2px;
+}
+
+
+/* Individual dates */
+
+.calendar-day {
+    width: 100%;
+    aspect-ratio: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    color: rgba(255, 255, 255, 0.94);
+
+    background: transparent;
+
+    border: 1px solid transparent;
+    border-radius: 4px;
+
+    box-shadow: none;
+
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-size: 12px;
+
+    text-shadow:
+        0 1px 2px
+        rgba(0, 0, 0, 0.85);
+
+    cursor: pointer;
+}
+
+
+.calendar-day:hover {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.28),
+            rgba(216, 151, 255, 0.17)
+        );
+
+    border-color:
+        rgba(255, 255, 255, 0.32);
+
+    box-shadow:
+        inset 0 1px 0
+            rgba(255, 255, 255, 0.32),
+
+        0 0 5px
+            rgba(211, 132, 255, 0.32);
+}
+
+
+/* Dates from the previous or next month */
+
+.calendar-day.outside-month {
+    color: rgba(255, 255, 255, 0.30);
+}
+
+
+/* Current day */
+
+.calendar-day.today {
+    color: #ffffff;
+    font-weight: 700;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(238, 189, 255, 0.92),
+            rgba(171, 75, 212, 0.88) 48%,
+            rgba(107, 35, 145, 0.92) 52%,
+            rgba(161, 72, 202, 0.92)
+        );
+
+    border-color:
+        rgba(255, 220, 255, 0.72);
+
+    text-shadow:
+        0 1px 2px
+        rgba(0, 0, 0, 0.8);
+
+    box-shadow:
+        inset 0 1px 0
+            rgba(255, 255, 255, 0.62),
+
+        0 0 8px
+            rgba(209, 121, 255, 0.55);
+}
+
+
+/* Today button */
+
+#calendar-today-button {
+    width: 100%;
+    height: 32px;
+
+    margin-top: 10px;
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.18),
+            rgba(255, 255, 255, 0.05)
+        );
+
+    border:
+        1px solid rgba(255, 255, 255, 0.22);
+
+    border-radius: 4px;
+
+    box-shadow:
+        inset 0 1px 0
+            rgba(255, 255, 255, 0.22),
+
+        0 1px 2px
+            rgba(0, 0, 0, 0.25);
+
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-size: 12px;
+
+    text-shadow:
+        0 1px 2px
+        rgba(0, 0, 0, 0.85);
+
+    cursor: pointer;
+}
+
+
+#calendar-today-button:hover {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.34),
+            rgba(213, 157, 255, 0.18)
+        );
+
+    border-color:
+        rgba(255, 255, 255, 0.42);
+
+    box-shadow:
+        inset 0 1px 0
+            rgba(255, 255, 255, 0.42),
+
+        0 0 7px
+            rgba(214, 137, 255, 0.40);
+}
+
+
+#calendar-today-button:active {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0.20),
+            rgba(255, 255, 255, 0.12)
+        );
+
+    box-shadow:
+        inset 0 2px 4px
+        rgba(0, 0, 0, 0.34);
+}
+
+
+@media (max-width: 420px) {
+
+    #clock-calendar {
+        width: 290px;
+        right: -2px;
+    }
+
+    .calendar-weekdays span {
+        font-size: 9px;
+    }
+
+    .calendar-day {
+        font-size: 11px;
+    }
+}
+
+/* =========================================================
+   FINAL VISUAL SYSTEM
+   Consolidated overrides: keep this section once, at the end.
+========================================================= */
+
+/* ---------- MATCH PRIMARY WINDOW BACKGROUNDS TO MUSIC ---------- */
+
+#music-window,
+#photography-window,
+#graphic-arts-window,
+#socials-window {
+    background: var(--glass-window);
+    border: 1px solid var(--glass-border);
+    border-radius: 9px 9px 6px 6px;
+    box-shadow:
+        0 14px 34px var(--glass-shadow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.10);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(135%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(135%);
+    overflow: hidden;
+}
+
+#music-window > .window-body,
+#photography-window > .window-body,
+#graphic-arts-window > .window-body,
+#socials-window > .window-body {
+    background: rgba(239, 236, 244, 0.42);
+    -webkit-backdrop-filter: blur(10px) saturate(135%);
+    backdrop-filter: blur(10px) saturate(135%);
+}
+
+/* ---------- SHARED GRAY WINDOW BUTTONS ---------- */
+
+.window .spotify-profile-button,
+.window .send-button,
+.window .photo-navigation-button,
+.window .shutdown-body button {
+    color: #000;
+    background: rgba(192, 192, 192, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 4px;
+    box-shadow:
+        inset 1px 1px 0 rgba(255, 255, 255, 0.55),
+        inset -1px -1px 0 rgba(64, 64, 64, 0.45),
+        0 1px 3px rgba(0, 0, 0, 0.20);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    text-shadow: none;
+}
+
+.window .spotify-profile-button:hover,
+.window .send-button:hover,
+.window .photo-navigation-button:hover,
+.window .shutdown-body button:hover {
+    color: #000;
+    background: rgba(210, 210, 210, 0.68);
+    border-color: rgba(255, 255, 255, 0.65);
+    box-shadow:
+        inset 1px 1px 0 rgba(255, 255, 255, 0.70),
+        inset -1px -1px 0 rgba(64, 64, 64, 0.40),
+        0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+.window .spotify-profile-button:active,
+.window .send-button:active,
+.window .photo-navigation-button:active,
+.window .shutdown-body button:active {
+    background: rgba(170, 170, 170, 0.58);
+    box-shadow:
+        inset 1px 1px 3px rgba(0, 0, 0, 0.35),
+        inset -1px -1px 0 rgba(255, 255, 255, 0.35);
+}
+
+/* ---------- NOTEPAD MENU: ORIGINAL STYLE ---------- */
+
+.window .notepad-menu button {
+    min-width: auto;
+    height: auto;
+    padding: 3px 8px;
+    color: #000;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    text-shadow: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    font-family: Tahoma, sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.window .notepad-menu button:hover,
+.window .notepad-menu button:active {
+    color: #fff;
+    background: #000080;
+    border: none;
+    box-shadow: none;
+}
+
+/* ---------- MUSIC TABS: PINK ---------- */
+
+.window .music-tab {
+    color: #4a153f;
+    background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.68),
+        rgba(242, 173, 224, 0.72) 45%,
+        rgba(205, 93, 171, 0.72)
+    );
+    border: 1px solid rgba(139, 47, 112, 0.65);
+    border-radius: 5px;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.75),
+        0 1px 3px rgba(81, 22, 67, 0.28);
+    text-shadow: none;
+}
+
+.window .music-tab:hover {
+    color: #3d0b32;
+    background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.82),
+        rgba(255, 187, 235, 0.86) 45%,
+        rgba(222, 101, 188, 0.82)
+    );
+    border-color: rgba(169, 48, 132, 0.82);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.88),
+        0 0 7px rgba(229, 91, 190, 0.42);
+}
+
+.window .music-tab:active {
+    background: linear-gradient(
+        to bottom,
+        rgba(193, 73, 157, 0.82),
+        rgba(239, 150, 215, 0.76)
+    );
+    box-shadow: inset 0 2px 4px rgba(91, 25, 73, 0.32);
+}
+
+.window .music-tab.active {
+    color: #fff;
+    background: linear-gradient(
+        to bottom,
+        rgba(238, 123, 204, 0.95),
+        rgba(188, 55, 144, 0.92)
+    );
+    border-color: rgba(255, 210, 244, 0.82);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.52),
+        0 0 8px rgba(225, 78, 180, 0.48);
+    text-shadow: 0 1px 2px rgba(81, 13, 60, 0.65);
+}
+
+/* ---------- MUSIC IFRAMES ---------- */
+
+#soundcloud-tab iframe,
+#bandcamp-tab iframe {
+    opacity: 0.72;
+    border-radius: 6px;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.22),
+        0 2px 8px rgba(0, 0, 0, 0.22);
+    transition: opacity 0.2s ease, box-shadow 0.2s ease;
+}
+
+#soundcloud-tab iframe:hover,
+#bandcamp-tab iframe:hover {
+    opacity: 0.88;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.30),
+        0 3px 10px rgba(0, 0, 0, 0.28);
+}
+
+/* ---------- DESKTOP ICONS: SOFT AERO HOVER ---------- */
+
+.icon {
+    position: relative;
+    padding: 7px 5px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    transition:
+        background 0.18s ease,
+        border-color 0.18s ease,
+        box-shadow 0.18s ease,
+        transform 0.18s ease;
+}
+
+.icon img {
+    transition: transform 0.18s ease, filter 0.18s ease;
+}
+
+.icon:hover {
+    background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.28),
+        rgba(225, 153, 219, 0.16) 45%,
+        rgba(117, 65, 130, 0.20)
+    );
+    border-color: rgba(255, 255, 255, 0.42);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.50),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.12),
+        0 0 10px rgba(239, 159, 228, 0.34),
+        0 3px 10px rgba(0, 0, 0, 0.18);
+    -webkit-backdrop-filter: blur(9px) saturate(145%);
+    backdrop-filter: blur(9px) saturate(145%);
+    transform: translateY(-1px);
+}
+
+.icon:hover img {
+    filter:
+        drop-shadow(0 0 4px rgba(255, 255, 255, 0.55))
+        drop-shadow(0 0 7px rgba(229, 126, 211, 0.40));
+    transform: scale(1.04);
+}
+
+.icon:hover span {
+    text-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.95),
+        0 0 5px rgba(255, 255, 255, 0.55);
+}
+
+.icon:active {
+    transform: translateY(0);
+    background: linear-gradient(
+        to bottom,
+        rgba(120, 66, 130, 0.28),
+        rgba(239, 147, 220, 0.20)
+    );
+    box-shadow:
+        inset 0 2px 5px rgba(0, 0, 0, 0.25),
+        0 0 7px rgba(231, 136, 216, 0.26);
+}
+
+/* ---------- SOCIALS: TWO-COLUMN AERO ICON GRID ---------- */
+
+#socials-window .socials-body {
+    min-height: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 92px);
+    gap: 18px;
+    justify-content: center;
+    align-content: start;
+    padding: 20px;
+}
+
+#socials-window .social-icon {
+    position: relative;
+    width: 92px;
+    min-height: 84px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 6px;
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    cursor: pointer;
+    transition:
+        background 0.18s ease,
+        border-color 0.18s ease,
+        box-shadow 0.18s ease,
+        transform 0.18s ease;
+}
+
+#socials-window .social-icon img {
+    display: block;
+    width: 42px;
+    height: 42px;
+    margin-bottom: 7px;
+    object-fit: contain;
+    transition: transform 0.18s ease, filter 0.18s ease;
+}
+
+#socials-window .social-icon span {
+    display: block;
+    color: #fff;
+    font-family: Tahoma, sans-serif;
+    font-size: 12px;
+    line-height: 1.2;
+    text-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.95),
+        0 0 4px rgba(0, 0, 0, 0.65);
+}
+
+#socials-window .social-icon:hover {
+    background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.30),
+        rgba(225, 153, 219, 0.17) 45%,
+        rgba(117, 65, 130, 0.22)
+    );
+    border-color: rgba(255, 255, 255, 0.44);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.52),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.12),
+        0 0 11px rgba(239, 159, 228, 0.36),
+        0 3px 10px rgba(0, 0, 0, 0.20);
+    -webkit-backdrop-filter: blur(9px) saturate(145%);
+    backdrop-filter: blur(9px) saturate(145%);
+    transform: translateY(-1px);
+}
+
+#socials-window .social-icon:hover img {
+    transform: scale(1.05);
+    filter:
+        drop-shadow(0 0 4px rgba(255, 255, 255, 0.58))
+        drop-shadow(0 0 7px rgba(229, 126, 211, 0.42));
+}
+
+#socials-window .social-icon:hover span {
+    text-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.95),
+        0 0 6px rgba(255, 255, 255, 0.62);
+}
+
+#socials-window .social-icon:active {
+    transform: translateY(0);
+    background: linear-gradient(
+        to bottom,
+        rgba(120, 66, 130, 0.30),
+        rgba(239, 147, 220, 0.22)
+    );
+    box-shadow:
+        inset 0 2px 5px rgba(0, 0, 0, 0.26),
+        0 0 7px rgba(231, 136, 216, 0.28);
+}
+
+/* =========================================================
+   TASKBAR WINDOW BUTTON ICONS
+========================================================= */
+
+.task-button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    min-width: 140px;
+    max-width: 210px;
+
+    padding: 3px 9px;
+
+    overflow: hidden;
+}
+
+.task-button-icon {
+    width: 18px;
+    height: 18px;
+
+    flex-shrink: 0;
+
+    object-fit: contain;
+
+    filter:
+        drop-shadow(0 1px 1px rgba(0, 0, 0, 0.45));
+}
+
+.task-button-text {
+    min-width: 0;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    text-align: left;
+}
+
+/* =========================================
+   RECYCLE BIN / WINDOWS EXPLORER
+========================================= */
+
+#trash-window {
+    width: 760px;
+    height: 560px;
+
+    max-width: calc(100vw - 20px);
+    max-height: calc(100vh - 58px);
+
+    display: flex;
+    flex-direction: column;
+}
+
+/* Keep hidden windows hidden even though
+   the Recycle Bin uses display:flex */
+
+#trash-window.hidden {
+    display: none;
+}
+
+/* =========================================
+   EXPLORER MENU
+========================================= */
+
+.explorer-menu {
+    height: 29px;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 5px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.94),
+            rgba(224, 235, 244, 0.94)
+        );
+
+    border-bottom: 1px solid #9baebe;
+}
+
+.explorer-menu button {
+    min-width: 38px;
+    height: 23px;
+
+    padding: 1px 8px;
+
+    color: #111;
+    background: transparent;
+
+    border: 1px solid transparent;
+    border-radius: 3px;
+
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-size: 12px;
+
+    cursor: pointer;
+}
+
+.explorer-menu button:hover {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.98),
+            rgba(205, 231, 250, 0.98) 48%,
+            rgba(167, 211, 243, 0.98) 49%,
+            rgba(205, 232, 250, 0.98)
+        );
+
+    border-color: #5f98c1;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.72),
+        0 0 4px rgba(67, 153, 218, 0.35);
+}
+
+/* =========================================
+   EXPLORER TOOLBAR
+========================================= */
+
+.explorer-toolbar {
+    min-height: 42px;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    padding: 5px 8px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(247, 251, 254, 0.96),
+            rgba(216, 230, 241, 0.94)
+        );
+
+    border-bottom: 1px solid #a4b6c4;
+}
+
+.explorer-toolbar-button {
+    min-height: 29px;
+
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    padding: 3px 9px;
+
+    color: #17202a;
+    background: transparent;
+
+    border: 1px solid transparent;
+    border-radius: 3px;
+
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-size: 12px;
+
+    cursor: pointer;
+}
+
+
+/* =========================================
+   ADDRESS BAR
+========================================= */
+
+.explorer-address-row {
+    min-height: 35px;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 4px 7px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(239, 246, 251, 0.96),
+            rgba(218, 231, 241, 0.96)
+        );
+
+    border-bottom: 1px solid #9fb1bf;
+}
+
+.explorer-address-label {
+    color: #303030;
+
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-size: 12px;
+}
+
+.explorer-address-bar {
+    min-width: 0;
+    height: 25px;
+    flex: 1;
+
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 2px 7px;
+
+    color: #111;
+    background: rgba(255, 255, 255, 0.96);
+
+    border: 1px solid #7f9db9;
+    border-radius: 2px;
+
+    box-shadow:
+        inset 1px 1px 2px rgba(52, 76, 99, 0.12);
+
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-size: 12px;
+}
+
+.explorer-address-bar img {
+    width: 17px;
+    height: 17px;
+
+    object-fit: contain;
+}
+
+.explorer-go-button {
+    height: 25px;
+    padding: 2px 10px;
+
+    color: #111;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #ffffff,
+            #d4e6f3
+        );
+
+    border: 1px solid #7d9eb7;
+    border-radius: 3px;
+
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-size: 12px;
+
+    cursor: pointer;
+}
+
+.explorer-go-button:hover {
+    background:
+        linear-gradient(
+            to bottom,
+            #ffffff,
+            #b9ddf5
+        );
+
+    border-color: #4389bb;
+}
+
+/* =========================================
+   RECYCLE BIN CONTENT
+========================================= */
+
+#trash-window .trash-body {
+    min-height: 0;
+    flex: 1;
+
+    padding: 0;
+
+    overflow: auto;
+
+    background: transparent;
+}
+
+.trash-content {
+    min-height: 100%;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+
+    gap: 18px;
+
+    padding: 18px;
+
+    background: transparent;
+}
+
+/* =========================================
+   RECYCLE BIN PROGRAM ICON
+========================================= */
+
+.recycle-program {
+    width: 92px;
+    min-height: 88px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 7px 5px;
+
+    font: inherit;
+    background: transparent;
+    
+    color: #17202a;
+    text-align: center;
+    text-decoration: none;
+
+    border: 1px solid transparent;
+    border-radius: 4px;
+
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.recycle-program img {
+    display: block;
+
+    width: 48px;
+    height: 48px;
+
+    margin-bottom: 6px;
+
+    object-fit: contain;
+
+    border: none;
+    border-radius: 0;
+
+    box-shadow: none;
+}
+
+.recycle-program span {
+    display: block;
+
+    max-width: 82px;
+    padding: 2px 4px;
+
+    color: #17202a;
+    background: transparent;
+
+    border: 1px solid transparent;
+    border-radius: 3px;
+
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-size: 12px;
+    line-height: 1.25;
+
+    text-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.75);
+
+    overflow-wrap: anywhere;
+}
+
+/* Same pale-blue selection style used elsewhere */
+
+.recycle-program:hover,
+.recycle-program:focus-visible {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(218, 239, 254, 0.62),
+            rgba(174, 216, 246, 0.62)
+        );
+
+    border-color: #6ca4ca;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.65);
+}
+
+.recycle-program:hover span,
+.recycle-program:focus-visible span {
+    color: #111;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(218, 239, 254, 0.9),
+            rgba(174, 216, 246, 0.9)
+        );
+
+    border-color: #6ca4ca;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.65);
+}
+
+.recycle-program:focus-visible {
+    outline: none;
+}
+
+.recycle-program:active {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(165, 207, 237, 0.85),
+            rgba(205, 229, 246, 0.85)
+        );
+}
+
+/* =========================================
+   DETAILS / STATUS BAR
+========================================= */
+
+.explorer-details-bar {
+    min-height: 53px;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 6px 10px;
+
+    color: #17202a;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(239, 247, 252, 0.98),
+            rgba(210, 226, 238, 0.98)
+        );
+
+    border-top: 1px solid #9eb1c0;
+
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-size: 11px;
+}
+
+.explorer-details-bar > img {
+    width: 32px;
+    height: 32px;
+
+    object-fit: contain;
+}
+
+.explorer-details-text {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.explorer-details-text strong {
+    font-size: 12px;
+}
+
+.explorer-details-text span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.explorer-item-count {
+    margin-left: auto;
+    padding-left: 12px;
+
+    white-space: nowrap;
+
+    border-left: 1px solid #a8bac8;
+}
+
+/* =========================================
+   MOBILE RECYCLE BIN
+========================================= */
+
+@media (max-width: 600px) {
+
+    #trash-window {
+        width: calc(100vw - 20px);
+        height: calc(100vh - 58px);
+    }
+
+    .explorer-address-label,
+    
+    .explorer-details-text span {
+        display: none;
+    }
+}
+
+/* =========================================
+   TROJAN.EXE CMD WINDOW
+========================================= */
+
+#trojan-window {
+    width: 720px;
+    height: 500px;
+
+    max-width: calc(100vw - 20px);
+    max-height: calc(100vh - 58px);
+
+    overflow: hidden;
+}
+
+#trojan-window .title-bar {
+    background:
+        linear-gradient(
+            to right,
+            rgba(29, 18, 44, 0.98),
+            rgba(116, 39, 113, 0.98)
+        );
+}
+
+.trojan-body {
+    position: relative;
+
+    height: calc(100% - 28px);
+
+    padding: 0 !important;
+
+    overflow: hidden;
+
+    background: #050505 !important;
+}
+
+/* =========================================
+   TERMINAL
+========================================= */
+
+.trojan-terminal {
+    position: absolute;
+    inset: 0;
+
+    padding: 15px 17px;
+
+    color: #b7ffb0;
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.025) 0,
+            rgba(255, 255, 255, 0.025) 1px,
+            transparent 1px,
+            transparent 4px
+        ),
+        radial-gradient(
+            circle at center,
+            rgba(28, 70, 36, 0.18),
+            transparent 70%
+        ),
+        #030604;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    font-family:
+        "Lucida Console",
+        "Courier New",
+        monospace;
+
+    font-size: 13px;
+    line-height: 1.45;
+
+    text-shadow:
+        0 0 3px rgba(126, 255, 132, 0.65),
+        0 0 8px rgba(75, 255, 92, 0.22);
+
+    opacity: 1;
+
+    transition:
+        opacity 1.2s ease,
+        filter 1.2s ease,
+        transform 1.2s ease;
+}
+
+.trojan-terminal::after {
+    content: "";
+
+    display: inline-block;
+
+    width: 8px;
+    height: 15px;
+
+    margin-left: 4px;
+
+    vertical-align: -2px;
+
+    background: #b7ffb0;
+
+    box-shadow:
+        0 0 6px rgba(126, 255, 132, 0.75);
+
+    animation:
+        trojanCursorBlink 0.7s steps(1) infinite;
+}
+
+.trojan-line {
+    min-height: 1.45em;
+
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.trojan-terminal-hidden {
+    opacity: 0;
+
+    filter:
+        blur(7px)
+        brightness(2);
+
+    transform:
+        scale(1.025);
+
+    pointer-events: none;
+}
+
+@keyframes trojanCursorBlink {
+    0%,
+    45% {
+        opacity: 1;
+    }
+
+    46%,
+    100% {
+        opacity: 0;
+    }
+}
+
+/* =========================================
+   STEAM IMAGE REVEAL
+========================================= */
+
+.trojan-reveal {
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    background: black;
+
+    opacity: 0;
+
+    visibility: hidden;
+    pointer-events: none;
+
+    transform: scale(1.08);
+
+    filter:
+        blur(12px)
+        brightness(0.45);
+
+    transition:
+        opacity 1.6s ease,
+        filter 1.6s ease,
+        transform 2.2s ease,
+        visibility 0s linear 1.6s;
+}
+
+.trojan-reveal-visible {
+    opacity: 1;
+
+    visibility: visible;
+    pointer-events: auto;
+
+    transform: scale(1);
+
+    filter:
+        blur(0)
+        brightness(1);
+
+    transition:
+        opacity 1.6s ease,
+        filter 1.6s ease,
+        transform 2.2s ease,
+        visibility 0s;
+}
+
+
+.trojan-reveal::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    z-index: 1;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0.08),
+            rgba(0, 0, 0, 0.18) 55%,
+            rgba(0, 0, 0, 0.78)
+        );
+
+    pointer-events: none;
+}
+
+/* =========================================
+   CLICKABLE STEAM IMAGE
+========================================= */
+
+.trojan-steam-image-link {
+    position: absolute;
+    inset: 0;
+
+    display: block;
+
+    overflow: hidden;
+
+    cursor: pointer;
+}
+
+.trojan-steam-image-link img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    border: none;
+    border-radius: 0;
+
+    box-shadow: none;
+
+    transition:
+        filter 0.55s ease,
+        transform 0.75s ease;
+}
+
+.trojan-steam-image-link:hover img,
+.trojan-steam-image-link:focus-visible img {
+    filter:
+        brightness(1.06)
+        contrast(1.02);
+
+    transform: scale(1.008);
+}
+
+.trojan-steam-image-link:hover img,
+.trojan-steam-image-link:focus-visible img {
+    opacity: 0.92;
+
+    filter:
+        brightness(1.13)
+        contrast(1.03);
+
+    transform: scale(1.012);
+}
+
+.trojan-steam-image-link:focus-visible {
+    outline: 1px solid rgba(255, 255, 255, 0.9);
+    outline-offset: -3px;
+}
+
+/* =========================================
+   SOFT GLOW ABOVE STEAM IMAGE
+========================================= */
+
+.trojan-image-shine {
+    position: absolute;
+
+    top: -18%;
+    left: 50%;
+
+    width: 78%;
+    height: 42%;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            rgba(255, 255, 255, 0.42) 0%,
+            rgba(255, 255, 255, 0.22) 28%,
+            rgba(255, 255, 255, 0.08) 55%,
+            transparent 76%
+        );
+
+    filter: blur(18px);
+
+    opacity: 0;
+
+    transform:
+        translateX(-50%)
+        translateY(-12px)
+        scale(0.92);
+
+    transition:
+        opacity 0.55s ease,
+        transform 0.75s ease;
+
+    pointer-events: none;
+}
+
+.trojan-steam-image-link:hover
+.trojan-image-shine,
+.trojan-steam-image-link:focus-visible
+.trojan-image-shine {
+    opacity: 0.8;
+
+    transform:
+        translateX(-50%)
+        translateY(4px)
+        scale(1.06);
+
+    animation:
+        trojanSoftGlow 2.4s ease-in-out infinite;
+}
+
+@keyframes trojanSoftGlow {
+
+    0%,
+    100% {
+        opacity: 0.58;
+
+        transform:
+            translateX(-50%)
+            translateY(0)
+            scale(1);
+    }
+
+    50% {
+        opacity: 0.92;
+
+        transform:
+            translateX(-50%)
+            translateY(7px)
+            scale(1.1);
+    }
+}
+
+
+/* =========================================
+   GLITCH TRANSITION
+========================================= */
+
+#trojan-window.trojan-glitch {
+    animation:
+        trojanWindowGlitch 0.12s steps(2) infinite;
+}
+
+#trojan-window.trojan-glitch .trojan-terminal {
+    color: white;
+
+    text-shadow:
+        -3px 0 rgba(255, 0, 90, 0.9),
+        3px 0 rgba(0, 230, 255, 0.9);
+
+    filter:
+        contrast(1.8)
+        brightness(1.4);
+}
+
+@keyframes trojanWindowGlitch {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    20% {
+        transform: translate(-3px, 1px);
+    }
+
+    40% {
+        transform: translate(3px, -2px);
+    }
+
+    60% {
+        transform: translate(-1px, 3px);
+    }
+
+    80% {
+        transform: translate(2px, -1px);
+    }
+
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 600px) {
+
+    #trojan-window {
+        width: calc(100vw - 20px);
+        height: calc(100vh - 58px);
+    }
+
+    .trojan-terminal {
+        padding: 12px;
+
+        font-size: 11px;
+    }
+
+    .trojan-reveal-title {
+        letter-spacing: 2px;
+    }
+}
+
+/* =========================================================
+   SHARED WINDOWS APPLICATION MENUS + SHEER NOTEPAD
+   Final overrides for the unified glass interface
+========================================================= */
+
+.window .window-menu {
+    position: relative;
+    z-index: 3;
+
+    width: 100%;
+    height: 30px;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 5px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.48) 0%,
+            rgba(236, 245, 253, 0.38) 48%,
+            rgba(191, 215, 234, 0.34) 49%,
+            rgba(221, 235, 246, 0.38) 100%
+        );
+
+    border-top: 1px solid rgba(255, 255, 255, 0.58);
+    border-bottom: 1px solid rgba(124, 157, 181, 0.65);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.52),
+        0 1px 0 rgba(255, 255, 255, 0.22);
+
+    -webkit-backdrop-filter: blur(9px) saturate(125%);
+    backdrop-filter: blur(9px) saturate(125%);
+}
+
+.window .window-menu button {
+    min-width: 39px;
+    height: 23px;
+
+    padding: 1px 8px 2px;
+
+    color: #17202a;
+    background: transparent;
+
+    border: 1px solid transparent;
+    border-radius: 3px;
+    box-shadow: none;
+
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 1;
+
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.75);
+
+    cursor: pointer;
+}
+
+.window .window-menu button:hover,
+.window .window-menu button:focus-visible {
+    color: #111;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.78),
+            rgba(205, 231, 250, 0.72) 48%,
+            rgba(167, 211, 243, 0.72) 49%,
+            rgba(205, 232, 250, 0.72)
+        );
+
+    border-color: rgba(77, 144, 191, 0.82);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.55),
+        0 0 4px rgba(67, 153, 218, 0.24);
+
+    outline: none;
+}
+
+.window .window-menu button:active {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(153, 200, 234, 0.76),
+            rgba(205, 229, 246, 0.72)
+        );
+
+    border-color: rgba(72, 119, 154, 0.9);
+    box-shadow: inset 0 1px 3px rgba(45, 78, 105, 0.22);
+}
+
+/* Every menu-equipped application window behaves as a vertical shell. */
+#photography-window,
+#socials-window,
+#contact-window,
+#graphic-arts-window,
+#music-window,
+#disney-window,
+#miku-window,
+#image-preview-window,
+#about-window,
+#trash-window,
+.graphic-project-window {
+    display: flex;
+    flex-direction: column;
+}
+
+#photography-window.hidden,
+#socials-window.hidden,
+#contact-window.hidden,
+#graphic-arts-window.hidden,
+#music-window.hidden,
+#disney-window.hidden,
+#miku-window.hidden,
+#image-preview-window.hidden,
+#about-window.hidden,
+#trash-window.hidden,
+.graphic-project-window.hidden {
+    display: none;
+}
+
+#photography-window > .window-body,
+#socials-window > .window-body,
+#contact-window > .window-body,
+#graphic-arts-window > .window-body,
+#music-window > .window-body,
+#disney-window > .window-body,
+#miku-window > .window-body,
+#image-preview-window > .window-body,
+#about-window > .window-body,
+.graphic-project-window > .window-body {
+    min-height: 0;
+    flex: 1;
+}
+
+#disney-window .window-body,
+#miku-window .window-body,
+#graphic-arts-window .graphic-arts-body,
+.graphic-project-window .graphic-project-body,
+#image-preview-window .image-preview-body {
+    height: auto;
+}
+
+/* Keep all ordinary content surfaces aligned with the same glass body. */
+.window .contact-body,
+.window .socials-body,
+.window .graphic-arts-body,
+.window .music-window,
+.window .photo-gallery,
+.window .graphic-projects,
+#trash-window .trash-body {
+    background: transparent;
+}
+
+/* =========================================================
+   SHEER NOTEPAD
+========================================================= */
+
+#about-window {
+    background: rgba(215, 222, 235, 0.46);
+
+    -webkit-backdrop-filter: blur(16px) saturate(135%);
+    backdrop-filter: blur(16px) saturate(135%);
+}
+
+#about-window .notepad-body {
+    height: auto;
+    min-height: 0;
+    flex: 1;
+
+    padding: 3px 3px 0;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(236, 245, 253, 0.34),
+            rgba(215, 230, 242, 0.30)
+        );
+
+    border-top: 1px solid rgba(255, 255, 255, 0.38);
+    box-shadow: inset 0 0 18px rgba(109, 151, 184, 0.08);
+
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+
+#about-window .notepad-text {
+    color: #111;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.50),
+            rgba(242, 248, 252, 0.38)
+        );
+
+    border: 1px solid rgba(110, 143, 168, 0.72);
+
+    box-shadow:
+        inset 1px 1px 3px rgba(52, 76, 99, 0.12),
+        inset 0 0 18px rgba(255, 255, 255, 0.16),
+        0 0 0 1px rgba(255, 255, 255, 0.26);
+
+    -webkit-backdrop-filter: blur(7px) saturate(115%);
+    backdrop-filter: blur(7px) saturate(115%);
+}
+
+#about-window .notepad-body::after {
+    color: #26323b;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(252, 253, 254, 0.48),
+            rgba(202, 219, 232, 0.42)
+        );
+
+    border-top: 1px solid rgba(126, 153, 174, 0.68);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.46);
+
+    -webkit-backdrop-filter: blur(7px);
+    backdrop-filter: blur(7px);
+}
+
+@media (max-width: 620px) {
+    .window .window-menu {
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .window .window-menu button {
+        flex: 0 0 auto;
+    }
+}
+
+/* =========================================================
+   COMPACT SQUARE SOCIALS WINDOW
+========================================================= */
+
+#socials-window {
+    width: 330px;
+    height: 350px;
+
+    max-width: calc(100vw - 20px);
+    max-height: calc(100vh - 58px);
+}
+
+#socials-window .socials-body {
+    min-height: 0;
+    flex: 1;
+
+    display: grid;
+    grid-template-columns:
+        repeat(2, 104px);
+    grid-template-rows:
+        repeat(2, 104px);
+
+    place-content: center;
+
+    gap: 18px;
+
+    padding: 20px;
+
+    overflow: auto;
+    background: transparent;
+}
+
+#socials-window .social-icon {
+    width: 104px;
+    height: 104px;
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding: 10px 7px 8px;
+
+    color: #17202a;
+    text-align: center;
+    text-decoration: none;
+
+    background: transparent;
+
+    border: 1px solid transparent;
+    border-radius: 8px;
+
+    cursor: pointer;
+    user-select: none;
+}
+
+#socials-window .social-icon img {
+    display: block;
+
+    width: 46px;
+    height: 46px;
+
+    margin: 0 0 11px;
+
+    object-fit: contain;
+}
+
+#socials-window .social-icon span {
+    display: block;
+
+    max-width: 90px;
+
+    color: #17202a;
+
+    font-family:
+        "Segoe UI",
+        Tahoma,
+        sans-serif;
+
+    font-size: 12px;
+    line-height: 1.25;
+
+    text-align: center;
+
+    text-shadow:
+        0 1px 0
+        rgba(255, 255, 255, 0.72);
+
+    overflow-wrap: anywhere;
+}
+
+#socials-window .social-icon:hover,
+#socials-window .social-icon:focus-visible {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(218, 239, 254, 0.58),
+            rgba(174, 216, 246, 0.48)
+        );
+
+    border-color:
+        rgba(108, 164, 202, 0.78);
+
+    box-shadow:
+        inset 0 0 0 1px
+        rgba(255, 255, 255, 0.58);
+
+    transform: none;
+    outline: none;
+}
+
+#socials-window .social-icon:hover img,
+#socials-window .social-icon:focus-visible img {
+    transform: scale(1.04);
+
+    filter:
+        drop-shadow(
+            0 0 4px
+            rgba(255, 255, 255, 0.55)
+        );
+}
+
+#socials-window .social-icon:hover span,
+#socials-window .social-icon:focus-visible span {
+    color: #111;
+
+    padding: 2px 4px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(218, 239, 254, 0.9),
+            rgba(174, 216, 246, 0.9)
+        );
+
+    border: 1px solid #6ca4ca;
+    border-radius: 3px;
+}
+
+@media (max-width: 380px) {
+
+    #socials-window {
+        width: calc(100vw - 20px);
+    }
+
+    #socials-window .socials-body {
+        grid-template-columns:
+            repeat(2, 92px);
+
+        grid-template-rows:
+            repeat(2, 100px);
+
+        gap: 10px;
+        padding: 12px;
+    }
+
+    #socials-window .social-icon {
+        width: 92px;
+        height: 100px;
+    }
+}
+
+/* =========================================================
+   PURPLE GLASS CURSOR SYSTEM
+   Matches the taskbar glass color
+========================================================= */
+
+:root {
+    /*
+     * Glass cursor colors based on the taskbar:
+     * rgba(30, 20, 42, 0.50)
+     */
+
+    --cursor-glass-dark: #1e142a;
+    --cursor-glass-mid: #5c3d72;
+    --cursor-glass-light: #dcb9f2;
+    --cursor-glass-white: #ffffff;
+
+    /* Normal arrow */
+
+     --cursor-default:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23f8eaff' stop-opacity='.88'/%3E%3Cstop offset='.42' stop-color='%23c79adc' stop-opacity='.82'/%3E%3Cstop offset='1' stop-color='%23412b52' stop-opacity='.94'/%3E%3C/linearGradient%3E%3Cfilter id='s'%3E%3CfeDropShadow dx='.7' dy='1.2' stdDeviation='.65' flood-color='%23000000' flood-opacity='.42'/%3E%3C/filter%3E%3C/defs%3E%3Cpath filter='url(%23s)' d='M3 2 L19 14 L12.3 14.8 L16.1 21.2 L12.7 22.8 L8.8 16.1 L4.2 20.8 Z' fill='url(%23g)' stroke='%23d7b6e8' stroke-opacity='.62' stroke-width='.7' stroke-linejoin='round'/%3E%3Cpath d='M5 4 L15.2 12 L10 12.6' fill='none' stroke='%23fff4ff' stroke-opacity='.38' stroke-width='.65' stroke-linecap='round'/%3E%3C/svg%3E")
+        3 2,
+        default;
+
+    /* Clickable pointer */
+
+   --cursor-pointer:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23f8eaff' stop-opacity='.9'/%3E%3Cstop offset='.4' stop-color='%23c79adc' stop-opacity='.84'/%3E%3Cstop offset='1' stop-color='%23412b52' stop-opacity='.95'/%3E%3C/linearGradient%3E%3Cfilter id='s'%3E%3CfeDropShadow dx='.7' dy='1.2' stdDeviation='.65' flood-color='%23000000' flood-opacity='.42'/%3E%3C/filter%3E%3C/defs%3E%3Cpath filter='url(%23s)' d='M8.5 3.2 C8.5 2.3 9.2 1.7 10 1.7 C10.9 1.7 11.5 2.4 11.5 3.2 V9.2 L12.1 5.1 C12.3 4.2 13 3.7 13.8 3.8 C14.7 4 15.1 4.7 15 5.6 L14.7 9.3 L15.7 6.1 C16 5.3 16.7 4.9 17.4 5.1 C18.2 5.4 18.5 6.2 18.2 7 L17.4 10.1 L18.4 8.4 C18.8 7.7 19.7 7.5 20.3 7.9 C21 8.3 21.1 9.2 20.7 9.9 L17.6 15.9 C16.3 18.6 14.8 21.7 11.3 22.2 C8.1 22.7 5.9 20.4 5.2 17.5 L3.8 12.6 C3.5 11.8 4 11 4.9 10.8 C5.7 10.6 6.4 11.1 6.7 11.8 L8.1 14 Z' fill='url(%23g)' stroke='%23d7b6e8' stroke-opacity='.62' stroke-width='.7' stroke-linejoin='round'/%3E%3C/svg%3E")
+        8 2,
+        pointer;
+
+    /* Text cursor */
+
+    --cursor-text:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23f8eaff' stop-opacity='.9'/%3E%3Cstop offset='.45' stop-color='%23c79adc' stop-opacity='.82'/%3E%3Cstop offset='1' stop-color='%23412b52' stop-opacity='.95'/%3E%3C/linearGradient%3E%3Cfilter id='s'%3E%3CfeDropShadow dx='.5' dy='.8' stdDeviation='.55' flood-color='%23000000' flood-opacity='.4'/%3E%3C/filter%3E%3C/defs%3E%3Cpath filter='url(%23s)' d='M7 2 H15 V4.2 H12.3 V17.8 H15 V20 H7 V17.8 H9.7 V4.2 H7 Z' fill='url(%23g)' stroke='%23d7b6e8' stroke-opacity='.58' stroke-width='.65'/%3E%3C/svg%3E")
+        11 11,
+        text;
+
+    /* Move cursor */
+
+    --cursor-move:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23f8eaff' stop-opacity='.9'/%3E%3Cstop offset='.4' stop-color='%23c79adc' stop-opacity='.84'/%3E%3Cstop offset='1' stop-color='%23412b52' stop-opacity='.95'/%3E%3C/linearGradient%3E%3Cfilter id='s'%3E%3CfeDropShadow dx='.7' dy='1.1' stdDeviation='.65' flood-color='%23000000' flood-opacity='.42'/%3E%3C/filter%3E%3C/defs%3E%3Cpath filter='url(%23s)' d='M12 1.7 L15.6 6.1 H13.5 V10.5 H17.9 V8.4 L22.3 12 L17.9 15.6 V13.5 H13.5 V17.9 H15.6 L12 22.3 L8.4 17.9 H10.5 V13.5 H6.1 V15.6 L1.7 12 L6.1 8.4 V10.5 H10.5 V6.1 H8.4 Z' fill='url(%23g)' stroke='%23d7b6e8' stroke-opacity='.6' stroke-width='.7' stroke-linejoin='round'/%3E%3C/svg%3E")
+        12 12,
+        move;
+
+    /* Horizontal resize */
+
+    --cursor-resize-horizontal:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='32' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='glass' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23ffffff' stop-opacity='.94'/%3E%3Cstop offset='.35' stop-color='%23dcb9f2' stop-opacity='.86'/%3E%3Cstop offset='1' stop-color='%231e142a' stop-opacity='.96'/%3E%3C/linearGradient%3E%3Cfilter id='shadow'%3E%3CfeDropShadow dx='1' dy='2' stdDeviation='1.1' flood-color='%23000000' flood-opacity='.58'/%3E%3C/filter%3E%3C/defs%3E%3Cpath filter='url(%23shadow)' d='M2 16 L9 9 V13 H23 V9 L30 16 L23 23 V19 H9 V23 Z' fill='url(%23glass)' stroke='%23ffffff' stroke-opacity='.88' stroke-width='1.1' stroke-linejoin='round'/%3E%3C/svg%3E")
+        11 11,
+        ew-resize;
+
+    /* Vertical resize */
+
+    --cursor-resize-vertical:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='32' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='glass' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23ffffff' stop-opacity='.94'/%3E%3Cstop offset='.35' stop-color='%23dcb9f2' stop-opacity='.86'/%3E%3Cstop offset='1' stop-color='%231e142a' stop-opacity='.96'/%3E%3C/linearGradient%3E%3Cfilter id='shadow'%3E%3CfeDropShadow dx='1' dy='2' stdDeviation='1.1' flood-color='%23000000' flood-opacity='.58'/%3E%3C/filter%3E%3C/defs%3E%3Cpath filter='url(%23shadow)' d='M16 2 L23 9 H19 V23 H23 L16 30 L9 23 H13 V9 H9 Z' fill='url(%23glass)' stroke='%23ffffff' stroke-opacity='.88' stroke-width='1.1' stroke-linejoin='round'/%3E%3C/svg%3E")
+        11 11,
+        ns-resize;
+
+    /* Forbidden cursor */
+
+    --cursor-forbidden:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23f8eaff' stop-opacity='.88'/%3E%3Cstop offset='.45' stop-color='%23c79adc' stop-opacity='.82'/%3E%3Cstop offset='1' stop-color='%23412b52' stop-opacity='.95'/%3E%3C/linearGradient%3E%3Cfilter id='s'%3E%3CfeDropShadow dx='.6' dy='1' stdDeviation='.6' flood-color='%23000000' flood-opacity='.42'/%3E%3C/filter%3E%3C/defs%3E%3Ccircle filter='url(%23s)' cx='11' cy='11' r='8.2' fill='url(%23g)' stroke='%23d7b6e8' stroke-opacity='.58' stroke-width='.7'/%3E%3Cpath d='M6.4 6.4 L15.6 15.6' stroke='%23f5dcff' stroke-opacity='.78' stroke-width='2.1' stroke-linecap='round'/%3E%3C/svg%3E")
+        11 11,
+        not-allowed;
+}
+
+/* =========================================================
+   APPLY CURSOR VARIANTS
+========================================================= */
+
+html,
+body,
+#desktop,
+.window,
+.window-body {
+    cursor: var(--cursor-default);
+}
+
+/* Clickable elements */
+
+a,
+button,
+.icon,
+.photo-folder,
+.graphic-project-folder,
+.social-icon,
+.recycle-program,
+.trojan-steam-image-link,
+.music-tab,
+.task-button,
+.start-item,
+#startButton,
+#clock,
+.window-controls button,
+.window-menu button,
+.photo-navigation-button {
+    cursor: var(--cursor-pointer);
+}
+
+/* Text areas and editable fields */
+
+input,
+textarea,
+.notepad-text,
+[contenteditable="true"] {
+    cursor: var(--cursor-text);
+}
+
+/* Window dragging */
+
+.title-bar {
+    cursor: var(--cursor-move);
+}
+
+/* Disabled elements */
+
+button:disabled,
+input:disabled,
+textarea:disabled,
+[aria-disabled="true"] {
+    cursor: var(--cursor-forbidden);
+}
+
+.resize-left,
+.resize-right {
+    cursor: var(--cursor-resize-horizontal);
+}
+
+.resize-top,
+.resize-bottom {
+    cursor: var(--cursor-resize-vertical);
+}
+
+/* =========================================================
+   IMAGE PREVIEW — MATCH WEBSITE GLASS STYLE
+========================================================= */
+
+#image-preview-window .image-preview-body {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(236, 245, 253, 0.34),
+            rgba(215, 230, 242, 0.28)
+        );
+
+    border-top:
+        1px solid rgba(255, 255, 255, 0.38);
+
+    -webkit-backdrop-filter:
+        blur(12px)
+        saturate(128%);
+
+    backdrop-filter:
+        blur(12px)
+        saturate(128%);
+}
+
+/* Dark image viewing area */
+
+#image-preview-window .preview-image-area {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(23, 15, 32, 0.66),
+            rgba(10, 7, 15, 0.74)
+        );
+
+    border:
+        1px solid rgba(255, 255, 255, 0.16);
+
+    box-shadow:
+        inset 0 0 24px rgba(0, 0, 0, 0.34);
+
+    -webkit-backdrop-filter:
+        blur(8px)
+        saturate(120%);
+
+    backdrop-filter:
+        blur(8px)
+        saturate(120%);
+}
+
+/* Bottom slideshow/navigation bar */
+
+#image-preview-window .photo-navigation {
+    height: 48px;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 13px;
+    padding: 6px 12px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.13) 0%,
+            rgba(255, 255, 255, 0.04) 42%,
+            rgba(0, 0, 0, 0.10) 44%,
+            rgba(0, 0, 0, 0.20) 100%
+        ),
+        rgba(30, 20, 42, 0.50);
+
+    border-top:
+        1px solid rgba(255, 255, 255, 0.34);
+
+    border-bottom: none;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.22),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.18);
+
+    -webkit-backdrop-filter:
+        blur(14px)
+        saturate(135%);
+
+    backdrop-filter:
+        blur(14px)
+        saturate(135%);
+}
+
+/* Left and right buttons */
+
+#image-preview-window .photo-navigation-button {
+    position: relative;
+
+    width: 43px;
+    height: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    color: rgba(255, 255, 255, 0.94);
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.23),
+            rgba(255, 255, 255, 0.08)
+        );
+
+    border:
+        1px solid rgba(255, 255, 255, 0.30);
+
+    border-radius: 5px;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.32),
+        0 1px 3px rgba(0, 0, 0, 0.28);
+
+    font-family:
+        "Segoe UI",
+        Tahoma,
+        sans-serif;
+
+    font-size: 18px;
+    font-weight: normal;
+    line-height: 1;
+
+    text-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.82);
+
+    -webkit-backdrop-filter:
+        blur(8px)
+        saturate(130%);
+
+    backdrop-filter:
+        blur(8px)
+        saturate(130%);
+
+    transition:
+        background 160ms ease,
+        border-color 160ms ease,
+        box-shadow 160ms ease,
+        transform 100ms ease;
+}
+
+#image-preview-window .photo-navigation-button:hover,
+#image-preview-window .photo-navigation-button:focus-visible {
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.36),
+            rgba(190, 145, 220, 0.20)
+        );
+
+    border-color:
+        rgba(230, 199, 249, 0.60);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.45),
+        0 0 7px rgba(207, 156, 235, 0.30),
+        0 1px 3px rgba(0, 0, 0, 0.30);
+
+    outline: none;
+}
+
+#image-preview-window .photo-navigation-button:active {
+    transform: translateY(1px);
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(95, 63, 116, 0.34),
+            rgba(255, 255, 255, 0.14)
+        );
+
+    border-color:
+        rgba(222, 186, 243, 0.48);
+
+    box-shadow:
+        inset 0 2px 4px rgba(0, 0, 0, 0.28);
+}
+
+/* Counter between the arrows */
+
+#image-preview-window .photo-counter {
+    min-width: 72px;
+
+    padding: 4px 10px;
+
+    color: rgba(255, 255, 255, 0.92);
+
+    background:
+        rgba(255, 255, 255, 0.07);
+
+    border:
+        1px solid rgba(255, 255, 255, 0.16);
+
+    border-radius: 4px;
+
+    box-shadow:
+        inset 0 1px 2px rgba(0, 0, 0, 0.18);
+
+    font-family:
+        "Segoe UI",
+        Tahoma,
+        sans-serif;
+
+    font-size: 12px;
+    text-align: center;
+
+    text-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.82);
+}
+
+
+/* =========================================================
+   CUSTOM CURSORS — ACTIVE FROM INITIAL BOOT
+========================================================= */
+
+/*
+ * The startup screens previously force cursor: default.
+ * These rules override that native cursor.
+ */
+
+html,
+body,
+body.booting,
+#startup-boot-screen,
+#startup-settings-screen,
+#startup-boot-screen *,
+#startup-settings-screen *,
+#desktop,
+#windows-container,
+.window,
+.window-body {
+    cursor: var(--cursor-default) !important;
+}
+
+/* Styled hand on every clickable element */
+
+a,
+button,
+.icon,
+.start-item,
+#startButton,
+#clock,
+.task-button,
+.window-controls button,
+.window-menu button,
+.music-tab,
+.photo-folder,
+.graphic-project-folder,
+.social-icon,
+.recycle-program,
+.trojan-steam-image-link,
+.photo-navigation-button,
+.project-gallery img,
+.graphic-project-gallery img,
+#preview-image {
+    cursor: var(--cursor-pointer) !important;
+}
+
+/* Styled move cursor on window title bars */
+
+.title-bar,
+.title-bar * {
+    cursor: var(--cursor-move) !important;
+}
+
+/* Styled text cursor */
+
+input,
+textarea,
+.notepad-text,
+[contenteditable="true"] {
+    cursor: var(--cursor-text) !important;
+}
+
+/* Disabled cursor */
+
+button:disabled,
+input:disabled,
+textarea:disabled,
+[aria-disabled="true"] {
+    cursor: var(--cursor-forbidden) !important;
+}
+
+/* =========================================================
+   SLIDESHOW IMAGE FITS WINDOW EDGES
+========================================================= */
+
+#image-preview-window .image-preview-body {
+    padding: 0;
+}
+
+#image-preview-window .preview-image-area {
+    padding: 0;
+    overflow: hidden;
+}
+
+#image-preview-window #preview-image {
+    width: 100%;
+    height: 100%;
+
+    max-width: none;
+    max-height: none;
+
+    display: block;
+
+    object-fit: contain;
+    object-position: center;
+
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+/* =========================================================
+   TROJAN GLASS LOADING DIALOG
+========================================================= */
+
+.trojan-loader {
+    position: absolute;
+    inset: 0;
+
+    z-index: 20;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 18px;
+
+    background:
+        rgba(4, 3, 7, 0.26);
+
+    -webkit-backdrop-filter:
+        blur(2px);
+
+    backdrop-filter:
+        blur(2px);
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transform: scale(0.96);
+
+    transition:
+        opacity 220ms ease,
+        transform 260ms ease,
+        visibility 0s linear 260ms;
+}
+
+.trojan-loader-visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+
+    transform: scale(1);
+
+    transition:
+        opacity 220ms ease,
+        transform 260ms ease,
+        visibility 0s;
+}
+
+
+/* Main small window */
+
+.trojan-loader-window {
+    width: min(430px, 100%);
+
+    overflow: hidden;
+
+    color: #17202a;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(236, 245, 253, 0.76),
+            rgba(215, 230, 242, 0.64)
+        );
+
+    border:
+        1px solid rgba(255, 255, 255, 0.58);
+
+    border-radius: 8px;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.50),
+        0 12px 34px rgba(0, 0, 0, 0.48);
+
+    -webkit-backdrop-filter:
+        blur(16px)
+        saturate(135%);
+
+    backdrop-filter:
+        blur(16px)
+        saturate(135%);
+}
+
+
+/* Purple glass title bar */
+
+.trojan-loader-titlebar {
+    height: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 7px 0 11px;
+
+    color: rgba(255, 255, 255, 0.95);
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.17),
+            rgba(255, 255, 255, 0.03) 45%,
+            rgba(0, 0, 0, 0.11) 48%,
+            rgba(0, 0, 0, 0.20)
+        ),
+        rgba(30, 20, 42, 0.72);
+
+    border-bottom:
+        1px solid rgba(255, 255, 255, 0.20);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.22);
+
+    font-family:
+        "Segoe UI",
+        Tahoma,
+        sans-serif;
+
+    font-size: 12px;
+
+    text-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.78);
+}
+
+.trojan-loader-close {
+    width: 27px;
+    height: 19px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: rgba(255, 255, 255, 0.92);
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.17),
+            rgba(255, 255, 255, 0.04)
+        );
+
+    border:
+        1px solid rgba(255, 255, 255, 0.20);
+
+    border-radius: 4px;
+
+    font-size: 17px;
+    line-height: 1;
+
+    opacity: 0.72;
+}
+
+
+/* Dialog interior */
+
+.trojan-loader-content {
+    display: grid;
+    grid-template-columns: 88px 1fr;
+    align-items: center;
+
+    gap: 13px;
+
+    min-height: 128px;
+
+    padding: 16px 18px 17px;
+}
+
+.trojan-loader-cat {
+    display: block;
+
+    width: 82px;
+    height: 82px;
+
+    object-fit: contain;
+
+    image-rendering: auto;
+
+    filter:
+        drop-shadow(
+            0 4px 5px
+            rgba(30, 20, 42, 0.22)
+        );
+}
+
+.trojan-loader-information {
+    min-width: 0;
+}
+
+.trojan-loader-heading {
+    min-height: 32px;
+
+    margin-bottom: 6px;
+
+    color: #251b2d;
+
+    font-family:
+        "Segoe UI",
+        Tahoma,
+        sans-serif;
+
+    font-size: 13px;
+    line-height: 1.3;
+}
+
+.trojan-loader-status {
+    margin-bottom: 7px;
+
+    color: #4d3f55;
+
+    font-family:
+        "Segoe UI",
+        Tahoma,
+        sans-serif;
+
+    font-size: 12px;
+}
+
+
+/* One loading bar */
+
+.trojan-loader-track {
+    position: relative;
+
+    width: 100%;
+    height: 18px;
+
+    overflow: hidden;
+
+    background:
+        rgba(255, 255, 255, 0.38);
+
+    border:
+        1px solid rgba(77, 58, 91, 0.40);
+
+    border-radius: 2px;
+
+    box-shadow:
+        inset 0 1px 3px rgba(34, 23, 43, 0.20),
+        0 1px 0 rgba(255, 255, 255, 0.50);
+}
+
+.trojan-loader-fill {
+    width: 0%;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(224, 190, 245, 0.96) 0%,
+            rgba(139, 87, 169, 0.94) 48%,
+            rgba(77, 47, 101, 0.98) 52%,
+            rgba(103, 64, 128, 0.96) 100%
+        );
+
+    border-right:
+        1px solid rgba(52, 31, 68, 0.55);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.36),
+        1px 0 5px rgba(153, 104, 184, 0.38);
+
+    transition:
+        width 180ms ease;
+}
+
+.trojan-loader-percentage {
+    margin-top: 5px;
+
+    color: #56445f;
+
+    font-family:
+        "Segoe UI",
+        Tahoma,
+        sans-serif;
+
+    font-size: 11px;
+    text-align: right;
+}
+
+
+/* Small screens */
+
+@media (max-width: 500px) {
+
+    .trojan-loader-content {
+        grid-template-columns: 68px 1fr;
+
+        gap: 10px;
+
+        padding: 13px;
+    }
+
+    .trojan-loader-cat {
+        width: 64px;
+        height: 64px;
+    }
+
+    .trojan-loader-heading {
+        font-size: 12px;
+    }
+}
+
+/* =========================================================
+   FINAL TROJAN WINDOW WEBSITE MATCH
+   Keep this at the absolute bottom of style.css
+========================================================= */
+
+/*
+ * Main Trojan shell:
+ * same glass frame used by all other windows.
+ */
+
+#trojan-window {
+    width: 720px;
+    height: 500px;
+
+    max-width: calc(100vw - 20px);
+    max-height: calc(100vh - 58px);
+
+    display: flex;
+    flex-direction: column;
+
+    background: var(--glass-window);
+
+    border: 1px solid var(--glass-border);
+    border-radius: 9px 9px 6px 6px;
+
+    box-shadow:
+        0 14px 34px var(--glass-shadow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.10);
+
+    -webkit-backdrop-filter:
+        blur(var(--glass-blur))
+        saturate(135%);
+
+    backdrop-filter:
+        blur(var(--glass-blur))
+        saturate(135%);
+
+    overflow: hidden;
+}
+
+/*
+ * Hidden windows must remain hidden.
+ * This is essential because display:flex above would
+ * otherwise override the site's .hidden class.
+ */
+
+#trojan-window.hidden {
+    display: none;
+}
+
+/*
+ * Remove the old custom dark-purple title-bar override.
+ * These values are identical to the site's shared title bar.
+ */
+
+#trojan-window > .title-bar {
+    width: 100%;
+    height: 30px;
+    flex-shrink: 0;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.30),
+            rgba(255, 255, 255, 0.05) 48%,
+            rgba(80, 12, 70, 0.14) 49%,
+            rgba(80, 12, 70, 0.24)
+        ),
+        linear-gradient(
+            to right,
+            rgba(219, 152, 214, 0.68),
+            rgba(197, 41, 158, 0.58)
+        );
+
+    border-bottom:
+        1px solid rgba(255, 255, 255, 0.34);
+
+    color: white;
+
+    padding: 0 7px 0 10px;
+
+    text-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.72);
+}
+
+/*
+ * Application menu:
+ * same shared sheer menu as the other windows.
+ */
+
+#trojan-window > .window-menu {
+    width: 100%;
+    height: 30px;
+    flex-shrink: 0;
+}
+
+/*
+ * Main content area.
+ * Its height is handled by flex, not an old calculation.
+ */
+
+#trojan-window > .trojan-body {
+    position: relative;
+
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    flex: 1;
+
+    padding: 7px !important;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(236, 245, 253, 0.40),
+            rgba(215, 230, 242, 0.31)
+        ) !important;
+
+    border-top:
+        1px solid rgba(255, 255, 255, 0.22);
+
+    -webkit-backdrop-filter:
+        blur(10px)
+        saturate(128%);
+
+    backdrop-filter:
+        blur(10px)
+        saturate(128%);
+}
+
+/*
+ * Terminal becomes inset content inside the glass body,
+ * rather than replacing the complete window structure.
+ */
+
+#trojan-window .trojan-terminal {
+    position: absolute;
+
+    top: 7px;
+    right: 7px;
+    bottom: 7px;
+    left: 7px;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.18);
+
+    border-radius: 4px;
+
+    box-shadow:
+        inset 0 0 20px rgba(0, 0, 0, 0.52),
+        0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/*
+ * Final revealed image uses the same inset area.
+ */
+
+#trojan-window .trojan-reveal {
+    position: absolute;
+
+    top: 7px;
+    right: 7px;
+    bottom: 7px;
+    left: 7px;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.18);
+
+    border-radius: 4px;
+
+    box-shadow:
+        inset 0 0 18px rgba(0, 0, 0, 0.32),
+        0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/*
+ * Loader overlay fills only the body content,
+ * not the title bar or menu.
+ */
+
+#trojan-window .trojan-loader {
+    position: absolute;
+    inset: 7px;
+
+    border-radius: 4px;
+
+    overflow: hidden;
+}
+
+/*
+ * Small loader dialog uses the same website glass.
+ */
+
+#trojan-window .trojan-loader-window {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(236, 245, 253, 0.72),
+            rgba(215, 230, 242, 0.60)
+        );
+
+    border:
+        1px solid rgba(255, 255, 255, 0.52);
+
+    border-radius: 9px 9px 6px 6px;
+
+    box-shadow:
+        0 14px 34px rgba(0, 0, 0, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.48);
+
+    -webkit-backdrop-filter:
+        blur(16px)
+        saturate(135%);
+
+    backdrop-filter:
+        blur(16px)
+        saturate(135%);
+}
+
+/*
+ * Loader title uses the same pink-purple title-bar style.
+ */
+
+#trojan-window .trojan-loader-titlebar {
+    height: 30px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.30),
+            rgba(255, 255, 255, 0.05) 48%,
+            rgba(80, 12, 70, 0.14) 49%,
+            rgba(80, 12, 70, 0.24)
+        ),
+        linear-gradient(
+            to right,
+            rgba(219, 152, 214, 0.68),
+            rgba(197, 41, 158, 0.58)
+        );
+
+    border-bottom:
+        1px solid rgba(255, 255, 255, 0.34);
+
+    padding: 0 7px 0 10px;
+}
+
+/*
+ * Let the animated GIF play normally.
+ */
+
+#trojan-window .trojan-loader-cat {
+    display: block;
+
+    width: 82px;
+    height: 82px;
+
+    object-fit: contain;
+
+    image-rendering: auto;
+
+    animation: none;
+    transform: none;
+}
+
+/*
+ * Keep the Steam image inside the rounded inset area.
+ */
+
+#trojan-window .trojan-steam-image-link,
+#trojan-window .trojan-steam-image-link img {
+    border-radius: 3px;
+}
+
+@media (max-width: 600px) {
+
+    #trojan-window {
+        width: calc(100vw - 20px);
+        height: calc(100vh - 58px);
+    }
+
+    #trojan-window > .trojan-body {
+        padding: 5px !important;
+    }
+
+    #trojan-window .trojan-terminal,
+    #trojan-window .trojan-reveal,
+    #trojan-window .trojan-loader {
+        inset: 5px;
+    }
+}
