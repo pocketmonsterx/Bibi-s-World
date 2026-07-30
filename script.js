@@ -2214,21 +2214,51 @@ if (
     );
 }
 // ====================================
-// FINAL MOBILE WINDOW POSITIONING FIX
+// TRUE PHONE VIEWPORT + WINDOW CENTERING
 // ====================================
 
 function isMobileViewport() {
     return window.matchMedia("(max-width: 700px)").matches;
 }
 
-function fitWindowToMobileViewport(windowElement) {
-    if (!windowElement || !isMobileViewport()) return;
+function updatePhoneViewportVariables() {
+    const viewport = window.visualViewport;
+    const width = viewport ? viewport.width : window.innerWidth;
+    const height = viewport ? viewport.height : window.innerHeight;
 
-    windowElement.style.left = "8px";
-    windowElement.style.top = "8px";
-    windowElement.style.transform = "none";
-    windowElement.style.width = "calc(100vw - 16px)";
-    windowElement.style.height = "calc(100dvh - 58px)";
+    document.documentElement.style.setProperty(
+        "--phone-width",
+        `${Math.round(width)}px`
+    );
+
+    document.documentElement.style.setProperty(
+        "--phone-height",
+        `${Math.round(height)}px`
+    );
+}
+
+function fitWindowToMobileViewport(windowElement) {
+    if (!windowElement || !isMobileViewport()) {
+        return;
+    }
+
+    updatePhoneViewportVariables();
+
+    const viewport = window.visualViewport;
+    const width = viewport ? viewport.width : window.innerWidth;
+    const height = viewport ? viewport.height : window.innerHeight;
+    const taskbarHeight = 42;
+    const margin = 10;
+    const usableHeight = Math.max(240, height - taskbarHeight);
+
+    windowElement.style.position = "fixed";
+    windowElement.style.left = `${width / 2}px`;
+    windowElement.style.top = `${usableHeight / 2}px`;
+    windowElement.style.transform = "translate(-50%, -50%)";
+    windowElement.style.width = `${Math.max(280, width - margin * 2)}px`;
+    windowElement.style.maxWidth = `${Math.max(280, width - margin * 2)}px`;
+    windowElement.style.height = `${Math.max(220, usableHeight - margin * 2)}px`;
+    windowElement.style.maxHeight = `${Math.max(220, usableHeight - margin * 2)}px`;
 }
 
 const originalOpenWindowForMobile = openWindow;
@@ -2239,12 +2269,17 @@ openWindow = function(windowElement) {
     if (isMobileViewport()) {
         requestAnimationFrame(() => {
             fitWindowToMobileViewport(windowElement);
+            bringToFront(windowElement);
         });
     }
 };
 
 function refitOpenWindowsForViewport() {
-    if (!isMobileViewport()) return;
+    updatePhoneViewportVariables();
+
+    if (!isMobileViewport()) {
+        return;
+    }
 
     document
         .querySelectorAll(".window:not(.hidden)")
@@ -2253,7 +2288,22 @@ function refitOpenWindowsForViewport() {
 
 window.addEventListener("resize", refitOpenWindowsForViewport);
 window.addEventListener("orientationchange", () => {
-    window.setTimeout(refitOpenWindowsForViewport, 100);
+    window.setTimeout(refitOpenWindowsForViewport, 120);
 });
 
-window.addEventListener("DOMContentLoaded", refitOpenWindowsForViewport);
+if (window.visualViewport) {
+    window.visualViewport.addEventListener(
+        "resize",
+        refitOpenWindowsForViewport
+    );
+
+    window.visualViewport.addEventListener(
+        "scroll",
+        refitOpenWindowsForViewport
+    );
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+    updatePhoneViewportVariables();
+    refitOpenWindowsForViewport();
+});

@@ -5911,99 +5911,136 @@ textarea:disabled,
     }
 }
 /* =========================================================
-   FINAL MOBILE RESPONSIVE FIXES
-   Keep this section at the absolute bottom of style.css
+   TRUE PHONE LAYOUT — KEEP AT THE END OF style.css
 ========================================================= */
+
+:root {
+    --phone-width: 100vw;
+    --phone-height: 100dvh;
+    --phone-taskbar: 42px;
+    --phone-gap: 10px;
+}
 
 html,
 body {
     width: 100%;
+    min-width: 0;
+    max-width: 100%;
     min-height: 100%;
-    background: transparent;
-}
-
-body {
-    height: 100dvh;
-    min-height: 100dvh;
+    background: #2b1238;
 }
 
 .wallpaper-vhs {
     position: fixed;
     inset: 0;
-    z-index: 0;
-    width: 100%;
+    width: 100vw;
     height: 100dvh;
+    min-width: 0;
     overflow: hidden;
     background: #2b1238;
 }
 
 #wallpaper-video {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
-    min-width: 100%;
-    min-height: 100%;
+    min-width: 0;
+    min-height: 0;
     object-fit: cover;
-    object-position: center;
+    object-position: 50% 50%;
 }
 
 @media (max-width: 700px) {
+    :root {
+        --phone-width: 100svw;
+        --phone-height: 100dvh;
+    }
+
     html,
     body {
-        width: 100%;
-        max-width: 100%;
-        height: 100dvh;
-        min-height: 100dvh;
+        position: fixed;
+        inset: 0;
+        width: var(--phone-width);
+        height: var(--phone-height);
+        min-width: 0 !important;
+        max-width: var(--phone-width) !important;
+        min-height: 0;
         overflow: hidden;
         overscroll-behavior: none;
         background: #2b1238;
     }
 
+    .wallpaper-vhs,
+    #wallpaper-video {
+        width: var(--phone-width) !important;
+        height: var(--phone-height) !important;
+        max-width: var(--phone-width) !important;
+    }
+
+    #wallpaper-video {
+        object-fit: cover;
+        object-position: center center;
+    }
+
+    .bibi-title {
+        left: 50% !important;
+        right: auto !important;
+        width: min(92vw, 430px) !important;
+        max-width: 92vw !important;
+        transform: translateX(-50%) !important;
+        text-align: center;
+    }
+
     #desktop {
-        width: 100%;
-        max-width: 100%;
-        height: calc(100dvh - 42px);
+        position: fixed;
+        inset: 0 0 var(--phone-taskbar) 0;
+        width: var(--phone-width) !important;
+        max-width: var(--phone-width) !important;
+        height: calc(var(--phone-height) - var(--phone-taskbar));
         padding: 12px 8px;
-        grid-template-rows: repeat(6, 70px);
-        grid-auto-columns: 76px;
-        column-gap: 4px;
-        row-gap: 6px;
+        grid-template-rows: repeat(6, 68px);
+        grid-auto-columns: 72px;
+        column-gap: 2px;
+        row-gap: 5px;
         overflow: hidden;
     }
 
     .icon {
-        width: 72px;
+        width: 68px;
     }
 
     .icon img {
-        width: 36px;
-        max-width: 100%;
+        width: 35px;
+        height: auto;
     }
 
     .icon span {
-        font-size: 11px;
+        font-size: 10px;
         line-height: 1.15;
         overflow-wrap: anywhere;
     }
 
     #windows-container {
         position: fixed;
-        inset: 0 0 42px 0;
-        width: 100%;
-        height: calc(100dvh - 42px);
+        inset: 0 0 var(--phone-taskbar) 0;
+        width: var(--phone-width) !important;
+        height: calc(var(--phone-height) - var(--phone-taskbar));
         overflow: hidden;
     }
 
     #windows-container .window,
     #shutdown-dialog.window {
-        left: 8px !important;
-        top: 8px !important;
-        transform: none !important;
-        width: calc(100vw - 16px) !important;
-        max-width: calc(100vw - 16px) !important;
-        height: calc(100dvh - 58px) !important;
-        max-height: calc(100dvh - 58px) !important;
+        position: fixed !important;
+        left: 50% !important;
+        top: calc((var(--phone-height) - var(--phone-taskbar)) / 2) !important;
+        transform: translate(-50%, -50%) !important;
+        width: calc(var(--phone-width) - 20px) !important;
+        max-width: calc(var(--phone-width) - 20px) !important;
+        height: calc(var(--phone-height) - var(--phone-taskbar) - 20px) !important;
+        max-height: calc(var(--phone-height) - var(--phone-taskbar) - 20px) !important;
         margin: 0 !important;
-        overflow: hidden;
+        overflow: hidden !important;
     }
 
     .window-body,
@@ -6015,8 +6052,8 @@ body {
     .music-window,
     .trash-body,
     .trojan-body {
-        min-width: 0;
-        max-width: 100%;
+        min-width: 0 !important;
+        max-width: 100% !important;
     }
 
     .window-body {
@@ -6044,7 +6081,8 @@ body {
         scrollbar-width: none;
     }
 
-    .window-menu::-webkit-scrollbar {
+    .window-menu::-webkit-scrollbar,
+    #taskbar-windows::-webkit-scrollbar {
         display: none;
     }
 
@@ -6052,13 +6090,13 @@ body {
     .graphic-projects,
     #socials-window .socials-body {
         justify-content: center;
-        gap: 14px;
-        padding: 14px;
+        gap: 12px;
+        padding: 12px;
     }
 
     .photo-folder,
     .graphic-project-folder {
-        width: min(140px, calc(50vw - 28px));
+        width: min(135px, calc(50vw - 24px));
     }
 
     .photo-folder img,
@@ -6078,34 +6116,23 @@ body {
     .graphic-project-content {
         width: 100%;
         max-width: 100%;
-        padding: 12px;
-    }
-
-    .graphic-project-header {
-        margin-bottom: 20px;
+        padding: 10px;
     }
 
     .graphic-project-header h1 {
-        font-size: clamp(22px, 8vw, 30px);
+        font-size: clamp(21px, 7vw, 28px);
     }
 
     .contact-body {
-        padding: 12px;
+        padding: 10px;
     }
 
     .contact-form input,
     .contact-form textarea,
     .contact-form button {
+        width: 100%;
         max-width: 100%;
         font-size: 16px;
-    }
-
-    .music-tabs {
-        overflow-x: auto;
-    }
-
-    .music-tab {
-        min-width: max-content;
     }
 
     iframe,
@@ -6115,8 +6142,12 @@ body {
     }
 
     #taskbar {
-        width: 100%;
-        height: 42px;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: var(--phone-width) !important;
+        height: var(--phone-taskbar);
         min-width: 0;
         padding: 3px;
     }
@@ -6124,27 +6155,23 @@ body {
     #startButton {
         flex: 0 0 auto;
         height: 34px;
-        padding: 0 9px;
+        padding: 0 8px;
     }
 
     #taskbar-windows {
         min-width: 0;
-        margin-left: 4px;
+        margin-left: 3px;
         overflow-x: auto;
         overflow-y: hidden;
         scrollbar-width: none;
     }
 
-    #taskbar-windows::-webkit-scrollbar {
-        display: none;
-    }
-
     .task-button {
-        min-width: 44px;
-        width: 44px;
-        max-width: 44px;
+        min-width: 42px;
+        width: 42px;
+        max-width: 42px;
+        flex: 0 0 42px;
         padding: 2px;
-        flex: 0 0 44px;
     }
 
     .task-button-text {
@@ -6155,39 +6182,34 @@ body {
         margin: auto;
     }
 
-    #clock-area,
     #clock {
-        flex: 0 0 auto;
-    }
-
-    #clock {
-        min-width: 52px;
-        padding: 0 6px;
-        font-size: 11px;
+        min-width: 50px;
+        padding: 0 5px;
+        font-size: 10px;
     }
 
     #start-menu {
         left: 3px;
-        bottom: 42px;
-        max-width: calc(100vw - 6px);
+        bottom: var(--phone-taskbar);
+        max-width: calc(var(--phone-width) - 6px);
     }
 
     #clock-calendar {
         position: fixed;
         right: 4px;
-        bottom: 46px;
-        width: min(320px, calc(100vw - 8px));
-        max-width: calc(100vw - 8px);
+        bottom: calc(var(--phone-taskbar) + 4px);
+        width: min(320px, calc(var(--phone-width) - 8px));
+        max-width: calc(var(--phone-width) - 8px);
     }
 }
 
 @media (max-width: 380px) {
     #desktop {
-        grid-auto-columns: 68px;
+        grid-auto-columns: 64px;
     }
 
     .icon {
-        width: 64px;
+        width: 60px;
     }
 
     .window-controls button {
