@@ -5910,3 +5910,288 @@ textarea:disabled,
         inset: 5px;
     }
 }
+/* =========================================================
+   FINAL MOBILE RESPONSIVE FIXES
+   Keep this section at the absolute bottom of style.css
+========================================================= */
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+    background: transparent;
+}
+
+body {
+    height: 100dvh;
+    min-height: 100dvh;
+}
+
+.wallpaper-vhs {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100dvh;
+    overflow: hidden;
+    background: #2b1238;
+}
+
+#wallpaper-video {
+    width: 100%;
+    height: 100%;
+    min-width: 100%;
+    min-height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+@media (max-width: 700px) {
+    html,
+    body {
+        width: 100%;
+        max-width: 100%;
+        height: 100dvh;
+        min-height: 100dvh;
+        overflow: hidden;
+        overscroll-behavior: none;
+        background: #2b1238;
+    }
+
+    #desktop {
+        width: 100%;
+        max-width: 100%;
+        height: calc(100dvh - 42px);
+        padding: 12px 8px;
+        grid-template-rows: repeat(6, 70px);
+        grid-auto-columns: 76px;
+        column-gap: 4px;
+        row-gap: 6px;
+        overflow: hidden;
+    }
+
+    .icon {
+        width: 72px;
+    }
+
+    .icon img {
+        width: 36px;
+        max-width: 100%;
+    }
+
+    .icon span {
+        font-size: 11px;
+        line-height: 1.15;
+        overflow-wrap: anywhere;
+    }
+
+    #windows-container {
+        position: fixed;
+        inset: 0 0 42px 0;
+        width: 100%;
+        height: calc(100dvh - 42px);
+        overflow: hidden;
+    }
+
+    #windows-container .window,
+    #shutdown-dialog.window {
+        left: 8px !important;
+        top: 8px !important;
+        transform: none !important;
+        width: calc(100vw - 16px) !important;
+        max-width: calc(100vw - 16px) !important;
+        height: calc(100dvh - 58px) !important;
+        max-height: calc(100dvh - 58px) !important;
+        margin: 0 !important;
+        overflow: hidden;
+    }
+
+    .window-body,
+    .graphic-arts-body,
+    .graphic-project-body,
+    .notepad-body,
+    .contact-body,
+    .socials-body,
+    .music-window,
+    .trash-body,
+    .trojan-body {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .window-body {
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .title-bar {
+        cursor: default;
+        touch-action: none;
+    }
+
+    .title-bar > span {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .window-menu {
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
+        scrollbar-width: none;
+    }
+
+    .window-menu::-webkit-scrollbar {
+        display: none;
+    }
+
+    .photo-gallery,
+    .graphic-projects,
+    #socials-window .socials-body {
+        justify-content: center;
+        gap: 14px;
+        padding: 14px;
+    }
+
+    .photo-folder,
+    .graphic-project-folder {
+        width: min(140px, calc(50vw - 28px));
+    }
+
+    .photo-folder img,
+    .graphic-project-folder img {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 4 / 3;
+    }
+
+    .gallery-row.two,
+    .gallery-row.three,
+    .gallery-row.four {
+        grid-template-columns: 1fr;
+    }
+
+    .project-gallery,
+    .graphic-project-content {
+        width: 100%;
+        max-width: 100%;
+        padding: 12px;
+    }
+
+    .graphic-project-header {
+        margin-bottom: 20px;
+    }
+
+    .graphic-project-header h1 {
+        font-size: clamp(22px, 8vw, 30px);
+    }
+
+    .contact-body {
+        padding: 12px;
+    }
+
+    .contact-form input,
+    .contact-form textarea,
+    .contact-form button {
+        max-width: 100%;
+        font-size: 16px;
+    }
+
+    .music-tabs {
+        overflow-x: auto;
+    }
+
+    .music-tab {
+        min-width: max-content;
+    }
+
+    iframe,
+    video,
+    img {
+        max-width: 100%;
+    }
+
+    #taskbar {
+        width: 100%;
+        height: 42px;
+        min-width: 0;
+        padding: 3px;
+    }
+
+    #startButton {
+        flex: 0 0 auto;
+        height: 34px;
+        padding: 0 9px;
+    }
+
+    #taskbar-windows {
+        min-width: 0;
+        margin-left: 4px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scrollbar-width: none;
+    }
+
+    #taskbar-windows::-webkit-scrollbar {
+        display: none;
+    }
+
+    .task-button {
+        min-width: 44px;
+        width: 44px;
+        max-width: 44px;
+        padding: 2px;
+        flex: 0 0 44px;
+    }
+
+    .task-button-text {
+        display: none;
+    }
+
+    .task-button-icon {
+        margin: auto;
+    }
+
+    #clock-area,
+    #clock {
+        flex: 0 0 auto;
+    }
+
+    #clock {
+        min-width: 52px;
+        padding: 0 6px;
+        font-size: 11px;
+    }
+
+    #start-menu {
+        left: 3px;
+        bottom: 42px;
+        max-width: calc(100vw - 6px);
+    }
+
+    #clock-calendar {
+        position: fixed;
+        right: 4px;
+        bottom: 46px;
+        width: min(320px, calc(100vw - 8px));
+        max-width: calc(100vw - 8px);
+    }
+}
+
+@media (max-width: 380px) {
+    #desktop {
+        grid-auto-columns: 68px;
+    }
+
+    .icon {
+        width: 64px;
+    }
+
+    .window-controls button {
+        width: 20px;
+        height: 20px;
+    }
+}
