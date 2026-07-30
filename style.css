@@ -6626,97 +6626,62 @@ body.window-resize-active {
     }
 }
 
+
 /* =========================================================
-   MOBILE VIEWPORT SEAM + NON-SELECTABLE INTERFACE
-   Keep this block at the absolute end of style.css.
+   SAFE MOBILE SEAM + TEXT-SELECTION FIX
+   This block intentionally does not change body dimensions,
+   window positioning, pointer events, or click handling.
 ========================================================= */
 
-/*
- * Use the darkest wallpaper edge as the emergency fallback.
- * This prevents a pink strip from appearing while mobile
- * browser bars expand or collapse.
- */
+/* Dark fallback shown only if the fixed wallpaper leaves a tiny gap. */
 html,
 body {
-    background: #17031f !important;
+    background-color: #17031f !important;
 }
 
 @media (max-width: 700px) {
-    html {
-        width: 100% !important;
-        min-height: 100% !important;
-        min-height: 100lvh !important;
-        overflow: hidden !important;
-        background: #17031f !important;
-    }
-
-    body {
-        width: 100% !important;
-        height: var(--phone-height, 100dvh) !important;
-        min-height: var(--phone-height, 100dvh) !important;
-        overflow: hidden !important;
-        background: transparent !important;
-    }
-
-    /*
-     * Overscan by a few pixels and use the largest viewport
-     * height. The animated layer therefore remains behind the
-     * address-bar and home-indicator areas during viewport changes.
-     */
+    /* A 3px overscan prevents browser-toolbar viewport seams. */
     .wallpaper-vhs {
-        top: -4px !important;
-        right: -4px !important;
-        bottom: -4px !important;
-        left: -4px !important;
+        position: fixed !important;
+        inset: -3px !important;
         width: auto !important;
         height: auto !important;
-        min-width: calc(100vw + 8px) !important;
-        min-height: calc(100lvh + 8px) !important;
-        background: #17031f !important;
-    }
-
-    .wallpaper-css-motion {
-        inset: -58% !important;
-        min-width: 216% !important;
-        min-height: 216% !important;
+        min-width: calc(100vw + 6px) !important;
+        min-height: calc(100dvh + 6px) !important;
+        background-color: #17031f !important;
     }
 
     #wallpaper-video {
-        top: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        left: 0 !important;
+        position: absolute !important;
+        inset: 0 !important;
         width: 100% !important;
         height: 100% !important;
-        min-width: 100% !important;
-        min-height: 100% !important;
+        object-fit: cover !important;
     }
 }
 
-/*
- * Layout text cannot be selected, dragged, copied through a
- * long-press menu, or given the mobile tap-highlight flash.
- * Links and controls remain functional.
- */
-html,
+/* Prevent selection/copying of interface text without cancelling events. */
 body,
-body * {
-    -webkit-user-select: none !important;
-    user-select: none !important;
-    -webkit-touch-callout: none !important;
-    -webkit-tap-highlight-color: transparent !important;
-}
-
-img,
-a,
+#desktop,
+#windows-container,
+#taskbar,
+#start-menu,
+#startup-boot-screen,
+#startup-settings-screen,
+.bibi-title,
+.window,
+.window-menu,
+.title-bar,
 .icon,
 .photo-folder,
-.graphic-project-folder {
-    -webkit-user-drag: none !important;
-    user-drag: none !important;
+.graphic-project-folder,
+.social-icon {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
 }
 
-/* Keep fields practical for typing and editing. */
+/* Visitors still need normal editing inside the contact form. */
 input,
 textarea,
 select,
@@ -6724,4 +6689,11 @@ select,
     -webkit-user-select: text !important;
     user-select: text !important;
     -webkit-touch-callout: default !important;
+}
+
+img,
+.icon,
+.photo-folder,
+.graphic-project-folder {
+    -webkit-user-drag: none;
 }

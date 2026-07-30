@@ -2637,37 +2637,3 @@ window.addEventListener("DOMContentLoaded", () => {
     updatePhoneViewportVariables();
     refitOpenWindowsForViewport();
 });
-
-// ====================================
-// PREVENT COPYING / SELECTING LAYOUT TEXT
-// ====================================
-
-function isEditableInterfaceTarget(target) {
-    return Boolean(
-        target &&
-        target.closest &&
-        target.closest(
-            'input, textarea, select, [contenteditable="true"]'
-        )
-    );
-}
-
-[
-    "copy",
-    "cut",
-    "selectstart",
-    "dragstart",
-    "contextmenu"
-].forEach(eventName => {
-    document.addEventListener(
-        eventName,
-        event => {
-            if (isEditableInterfaceTarget(event.target)) {
-                return;
-            }
-
-            event.preventDefault();
-        },
-        { capture: true }
-    );
-});
