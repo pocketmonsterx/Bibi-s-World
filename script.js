@@ -49,7 +49,7 @@ document
 const desktopIcons = document.querySelectorAll(".icon");
 const windows = document.querySelectorAll(".window");
 
-let highestZ = 100;
+let highestZ = 10000;
 let galleryOffset = 0;
 
 const taskbarWindows = document.getElementById("taskbar-windows");
@@ -74,6 +74,10 @@ desktopIcons.forEach(icon => {
 
         if (!windowElement) {
             return;
+        }
+
+        if (typeof startMenu !== "undefined" && startMenu) {
+            startMenu.classList.add("hidden");
         }
 
         openWindow(windowElement);
@@ -1072,7 +1076,10 @@ startMenu.addEventListener("click",(e)=>{
 
 document.querySelectorAll(".start-item[data-window]").forEach(item=>{
 
-    item.addEventListener("click",()=>{
+    item.addEventListener("click", event => {
+
+        event.preventDefault();
+        event.stopPropagation();
 
         startMenu.classList.add("hidden");
 
@@ -1081,9 +1088,13 @@ document.querySelectorAll(".start-item[data-window]").forEach(item=>{
             `[data-window-id="${item.dataset.window}"]`
         );
 
-        if(windowElement){
+        if (windowElement) {
 
             openWindow(windowElement);
+
+            requestAnimationFrame(() => {
+                bringToFront(windowElement);
+            });
 
         }
 
