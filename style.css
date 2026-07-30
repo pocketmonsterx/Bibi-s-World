@@ -6287,3 +6287,110 @@ body {
         display: none;
     }
 }
+
+/* =========================================================
+   RELIABLE ANIMATED WALLPAPER
+   CSS animation remains active when a phone blocks the MP4.
+========================================================= */
+
+html,
+body {
+    background: #2b1238 !important;
+}
+
+.wallpaper-vhs {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    overflow: hidden !important;
+    z-index: 0 !important;
+    pointer-events: none !important;
+
+    background:
+        radial-gradient(circle at 20% 20%, rgba(255, 73, 214, 0.95), transparent 42%),
+        radial-gradient(circle at 82% 28%, rgba(113, 56, 255, 0.95), transparent 44%),
+        radial-gradient(circle at 52% 82%, rgba(227, 36, 177, 0.85), transparent 48%),
+        linear-gradient(135deg, #170425, #4c0c67 48%, #160321);
+
+    background-size: 160% 160%, 170% 170%, 180% 180%, 100% 100%;
+    animation: phoneWallpaperMotion 10s ease-in-out infinite alternate;
+    transform: translateZ(0);
+}
+
+.wallpaper-vhs::after {
+    content: "";
+    position: absolute;
+    inset: -15%;
+    z-index: 0;
+    opacity: 0.35;
+    pointer-events: none;
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.045) 0,
+            rgba(255, 255, 255, 0.045) 1px,
+            transparent 1px,
+            transparent 4px
+        );
+    animation: wallpaperScanlines 1.2s linear infinite;
+}
+
+#wallpaper-video {
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 1 !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    opacity: 0 !important;
+    visibility: visible !important;
+    object-fit: cover !important;
+    object-position: center center !important;
+    transition: opacity 350ms ease !important;
+    pointer-events: none !important;
+}
+
+#wallpaper-video.wallpaper-playing {
+    opacity: 1 !important;
+}
+
+#wallpaper-video.wallpaper-failed {
+    opacity: 0 !important;
+}
+
+@keyframes phoneWallpaperMotion {
+    0% {
+        background-position: 0% 10%, 100% 0%, 45% 100%, center;
+        filter: hue-rotate(0deg) saturate(1.05);
+    }
+
+    50% {
+        background-position: 42% 55%, 55% 42%, 80% 35%, center;
+        filter: hue-rotate(12deg) saturate(1.2);
+    }
+
+    100% {
+        background-position: 95% 85%, 8% 100%, 10% 15%, center;
+        filter: hue-rotate(-8deg) saturate(1.08);
+    }
+}
+
+@keyframes wallpaperScanlines {
+    from {
+        transform: translate3d(0, -8px, 0);
+    }
+
+    to {
+        transform: translate3d(0, 8px, 0);
+    }
+}
+
+@media (max-width: 700px) {
+    .wallpaper-vhs {
+        width: 100svw !important;
+        height: 100dvh !important;
+        animation-duration: 8s;
+    }
+}

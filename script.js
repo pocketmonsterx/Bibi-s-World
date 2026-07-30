@@ -21,15 +21,35 @@ function startWallpaperVideo() {
     wallpaperVideo.loop = true;
     wallpaperVideo.playsInline = true;
 
+    const markPlaying = () => {
+        wallpaperVideo.classList.add("wallpaper-playing");
+        wallpaperVideo.classList.remove("wallpaper-failed");
+    };
+
+    const markFailed = () => {
+        wallpaperVideo.classList.remove("wallpaper-playing");
+        wallpaperVideo.classList.add("wallpaper-failed");
+    };
+
+    wallpaperVideo.addEventListener("playing", markPlaying, { once: true });
+    wallpaperVideo.addEventListener("canplay", markPlaying, { once: true });
+    wallpaperVideo.addEventListener("error", markFailed, { once: true });
+
     const playAttempt = wallpaperVideo.play();
 
     if (playAttempt && typeof playAttempt.catch === "function") {
-        playAttempt.catch(() => {
-            // A first touch/click will retry playback when a mobile
-            // browser blocks the initial automatic attempt.
-        });
+        playAttempt.catch(markFailed);
     }
 }
+
+
+// Retry video playback after the first real user interaction.
+["pointerdown", "touchstart", "click"].forEach(eventName => {
+    document.addEventListener(eventName, startWallpaperVideo, {
+        once: true,
+        passive: true
+    });
+});
 
 window.addEventListener("DOMContentLoaded", () => {
     startWallpaperVideo();
