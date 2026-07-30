@@ -6625,3 +6625,103 @@ body.window-resize-active {
         display: none !important;
     }
 }
+
+/* =========================================================
+   MOBILE VIEWPORT SEAM + NON-SELECTABLE INTERFACE
+   Keep this block at the absolute end of style.css.
+========================================================= */
+
+/*
+ * Use the darkest wallpaper edge as the emergency fallback.
+ * This prevents a pink strip from appearing while mobile
+ * browser bars expand or collapse.
+ */
+html,
+body {
+    background: #17031f !important;
+}
+
+@media (max-width: 700px) {
+    html {
+        width: 100% !important;
+        min-height: 100% !important;
+        min-height: 100lvh !important;
+        overflow: hidden !important;
+        background: #17031f !important;
+    }
+
+    body {
+        width: 100% !important;
+        height: var(--phone-height, 100dvh) !important;
+        min-height: var(--phone-height, 100dvh) !important;
+        overflow: hidden !important;
+        background: transparent !important;
+    }
+
+    /*
+     * Overscan by a few pixels and use the largest viewport
+     * height. The animated layer therefore remains behind the
+     * address-bar and home-indicator areas during viewport changes.
+     */
+    .wallpaper-vhs {
+        top: -4px !important;
+        right: -4px !important;
+        bottom: -4px !important;
+        left: -4px !important;
+        width: auto !important;
+        height: auto !important;
+        min-width: calc(100vw + 8px) !important;
+        min-height: calc(100lvh + 8px) !important;
+        background: #17031f !important;
+    }
+
+    .wallpaper-css-motion {
+        inset: -58% !important;
+        min-width: 216% !important;
+        min-height: 216% !important;
+    }
+
+    #wallpaper-video {
+        top: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        min-width: 100% !important;
+        min-height: 100% !important;
+    }
+}
+
+/*
+ * Layout text cannot be selected, dragged, copied through a
+ * long-press menu, or given the mobile tap-highlight flash.
+ * Links and controls remain functional.
+ */
+html,
+body,
+body * {
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    -webkit-touch-callout: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+img,
+a,
+.icon,
+.photo-folder,
+.graphic-project-folder {
+    -webkit-user-drag: none !important;
+    user-drag: none !important;
+}
+
+/* Keep fields practical for typing and editing. */
+input,
+textarea,
+select,
+[contenteditable="true"] {
+    -webkit-user-select: text !important;
+    user-select: text !important;
+    -webkit-touch-callout: default !important;
+}
