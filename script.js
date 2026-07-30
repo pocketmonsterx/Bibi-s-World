@@ -10,6 +10,7 @@
 document.body.classList.add("booting");
 
 // Keep the animated wallpaper playing on desktop and mobile browsers.
+// The video is revealed only after playback time genuinely advances.
 function startWallpaperVideo() {
     const wallpaperVideo =
         document.getElementById("wallpaper-video");
@@ -21,24 +22,68 @@ function startWallpaperVideo() {
     wallpaperVideo.loop = true;
     wallpaperVideo.playsInline = true;
 
-    const markPlaying = () => {
-        wallpaperVideo.classList.add("wallpaper-playing");
-        wallpaperVideo.classList.remove("wallpaper-failed");
-    };
-
-    const markFailed = () => {
+    const showCssFallback = () => {
         wallpaperVideo.classList.remove("wallpaper-playing");
         wallpaperVideo.classList.add("wallpaper-failed");
     };
 
-    wallpaperVideo.addEventListener("playing", markPlaying, { once: true });
-    wallpaperVideo.addEventListener("canplay", markPlaying, { once: true });
-    wallpaperVideo.addEventListener("error", markFailed, { once: true });
+    const showVideo = () => {
+        wallpaperVideo.classList.add("wallpaper-playing");
+        wallpaperVideo.classList.remove("wallpaper-failed");
+    };
+
+    /*
+     * Bind these once. "canplay" is intentionally not used:
+     * mobile browsers may fire it while displaying a frozen frame.
+     */
+    if (wallpaperVideo.dataset.playbackEventsBound !== "true") {
+        wallpaperVideo.dataset.playbackEventsBound = "true";
+
+        wallpaperVideo.addEventListener("timeupdate", () => {
+            if (
+                !wallpaperVideo.paused &&
+                wallpaperVideo.currentTime > 0.05
+            ) {
+                showVideo();
+            }
+        });
+
+        wallpaperVideo.addEventListener("playing", () => {
+            const startingTime = wallpaperVideo.currentTime;
+
+            window.setTimeout(() => {
+                if (
+                    !wallpaperVideo.paused &&
+                    wallpaperVideo.currentTime > startingTime + 0.03
+                ) {
+                    showVideo();
+                } else {
+                    showCssFallback();
+                }
+            }, 350);
+        });
+
+        [
+            "pause",
+            "stalled",
+            "abort",
+            "error",
+            "emptied"
+        ].forEach(eventName => {
+            wallpaperVideo.addEventListener(
+                eventName,
+                showCssFallback
+            );
+        });
+    }
+
+    /* Keep the animated CSS layer visible during every attempt. */
+    showCssFallback();
 
     const playAttempt = wallpaperVideo.play();
 
     if (playAttempt && typeof playAttempt.catch === "function") {
-        playAttempt.catch(markFailed);
+        playAttempt.catch(showCssFallback);
     }
 }
 

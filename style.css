@@ -6394,3 +6394,132 @@ body {
         animation-duration: 8s;
     }
 }
+
+/* =========================================================
+   MOBILE-SAFE CSS WALLPAPER MOTION — FINAL OVERRIDE
+   Uses transform animation instead of background-position.
+========================================================= */
+
+.wallpaper-vhs {
+    isolation: isolate !important;
+    background: #25072f !important;
+    animation: none !important;
+}
+
+.wallpaper-vhs::before {
+    content: "";
+    position: absolute;
+    inset: -40%;
+    z-index: 0;
+    display: block;
+    pointer-events: none;
+
+    background:
+        radial-gradient(circle at 22% 28%, rgba(255, 67, 211, 0.98) 0 11%, rgba(255, 67, 211, 0.48) 24%, transparent 47%),
+        radial-gradient(circle at 76% 24%, rgba(111, 59, 255, 0.98) 0 12%, rgba(111, 59, 255, 0.46) 27%, transparent 49%),
+        radial-gradient(circle at 68% 77%, rgba(226, 29, 171, 0.90) 0 12%, rgba(226, 29, 171, 0.38) 29%, transparent 52%),
+        radial-gradient(circle at 25% 78%, rgba(69, 28, 145, 0.95) 0 13%, rgba(69, 28, 145, 0.42) 30%, transparent 54%),
+        linear-gradient(135deg, #17031f 0%, #4b0b62 48%, #180322 100%);
+
+    background-repeat: no-repeat;
+    transform-origin: center center;
+    transform: translate3d(-8%, -5%, 0) scale(1.08) rotate(-3deg);
+    will-change: transform;
+    backface-visibility: hidden;
+    animation: wallpaperBlobDrift 5.5s ease-in-out infinite alternate !important;
+}
+
+.wallpaper-vhs::after {
+    z-index: 2 !important;
+    animation: wallpaperScanlines 0.9s linear infinite !important;
+    will-change: transform;
+}
+
+#wallpaper-video {
+    z-index: 1 !important;
+}
+
+@keyframes wallpaperBlobDrift {
+    0% {
+        transform: translate3d(-8%, -5%, 0) scale(1.08) rotate(-3deg);
+    }
+
+    33% {
+        transform: translate3d(7%, -10%, 0) scale(1.18) rotate(2deg);
+    }
+
+    66% {
+        transform: translate3d(-3%, 9%, 0) scale(1.13) rotate(-1deg);
+    }
+
+    100% {
+        transform: translate3d(10%, 7%, 0) scale(1.22) rotate(4deg);
+    }
+}
+
+/* Keep the motion obvious and smooth on phones. */
+@media (max-width: 700px) {
+    .wallpaper-vhs::before {
+        inset: -48%;
+        animation-duration: 4.2s !important;
+    }
+}
+
+/* =========================================================
+   REAL CSS WALLPAPER LAYER + FROZEN-VIDEO PROTECTION
+========================================================= */
+
+/* The real element is more reliable than a pseudo-element on mobile. */
+.wallpaper-vhs::before {
+    display: none !important;
+}
+
+.wallpaper-css-motion {
+    position: absolute;
+    inset: -48%;
+    z-index: 0;
+    display: block;
+    pointer-events: none;
+
+    background:
+        radial-gradient(circle at 22% 28%, rgba(255, 67, 211, 0.98) 0 11%, rgba(255, 67, 211, 0.48) 24%, transparent 47%),
+        radial-gradient(circle at 76% 24%, rgba(111, 59, 255, 0.98) 0 12%, rgba(111, 59, 255, 0.46) 27%, transparent 49%),
+        radial-gradient(circle at 68% 77%, rgba(226, 29, 171, 0.90) 0 12%, rgba(226, 29, 171, 0.38) 29%, transparent 52%),
+        radial-gradient(circle at 25% 78%, rgba(69, 28, 145, 0.95) 0 13%, rgba(69, 28, 145, 0.42) 30%, transparent 54%),
+        linear-gradient(135deg, #17031f 0%, #4b0b62 48%, #180322 100%);
+
+    background-repeat: no-repeat;
+    transform-origin: center;
+    transform: translate3d(-8%, -5%, 0) scale(1.08) rotate(-3deg);
+    backface-visibility: hidden;
+    will-change: transform;
+    animation: wallpaperRealMotion 4.2s ease-in-out infinite alternate !important;
+}
+
+@keyframes wallpaperRealMotion {
+    0% {
+        transform: translate3d(-8%, -5%, 0) scale(1.08) rotate(-3deg);
+    }
+
+    33% {
+        transform: translate3d(7%, -10%, 0) scale(1.18) rotate(2deg);
+    }
+
+    66% {
+        transform: translate3d(-3%, 9%, 0) scale(1.13) rotate(-1deg);
+    }
+
+    100% {
+        transform: translate3d(10%, 7%, 0) scale(1.22) rotate(4deg);
+    }
+}
+
+/* A video that has only loaded a frozen frame stays transparent. */
+#wallpaper-video:not(.wallpaper-playing),
+#wallpaper-video.wallpaper-failed {
+    opacity: 0 !important;
+}
+
+#wallpaper-video.wallpaper-playing {
+    opacity: 1 !important;
+}
