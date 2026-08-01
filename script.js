@@ -443,6 +443,7 @@ function openWindow(windowElement) {
 else if (
     windowElement.id === "disney-window" ||
     windowElement.id === "miku-window" ||
+    windowElement.id === "magical-lake-window" ||
     windowElement.classList.contains("graphic-project-window")
 ) {
     centerWindow(windowElement);
@@ -695,6 +696,7 @@ function createTaskButton(windowElement) {
         "graphic-project-one": "assets/icons/graphic arts.ico",
         "graphic-project-two": "assets/icons/graphic arts.ico",
         music: "assets/icons/music.ico",
+        "magical-lake": "assets/icons/magical-lake.svg",
         socials: "assets/icons/iexplore.ico",
         contact: "assets/icons/contato.ico",
         trash: "assets/icons/trash.ico",
@@ -2774,3 +2776,1458 @@ window.addEventListener("DOMContentLoaded", () => {
     updatePhoneViewportVariables();
     refitOpenWindowsForViewport();
 });
+
+
+// ====================================
+// MAGICAL LAKE — CUTE DETAILED PIXEL ART
+// ====================================
+
+(() => {
+    const canvas = document.getElementById("magical-lake-canvas");
+    if (!canvas) return;
+
+    const context = canvas.getContext("2d", { alpha: false });
+    if (!context) return;
+
+    context.imageSmoothingEnabled = false;
+
+    const WIDTH = canvas.width;
+    const HEIGHT = canvas.height;
+    const WATER_LINE = 171;
+
+    const wishButton = document.getElementById("magical-wish-button");
+    const resetButton = document.getElementById("magical-reset-button");
+    const status = document.getElementById("magical-lake-status");
+
+    const lakeWindow = document.getElementById("magical-lake-window");
+    const lakeScreen = lakeWindow
+        ? lakeWindow.querySelector(".magical-lake-screen")
+        : null;
+
+    const waterfallCanvas = document.createElement("canvas");
+    waterfallCanvas.id = "magical-waterfall-canvas";
+    waterfallCanvas.setAttribute("aria-hidden", "true");
+    document.body.appendChild(waterfallCanvas);
+
+    const waterfallContext = waterfallCanvas.getContext("2d", {
+        alpha: true
+    });
+
+    if (waterfallContext) {
+        waterfallContext.imageSmoothingEnabled = false;
+    }
+
+    let pointerX = WIDTH * 0.5;
+    let pointerY = HEIGHT * 0.52;
+    let wishCount = 0;
+
+    const sparkles = [];
+    const ripples = [];
+    const bubbles = [];
+    const waterfallDrops = [];
+
+    let waterfallBoost = 0;
+    let waterfallSpawnCarry = 0;
+    let previousWaterfallTime = 0;
+    let waterfallPixelRatio = 1;
+
+    const waterShadow = {
+        active: false,
+        startedAt: 0,
+        duration: 2900,
+        direction: 1,
+        y: WATER_LINE + 52,
+        wobble: 0
+    };
+
+    const permanentFairies = [
+        {
+            x: 91,
+            y: 112,
+            phase: 0.3,
+            speed: 0.85,
+            wing: "#baffff",
+            dress: "#64e9e2",
+            hair: "#ffe876"
+        },
+        {
+            x: 145,
+            y: 82,
+            phase: 1.8,
+            speed: 1.05,
+            wing: "#fff8a8",
+            dress: "#ffcf55",
+            hair: "#f6a65d"
+        },
+        {
+            x: 331,
+            y: 94,
+            phase: 3.0,
+            speed: 0.76,
+            wing: "#f3c3ff",
+            dress: "#d58cff",
+            hair: "#f4b078"
+        },
+        {
+            x: 394,
+            y: 124,
+            phase: 4.2,
+            speed: 1.12,
+            wing: "#a9ffe4",
+            dress: "#6ce8ad",
+            hair: "#50344f"
+        },
+        {
+            x: 258,
+            y: 58,
+            phase: 2.2,
+            speed: 0.66,
+            wing: "#ffffff",
+            dress: "#ff9fd6",
+            hair: "#ffe38a"
+        },
+        {
+            x: 207,
+            y: 127,
+            phase: 5.4,
+            speed: 0.92,
+            wing: "#b7ccff",
+            dress: "#859cff",
+            hair: "#8b4a60"
+        },
+        {
+            x: 438,
+            y: 70,
+            phase: 6.1,
+            speed: 0.72,
+            wing: "#ffd5ef",
+            dress: "#ff78b7",
+            hair: "#d47345"
+        }
+    ];
+
+    const backgroundStars = Array.from({ length: 96 }, (_, index) => ({
+        x: (index * 79 + 17) % WIDTH,
+        y: 12 + ((index * 47 + 9) % 140),
+        phase: index * 0.57,
+        size: index % 13 === 0 ? 2 : 1,
+        colorIndex: index % 5
+    }));
+
+    const fireflies = Array.from({ length: 28 }, (_, index) => ({
+        x: 12 + ((index * 83) % (WIDTH - 24)),
+        y: 105 + ((index * 37) % 172),
+        phase: index * 0.81,
+        rangeX: 3 + (index % 5),
+        rangeY: 2 + (index % 4)
+    }));
+
+    function setStatus(message) {
+        if (status) status.textContent = message;
+    }
+
+    function canvasPoint(event) {
+        const rectangle = canvas.getBoundingClientRect();
+
+        return {
+            x: Math.max(0, Math.min(
+                WIDTH,
+                (event.clientX - rectangle.left) * WIDTH / rectangle.width
+            )),
+            y: Math.max(0, Math.min(
+                HEIGHT,
+                (event.clientY - rectangle.top) * HEIGHT / rectangle.height
+            ))
+        };
+    }
+
+    function resizeWaterfallCanvas() {
+        if (!waterfallContext) return;
+
+        waterfallPixelRatio = Math.min(
+            2,
+            Math.max(1, window.devicePixelRatio || 1)
+        );
+
+        const viewportWidth = Math.max(1, Math.round(window.innerWidth));
+        const viewportHeight = Math.max(1, Math.round(window.innerHeight));
+
+        waterfallCanvas.width = Math.round(
+            viewportWidth * waterfallPixelRatio
+        );
+        waterfallCanvas.height = Math.round(
+            viewportHeight * waterfallPixelRatio
+        );
+
+        waterfallCanvas.style.width = `${viewportWidth}px`;
+        waterfallCanvas.style.height = `${viewportHeight}px`;
+
+        waterfallContext.setTransform(
+            waterfallPixelRatio,
+            0,
+            0,
+            waterfallPixelRatio,
+            0,
+            0
+        );
+        waterfallContext.imageSmoothingEnabled = false;
+    }
+
+    function lakeWindowIsVisible() {
+        if (!lakeWindow || !lakeScreen) return false;
+        if (lakeWindow.classList.contains("hidden")) return false;
+
+        const style = window.getComputedStyle(lakeWindow);
+        return style.display !== "none" && style.visibility !== "hidden";
+    }
+
+    function getWaterfallSource() {
+        if (!lakeWindowIsVisible()) return null;
+
+        const rectangle = lakeScreen.getBoundingClientRect();
+
+        if (
+            rectangle.width < 20 ||
+            rectangle.height < 20 ||
+            rectangle.bottom < 0 ||
+            rectangle.top > window.innerHeight
+        ) {
+            return null;
+        }
+
+        const windowZ = Number.parseInt(
+            window.getComputedStyle(lakeWindow).zIndex,
+            10
+        );
+
+        waterfallCanvas.style.zIndex = String(
+            Number.isFinite(windowZ)
+                ? Math.max(3, windowZ - 1)
+                : 9999
+        );
+
+        return {
+            left: rectangle.left + rectangle.width * 0.17,
+            right: rectangle.right - rectangle.width * 0.17,
+            y: rectangle.bottom - 2,
+            width: rectangle.width * 0.66
+        };
+    }
+
+    function spawnWaterfallDrop(source, strength = 1) {
+        const streamCount = 15;
+        const stream = Math.floor(Math.random() * streamCount);
+        const streamPosition = stream / Math.max(1, streamCount - 1);
+        const streamX = source.left + source.width * streamPosition;
+        const spread = 2 + Math.random() * 8;
+        const randomValue = Math.random();
+        const isGlitter = randomValue < 0.25 + waterfallBoost * 0.11;
+        const isHeart = !isGlitter && randomValue > 0.94;
+
+        waterfallDrops.push({
+            x: streamX + (Math.random() - 0.5) * spread,
+            y: source.y + Math.random() * 3,
+            velocityX: (Math.random() - 0.5) * 0.38,
+            velocityY: (1.3 + Math.random() * 2.25) * strength,
+            gravity: 0.018 + Math.random() * 0.025,
+            width: Math.random() < 0.76 ? 2 : 3,
+            height: isGlitter || isHeart
+                ? 2
+                : 4 + Math.floor(Math.random() * 12),
+            life: 280 + Math.random() * 190,
+            phase: Math.random() * Math.PI * 2,
+            glitter: isGlitter,
+            heart: isHeart,
+            colorIndex: Math.floor(Math.random() * 7)
+        });
+
+        if (waterfallDrops.length > 620) {
+            waterfallDrops.splice(0, waterfallDrops.length - 620);
+        }
+    }
+
+    function drawWaterfallStar(x, y, color, alpha) {
+        const px = Math.round(x);
+        const py = Math.round(y);
+
+        waterfallContext.globalAlpha = alpha;
+        waterfallContext.fillStyle = color;
+        waterfallContext.fillRect(px, py, 2, 2);
+        waterfallContext.fillRect(px - 3, py, 2, 2);
+        waterfallContext.fillRect(px + 3, py, 2, 2);
+        waterfallContext.fillRect(px, py - 3, 2, 2);
+        waterfallContext.fillRect(px, py + 3, 2, 2);
+    }
+
+    function drawWaterfallHeart(x, y, color, alpha) {
+        const px = Math.round(x);
+        const py = Math.round(y);
+
+        waterfallContext.globalAlpha = alpha;
+        waterfallContext.fillStyle = color;
+        waterfallContext.fillRect(px - 3, py - 2, 3, 3);
+        waterfallContext.fillRect(px + 1, py - 2, 3, 3);
+        waterfallContext.fillRect(px - 4, py, 8, 3);
+        waterfallContext.fillRect(px - 2, py + 3, 4, 2);
+        waterfallContext.fillRect(px - 1, py + 5, 2, 2);
+    }
+
+    function drawGlitteringWaterfall(time) {
+        if (!waterfallContext) return;
+
+        waterfallContext.clearRect(
+            0,
+            0,
+            window.innerWidth,
+            window.innerHeight
+        );
+
+        const source = getWaterfallSource();
+        const delta = previousWaterfallTime
+            ? Math.min(34, time - previousWaterfallTime)
+            : 16;
+        previousWaterfallTime = time;
+
+        if (!source) {
+            waterfallDrops.length = 0;
+            waterfallCanvas.classList.remove("waterfall-visible");
+            return;
+        }
+
+        waterfallCanvas.classList.add("waterfall-visible");
+
+        const mobileMultiplier = window.innerWidth <= 700 ? 0.66 : 1;
+        const spawnRate = (0.11 + waterfallBoost * 0.13) * mobileMultiplier;
+
+        waterfallSpawnCarry += delta * spawnRate;
+
+        while (waterfallSpawnCarry >= 1) {
+            spawnWaterfallDrop(
+                source,
+                1 + Math.min(0.72, waterfallBoost * 0.3)
+            );
+            waterfallSpawnCarry -= 1;
+        }
+
+        const lipPulse = 0.76 + Math.sin(time * 0.009) * 0.16;
+        waterfallContext.globalAlpha = lipPulse;
+
+        for (let stream = 0; stream < 15; stream++) {
+            const x = source.left + source.width * (stream / 14);
+            const width = stream % 4 === 0 ? 4 : 2;
+            const colors = ["#e9ffff", "#a8fbff", "#fff5bc", "#efc8ff"];
+            waterfallContext.fillStyle = colors[stream % colors.length];
+            waterfallContext.fillRect(
+                Math.round(x - width * 0.5),
+                Math.round(source.y),
+                width,
+                3 + (stream % 5)
+            );
+        }
+
+        const colors = [
+            "#efffff",
+            "#9effff",
+            "#69e8ef",
+            "#fff3a8",
+            "#efc0ff",
+            "#ffadd8",
+            "#a7c8ff"
+        ];
+
+        for (let index = waterfallDrops.length - 1; index >= 0; index--) {
+            const drop = waterfallDrops[index];
+
+            drop.phase += 0.045;
+            drop.x += drop.velocityX + Math.sin(drop.phase) * 0.09;
+            drop.y += drop.velocityY;
+            drop.velocityY += drop.gravity;
+            drop.life -= delta;
+
+            if (
+                drop.life <= 0 ||
+                drop.y > window.innerHeight + 28 ||
+                drop.x < -30 ||
+                drop.x > window.innerWidth + 30
+            ) {
+                waterfallDrops.splice(index, 1);
+                continue;
+            }
+
+            const fade = Math.min(1, drop.life / 86);
+            const color = colors[drop.colorIndex % colors.length];
+
+            if (drop.heart) {
+                drawWaterfallHeart(
+                    drop.x,
+                    drop.y,
+                    color,
+                    fade * 0.78
+                );
+            } else if (drop.glitter) {
+                drawWaterfallStar(
+                    drop.x,
+                    drop.y,
+                    color,
+                    fade * (0.6 + Math.sin(
+                        time * 0.02 + drop.phase
+                    ) * 0.3)
+                );
+            } else {
+                waterfallContext.globalAlpha = fade * 0.62;
+                waterfallContext.fillStyle = color;
+                waterfallContext.fillRect(
+                    Math.round(drop.x),
+                    Math.round(drop.y),
+                    drop.width,
+                    drop.height
+                );
+
+                waterfallContext.globalAlpha = fade * 0.28;
+                waterfallContext.fillStyle = "#ffffff";
+                waterfallContext.fillRect(
+                    Math.round(drop.x),
+                    Math.round(drop.y),
+                    1,
+                    Math.max(2, Math.floor(drop.height * 0.66))
+                );
+            }
+        }
+
+        waterfallContext.globalAlpha = 1;
+        waterfallBoost *= 0.982;
+    }
+
+    function addSparkle(x, y, strong = false) {
+        const amount = strong ? 42 : 20;
+
+        for (let index = 0; index < amount; index++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = strong
+                ? 0.42 + Math.random() * 1.72
+                : 0.28 + Math.random() * 1.05;
+
+            sparkles.push({
+                x,
+                y,
+                velocityX: Math.cos(angle) * speed,
+                velocityY: Math.sin(angle) * speed - (strong ? 0.78 : 0.34),
+                life: strong
+                    ? 78 + Math.random() * 52
+                    : 50 + Math.random() * 38,
+                maximumLife: strong ? 130 : 88,
+                size: Math.random() > 0.73 ? 2 : 1,
+                hue: Math.random(),
+                heart: Math.random() < (strong ? 0.2 : 0.08)
+            });
+        }
+    }
+
+    function addBubbles(x, y, amount = 5) {
+        for (let index = 0; index < amount; index++) {
+            bubbles.push({
+                x: x + (Math.random() - 0.5) * 22,
+                y: y + Math.random() * 8,
+                velocityX: (Math.random() - 0.5) * 0.18,
+                velocityY: -0.22 - Math.random() * 0.36,
+                life: 46 + Math.random() * 44,
+                maximumLife: 90,
+                size: Math.random() > 0.68 ? 2 : 1
+            });
+        }
+    }
+
+    function triggerWaterShadow() {
+        waterShadow.active = true;
+        waterShadow.startedAt = performance.now();
+        waterShadow.duration = 2700 + Math.random() * 700;
+        waterShadow.direction = Math.random() > 0.5 ? 1 : -1;
+        waterShadow.y = WATER_LINE + 38 + Math.random() * 48;
+        waterShadow.wobble = Math.random() * Math.PI * 2;
+
+        ripples.push({
+            x: waterShadow.direction > 0 ? 34 : WIDTH - 34,
+            y: waterShadow.y,
+            radius: 3,
+            life: 82,
+            maximumLife: 82
+        });
+    }
+
+    function drawWaterShadow(time) {
+        if (!waterShadow.active) return;
+
+        const progress = Math.max(
+            0,
+            Math.min(1, (time - waterShadow.startedAt) / waterShadow.duration)
+        );
+
+        if (progress >= 1) {
+            waterShadow.active = false;
+            return;
+        }
+
+        const eased = progress * progress * (3 - 2 * progress);
+        const travelWidth = WIDTH + 150;
+        const x = waterShadow.direction > 0
+            ? -75 + travelWidth * eased
+            : WIDTH + 75 - travelWidth * eased;
+        const y = waterShadow.y + Math.sin(
+            progress * Math.PI * 4 + waterShadow.wobble
+        ) * 5;
+        const fade = Math.sin(progress * Math.PI);
+        const direction = waterShadow.direction;
+
+        context.save();
+        context.globalAlpha = 0.13 + fade * 0.31;
+        context.fillStyle = "#092336";
+
+        /* A cute long pixel fish/dragon shadow beneath the lake. */
+        context.fillRect(Math.round(x - 29), Math.round(y - 6), 58, 12);
+        context.fillRect(Math.round(x - 20), Math.round(y - 10), 40, 20);
+        context.fillRect(
+            Math.round(x + direction * 27),
+            Math.round(y - 4),
+            18 * direction,
+            8
+        );
+        context.fillRect(
+            Math.round(x - direction * 31),
+            Math.round(y - 11),
+            12 * direction,
+            8
+        );
+        context.fillRect(
+            Math.round(x - direction * 31),
+            Math.round(y + 3),
+            12 * direction,
+            8
+        );
+
+        context.globalAlpha = fade * 0.52;
+        context.fillStyle = "#71ddea";
+        context.fillRect(
+            Math.round(x + direction * 22),
+            Math.round(y - 2),
+            2,
+            2
+        );
+
+        context.globalAlpha = fade * 0.22;
+        context.fillStyle = "#bbffff";
+        context.fillRect(Math.round(x - 40), Math.round(y - 15), 24, 2);
+        context.fillRect(Math.round(x + 13), Math.round(y + 15), 35, 2);
+        context.fillRect(Math.round(x - 7), Math.round(y + 19), 18, 1);
+
+        context.restore();
+
+        if (Math.random() < 0.06) {
+            addBubbles(x, y - 4, 1);
+        }
+    }
+
+    function makeWish(x = WIDTH * 0.5, y = WATER_LINE + 40, strong = true) {
+        wishCount += 1;
+
+        const waterY = Math.max(WATER_LINE + 5, Math.min(HEIGHT - 18, y));
+
+        ripples.push({
+            x,
+            y: waterY,
+            radius: 2,
+            life: strong ? 96 : 66,
+            maximumLife: strong ? 96 : 66
+        });
+
+        if (strong) {
+            ripples.push({
+                x,
+                y: waterY,
+                radius: 8,
+                life: 82,
+                maximumLife: 82
+            });
+        }
+
+        addSparkle(x, Math.min(waterY, WATER_LINE + 28), strong);
+        addBubbles(x, waterY, strong ? 9 : 4);
+
+        waterfallBoost = Math.min(
+            2.5,
+            waterfallBoost + (strong ? 1.08 : 0.46)
+        );
+
+        const messages = [
+            "The lake tucked your wish beneath a lily pad.",
+            "A tiny fairy carried your wish into the light.",
+            "The flowers are sparkling for you.",
+            "Something magical moved beneath the water.",
+            "Your wish is safe in Bibi's World."
+        ];
+
+        const selectedMessage = messages[(wishCount - 1) % messages.length];
+        setStatus(selectedMessage);
+
+        if (selectedMessage === "Something magical moved beneath the water.") {
+            triggerWaterShadow();
+        }
+    }
+
+    function resetMagic() {
+        sparkles.length = 0;
+        ripples.length = 0;
+        bubbles.length = 0;
+        waterfallDrops.length = 0;
+        waterfallBoost = 0;
+        wishCount = 0;
+        waterShadow.active = false;
+        setStatus("The lake is listening...");
+    }
+
+    function drawPixelStar(x, y, color, size = 1, alpha = 1) {
+        const px = Math.round(x);
+        const py = Math.round(y);
+
+        context.globalAlpha = alpha;
+        context.fillStyle = color;
+        context.fillRect(px, py, size, size);
+        context.fillRect(px - size, py, size, size);
+        context.fillRect(px + size, py, size, size);
+        context.fillRect(px, py - size, size, size);
+        context.fillRect(px, py + size, size, size);
+        context.globalAlpha = 1;
+    }
+
+    function drawPixelHeart(x, y, color, size = 1, alpha = 1) {
+        const px = Math.round(x);
+        const py = Math.round(y);
+        const unit = Math.max(1, Math.round(size));
+
+        context.globalAlpha = alpha;
+        context.fillStyle = color;
+        context.fillRect(px - 3 * unit, py - 2 * unit, 3 * unit, 3 * unit);
+        context.fillRect(px + unit, py - 2 * unit, 3 * unit, 3 * unit);
+        context.fillRect(px - 4 * unit, py, 8 * unit, 3 * unit);
+        context.fillRect(px - 2 * unit, py + 3 * unit, 4 * unit, 2 * unit);
+        context.fillRect(px - unit, py + 5 * unit, 2 * unit, 2 * unit);
+        context.globalAlpha = 1;
+    }
+
+    function drawSky(time) {
+        const skyBands = [
+            "#171733",
+            "#1d2042",
+            "#232a51",
+            "#28375e",
+            "#2b4568",
+            "#31546f",
+            "#37637a",
+            "#3f7184"
+        ];
+
+        const bandHeight = Math.ceil(WATER_LINE / skyBands.length);
+
+        skyBands.forEach((color, index) => {
+            context.fillStyle = color;
+            context.fillRect(0, index * bandHeight, WIDTH, bandHeight + 1);
+        });
+
+        const starColors = [
+            "#d5ffff",
+            "#fff4a6",
+            "#f0c1ff",
+            "#ffb8dc",
+            "#bad0ff"
+        ];
+
+        backgroundStars.forEach(star => {
+            const twinkle = 0.28 + 0.72 * Math.abs(
+                Math.sin(time * 0.0018 + star.phase)
+            );
+
+            drawPixelStar(
+                star.x,
+                star.y,
+                starColors[star.colorIndex],
+                star.size,
+                twinkle
+            );
+        });
+
+        /* Soft little pixel clouds around the divine opening. */
+        context.globalAlpha = 0.18;
+        context.fillStyle = "#d6e9ff";
+        context.fillRect(70, 40, 42, 6);
+        context.fillRect(80, 34, 24, 6);
+        context.fillRect(365, 48, 48, 6);
+        context.fillRect(377, 41, 25, 7);
+        context.fillRect(27, 83, 31, 5);
+        context.globalAlpha = 1;
+    }
+
+    function drawDivineLight(time) {
+        const pulse = 0.86 + Math.sin(time * 0.0015) * 0.09;
+
+        context.save();
+        context.globalAlpha = 0.14 * pulse;
+        context.fillStyle = "#fffbe5";
+        context.beginPath();
+        context.moveTo(184, 0);
+        context.lineTo(296, 0);
+        context.lineTo(338, WATER_LINE + 23);
+        context.lineTo(143, WATER_LINE + 23);
+        context.closePath();
+        context.fill();
+
+        context.globalAlpha = 0.11 * pulse;
+        context.beginPath();
+        context.moveTo(214, 0);
+        context.lineTo(268, 0);
+        context.lineTo(292, WATER_LINE + 36);
+        context.lineTo(188, WATER_LINE + 36);
+        context.closePath();
+        context.fill();
+
+        context.globalAlpha = 0.96;
+        context.fillStyle = "#fffde2";
+        context.fillRect(232, 0, 17, 8);
+        context.fillRect(226, 8, 29, 6);
+        context.fillRect(220, 14, 41, 5);
+        context.fillRect(214, 19, 53, 3);
+
+        context.globalAlpha = 0.34 * pulse;
+        context.fillStyle = "#fff0a8";
+        context.fillRect(204, 23, 73, 3);
+        context.fillRect(194, 29, 92, 2);
+
+        /* Falling golden pixels inside the light beam. */
+        for (let index = 0; index < 22; index++) {
+            const x = 177 + ((index * 31) % 127);
+            const y = 20 + ((index * 41 + Math.floor(time * 0.018)) % 146);
+            const alpha = 0.25 + Math.abs(
+                Math.sin(time * 0.004 + index)
+            ) * 0.6;
+
+            drawPixelStar(
+                x,
+                y,
+                index % 3 === 0 ? "#ffffff" : "#ffe789",
+                index % 8 === 0 ? 2 : 1,
+                alpha
+            );
+        }
+
+        context.restore();
+    }
+
+    function drawDistantForest() {
+        context.fillStyle = "#102c3b";
+
+        for (let x = 0; x < WIDTH; x += 14) {
+            const height = 29 + ((x * 7) % 43);
+            context.fillRect(x, WATER_LINE - height, 7, height);
+            context.fillRect(x - 4, WATER_LINE - height + 9, 15, 5);
+            context.fillRect(x - 7, WATER_LINE - height + 18, 21, 5);
+            context.fillRect(x - 10, WATER_LINE - height + 28, 27, 5);
+        }
+
+        context.fillStyle = "#17464a";
+        context.fillRect(0, WATER_LINE - 9, WIDTH, 9);
+
+        context.fillStyle = "#287264";
+        for (let x = 5; x < WIDTH; x += 31) {
+            context.fillRect(x, WATER_LINE - 6 - (x % 8), 19, 3);
+        }
+
+        context.fillStyle = "#4e9c78";
+        for (let x = 11; x < WIDTH; x += 53) {
+            context.fillRect(x, WATER_LINE - 9, 3, 3);
+        }
+    }
+
+    function drawTree(x, mirror = false, time = 0) {
+        context.save();
+        context.translate(x, 0);
+        if (mirror) context.scale(-1, 1);
+
+        context.fillStyle = "#0a1722";
+        context.fillRect(0, 43, 27, 139);
+        context.fillRect(14, 27, 12, 38);
+        context.fillRect(22, 14, 9, 34);
+        context.fillRect(28, 12, 57, 8);
+        context.fillRect(60, 20, 9, 26);
+        context.fillRect(65, 39, 41, 8);
+        context.fillRect(9, 72, 34, 10);
+        context.fillRect(4, 108, 39, 12);
+
+        context.fillStyle = "#173142";
+        context.fillRect(5, 48, 7, 121);
+        context.fillRect(16, 33, 5, 111);
+        context.fillRect(31, 15, 49, 4);
+        context.fillRect(67, 24, 5, 17);
+
+        context.fillStyle = "#27624e";
+        context.fillRect(8, 62, 4, 47);
+        context.fillRect(18, 43, 4, 39);
+        context.fillRect(34, 13, 38, 3);
+        context.fillRect(62, 27, 4, 19);
+
+        /* Layered, chunky pixel leaves. */
+        const leafColors = ["#102b36", "#174235", "#205b43", "#2c7652"];
+        const leafBlocks = [
+            [-11, 21, 48, 17],
+            [-20, 38, 66, 20],
+            [18, 4, 68, 20],
+            [58, 23, 58, 19],
+            [78, 43, 43, 18],
+            [-6, 62, 36, 16]
+        ];
+
+        leafBlocks.forEach((block, index) => {
+            context.fillStyle = leafColors[index % leafColors.length];
+            context.fillRect(...block);
+        });
+
+        /* Cute pink blossoms that gently twinkle. */
+        const blossoms = [
+            [10, 31], [27, 19], [49, 11], [72, 16], [91, 30],
+            [15, 52], [101, 47], [34, 42], [64, 31]
+        ];
+
+        blossoms.forEach(([bx, by], index) => {
+            const alpha = 0.62 + Math.sin(time * 0.004 + index) * 0.22;
+            context.globalAlpha = alpha;
+            context.fillStyle = index % 2 ? "#ff9fd4" : "#ffd0ea";
+            context.fillRect(bx, by, 3, 3);
+            context.fillRect(bx - 2, by + 1, 2, 2);
+            context.fillRect(bx + 3, by + 1, 2, 2);
+        });
+
+        context.globalAlpha = 1;
+        context.restore();
+    }
+
+    function drawLake(time) {
+        const waterBands = [
+            "#16536d",
+            "#17637a",
+            "#157483",
+            "#16858d",
+            "#13747d",
+            "#105e6d",
+            "#0d4b5d"
+        ];
+
+        const height = HEIGHT - WATER_LINE;
+        const bandHeight = Math.ceil(height / waterBands.length);
+
+        waterBands.forEach((color, index) => {
+            context.fillStyle = color;
+            context.fillRect(
+                0,
+                WATER_LINE + index * bandHeight,
+                WIDTH,
+                bandHeight + 1
+            );
+        });
+
+        const center = WIDTH * 0.5;
+        const shimmer = Math.round(Math.sin(time * 0.002) * 3);
+
+        for (let row = 0; row < 19; row++) {
+            const y = WATER_LINE + 5 + row * 6;
+            const width = 22 + row * 10;
+            const offset = ((row * 17 + Math.floor(time * 0.018)) % 15) - 7;
+
+            context.globalAlpha = 0.15 + row * 0.011;
+            context.fillStyle = row % 4 === 0 ? "#fff2b6" : "#b8ffff";
+            context.fillRect(
+                Math.round(center - width * 0.5 + offset + shimmer),
+                y,
+                width,
+                row % 5 === 0 ? 2 : 1
+            );
+        }
+
+        context.globalAlpha = 1;
+
+        for (let index = 0; index < 42; index++) {
+            const y = WATER_LINE + 5 + ((index * 17) % (height - 11));
+            const x = ((index * 61 + Math.floor(time * 0.024)) % (WIDTH + 55)) - 30;
+            const length = 5 + (index % 7) * 3;
+
+            context.globalAlpha = 0.11 + (index % 5) * 0.04;
+            context.fillStyle = index % 3 === 0
+                ? "#fff1aa"
+                : index % 2
+                    ? "#76f0ef"
+                    : "#d3ffff";
+            context.fillRect(x, y, length, index % 11 === 0 ? 2 : 1);
+        }
+
+        context.globalAlpha = 1;
+        drawLilyPads(time);
+    }
+
+    function drawLilyPad(x, y, scale, flowerColor, time, phase) {
+        const width = Math.round(18 * scale);
+        const height = Math.max(3, Math.round(6 * scale));
+        const bob = Math.round(Math.sin(time * 0.0025 + phase));
+        const px = Math.round(x);
+        const py = Math.round(y + bob);
+
+        context.fillStyle = "#154f48";
+        context.fillRect(px - Math.floor(width / 2), py, width, height);
+        context.fillRect(px - Math.floor(width * 0.38), py - 2, Math.round(width * 0.76), 2);
+
+        context.fillStyle = "#3d9c65";
+        context.fillRect(px - Math.floor(width * 0.33), py, Math.round(width * 0.42), 2);
+        context.fillStyle = "#8ad66f";
+        context.fillRect(px - Math.floor(width * 0.25), py - 1, Math.round(width * 0.2), 1);
+
+        if (flowerColor) {
+            context.fillStyle = flowerColor;
+            context.fillRect(px - 3, py - 6, 3, 3);
+            context.fillRect(px + 1, py - 6, 3, 3);
+            context.fillRect(px - 1, py - 8, 3, 3);
+            context.fillRect(px - 1, py - 4, 3, 3);
+            context.fillStyle = "#fff6a8";
+            context.fillRect(px, py - 5, 2, 2);
+        }
+    }
+
+    function drawLilyPads(time) {
+        drawLilyPad(78, 215, 1.1, "#ffb3dd", time, 0.2);
+        drawLilyPad(137, 245, 0.72, null, time, 1.7);
+        drawLilyPad(305, 225, 0.9, "#e8bcff", time, 2.8);
+        drawLilyPad(402, 253, 0.75, "#fff0a8", time, 4.1);
+        drawLilyPad(250, 268, 0.62, null, time, 5.3);
+
+        /* Tiny frog on the left lily pad. */
+        const frogY = 207 + Math.round(Math.sin(time * 0.0025 + 0.2));
+        context.fillStyle = "#8dd85f";
+        context.fillRect(72, frogY, 12, 7);
+        context.fillRect(74, frogY - 4, 3, 4);
+        context.fillRect(80, frogY - 4, 3, 4);
+        context.fillStyle = "#f8ffd6";
+        context.fillRect(75, frogY - 3, 1, 1);
+        context.fillRect(81, frogY - 3, 1, 1);
+        context.fillStyle = "#18332a";
+        context.fillRect(76, frogY + 2, 4, 1);
+    }
+
+    function drawMushroom(x, groundY, scale, capColor, glowColor = "#fff2a8") {
+        const stemWidth = Math.max(3, Math.round(4 * scale));
+        const stemHeight = Math.round(14 * scale);
+        const capWidth = Math.round(21 * scale);
+        const capHeight = Math.max(6, Math.round(8 * scale));
+        const stemX = Math.round(x - stemWidth * 0.5);
+        const stemY = Math.round(groundY - stemHeight);
+
+        context.globalAlpha = 0.13;
+        context.fillStyle = glowColor;
+        context.fillRect(
+            Math.round(x - capWidth * 0.7),
+            stemY - capHeight - 4,
+            Math.round(capWidth * 1.4),
+            capHeight + 12
+        );
+        context.globalAlpha = 1;
+
+        context.fillStyle = "#ffe8ce";
+        context.fillRect(stemX, stemY, stemWidth, stemHeight);
+        context.fillStyle = "#dfa7c6";
+        context.fillRect(
+            stemX,
+            stemY + Math.round(stemHeight * 0.6),
+            Math.max(1, Math.floor(stemWidth * 0.4)),
+            Math.round(stemHeight * 0.4)
+        );
+
+        context.fillStyle = capColor;
+        context.fillRect(
+            Math.round(x - capWidth * 0.5),
+            stemY - capHeight + 2,
+            capWidth,
+            capHeight - 1
+        );
+        context.fillRect(
+            Math.round(x - capWidth * 0.39),
+            stemY - capHeight - 2,
+            Math.round(capWidth * 0.78),
+            4
+        );
+        context.fillRect(
+            Math.round(x - capWidth * 0.24),
+            stemY - capHeight - 4,
+            Math.round(capWidth * 0.48),
+            2
+        );
+
+        context.fillStyle = "#fff6c5";
+        const spots = [-0.28, 0.05, 0.28];
+        spots.forEach((offset, index) => {
+            context.fillRect(
+                Math.round(x + capWidth * offset),
+                stemY - capHeight + (index % 2 ? 3 : 1),
+                Math.max(2, Math.round(scale * 2)),
+                Math.max(2, Math.round(scale * 2))
+            );
+        });
+    }
+
+    function drawPixelFlower(x, y, petalColor, centerColor = "#fff6a6", scale = 1) {
+        const unit = Math.max(1, Math.round(scale));
+
+        context.fillStyle = "#2f9a57";
+        context.fillRect(x, y + 2 * unit, unit, 7 * unit);
+        context.fillRect(x + unit, y + 5 * unit, 2 * unit, unit);
+
+        context.fillStyle = petalColor;
+        context.fillRect(x - 3 * unit, y, 3 * unit, 3 * unit);
+        context.fillRect(x + unit, y, 3 * unit, 3 * unit);
+        context.fillRect(x - unit, y - 3 * unit, 3 * unit, 3 * unit);
+        context.fillRect(x - unit, y + 3 * unit, 3 * unit, 3 * unit);
+
+        context.fillStyle = centerColor;
+        context.fillRect(x - unit, y, 3 * unit, 3 * unit);
+    }
+
+    function drawGrassClump(x, baseY, color, accent, seed) {
+        const heights = [8, 13, 10, 16, 7, 12];
+
+        heights.forEach((height, index) => {
+            const h = height + ((seed + index * 3) % 5);
+            const bladeX = x + index * 3;
+            context.fillStyle = index % 2 ? accent : color;
+            context.fillRect(bladeX, baseY - h, 2, h);
+
+            if (index % 2 === 0) {
+                context.fillRect(bladeX - 2, baseY - h + 4, 2, 2);
+            } else {
+                context.fillRect(bladeX + 2, baseY - h + 6, 2, 2);
+            }
+        });
+    }
+
+    function drawForeground(time) {
+        context.fillStyle = "#071b20";
+        context.fillRect(0, HEIGHT - 29, WIDTH, 29);
+
+        /* Chunky grass banks with several pixel layers. */
+        context.fillStyle = "#10372e";
+        context.fillRect(0, HEIGHT - 43, 145, 17);
+        context.fillRect(WIDTH - 150, HEIGHT - 45, 150, 19);
+        context.fillRect(168, HEIGHT - 27, 145, 14);
+
+        context.fillStyle = "#1d6041";
+        context.fillRect(0, HEIGHT - 40, 136, 5);
+        context.fillRect(WIDTH - 141, HEIGHT - 42, 141, 5);
+        context.fillRect(176, HEIGHT - 26, 128, 5);
+
+        for (let x = 0; x < WIDTH; x += 18) {
+            const onBank = x < 145 || x > WIDTH - 153 || (x > 165 && x < 315);
+            if (!onBank) continue;
+
+            const baseY = x > 165 && x < 315
+                ? HEIGHT - 20
+                : HEIGHT - 29;
+
+            drawGrassClump(
+                x,
+                baseY,
+                "#26784b",
+                "#48aa5a",
+                x
+            );
+        }
+
+        /* Soft glowing moss island. */
+        context.globalAlpha = 0.58 + Math.sin(time * 0.003) * 0.09;
+        context.fillStyle = "#73d54f";
+        context.fillRect(185, HEIGHT - 31, 111, 7);
+        context.fillRect(199, HEIGHT - 34, 83, 4);
+        context.fillStyle = "#c5ff78";
+        context.fillRect(210, HEIGHT - 36, 57, 3);
+        context.globalAlpha = 1;
+
+        drawMushroom(54, 287, 1.35, "#ff6f49");
+        drawMushroom(101, 294, 0.8, "#ff4e72", "#ffb7d2");
+        drawMushroom(394, 290, 1.16, "#ff8561");
+        drawMushroom(442, 296, 0.73, "#e95c8c", "#efc6ff");
+        drawMushroom(244, 296, 0.9, "#ff5d72", "#fff2ad");
+        drawMushroom(342, 296, 0.62, "#f6a04b");
+
+        const flowers = [
+            [22, 275, "#ff5fc3", 1],
+            [127, 279, "#66e8ff", 1],
+            [157, 288, "#ffac57", 1],
+            [318, 284, "#fff05e", 1],
+            [361, 278, "#ff79aa", 1],
+            [466, 272, "#b878ff", 1],
+            [194, 288, "#ff9fdc", 1],
+            [287, 288, "#8ee0ff", 1]
+        ];
+
+        flowers.forEach(([x, y, color, scale]) => {
+            drawPixelFlower(x, y, color, "#fff5a0", scale);
+        });
+
+        /* Tiny stones and berries make the ground feel busier and cuter. */
+        const stones = [
+            [13, 292, "#667d91"], [70, 296, "#a689b6"],
+            [145, 295, "#5d8292"], [325, 296, "#7c8fa4"],
+            [419, 295, "#8f78a2"], [468, 295, "#608495"]
+        ];
+
+        stones.forEach(([x, y, color]) => {
+            context.fillStyle = color;
+            context.fillRect(x, y, 6, 3);
+            context.fillRect(x + 1, y - 2, 4, 2);
+        });
+
+        for (let index = 0; index < 20; index++) {
+            const x = 185 + ((index * 23) % 113);
+            const y = HEIGHT - 38 + ((index * 11) % 19);
+            const alpha = 0.45 + Math.abs(
+                Math.sin(time * 0.005 + index)
+            ) * 0.5;
+
+            if (index % 5 === 0) {
+                drawPixelHeart(
+                    x,
+                    y,
+                    "#ffb4df",
+                    1,
+                    alpha * 0.72
+                );
+            } else {
+                drawPixelStar(
+                    x,
+                    y,
+                    index % 2 ? "#fff16e" : "#c7ffff",
+                    1,
+                    alpha
+                );
+            }
+        }
+
+        context.globalAlpha = 1;
+    }
+
+    function drawFairySprite(x, y, fairy, facingRight, alpha, wingFrame) {
+        const direction = facingRight ? 1 : -1;
+        const px = Math.round(x);
+        const py = Math.round(y);
+
+        context.save();
+
+        /* Square glow halo, kept pixel-crisp. */
+        context.globalAlpha = alpha * 0.12;
+        context.fillStyle = fairy.wing;
+        context.fillRect(px - 12, py - 13, 25, 26);
+        context.globalAlpha = alpha * 0.07;
+        context.fillRect(px - 16, py - 9, 33, 18);
+
+        /* More detailed animated wings. */
+        context.globalAlpha = alpha * 0.78;
+        context.fillStyle = fairy.wing;
+
+        if (wingFrame === 0) {
+            context.fillRect(px - 10 * direction, py - 10, 7 * direction, 5);
+            context.fillRect(px - 13 * direction, py - 6, 10 * direction, 4);
+            context.fillRect(px + 3 * direction, py - 10, 7 * direction, 5);
+            context.fillRect(px + 3 * direction, py - 5, 10 * direction, 4);
+        } else {
+            context.fillRect(px - 11 * direction, py - 7, 8 * direction, 5);
+            context.fillRect(px - 12 * direction, py - 1, 9 * direction, 4);
+            context.fillRect(px + 3 * direction, py - 7, 8 * direction, 5);
+            context.fillRect(px + 3 * direction, py - 1, 9 * direction, 4);
+        }
+
+        context.globalAlpha = alpha * 0.34;
+        context.fillStyle = "#ffffff";
+        context.fillRect(px - 8 * direction, py - 8, 3 * direction, 2);
+        context.fillRect(px + 5 * direction, py - 8, 3 * direction, 2);
+
+        /* Hair and face. */
+        context.globalAlpha = alpha;
+        context.fillStyle = fairy.hair;
+        context.fillRect(px - 3, py - 10, 7, 5);
+        context.fillRect(px - 4, py - 8, 2, 5);
+
+        context.fillStyle = "#f6bd8d";
+        context.fillRect(px - 2, py - 6, 5, 5);
+        context.fillStyle = "#4e3150";
+        context.fillRect(px + direction, py - 5, 1, 1);
+
+        /* Dress with skirt pixels. */
+        context.fillStyle = fairy.dress;
+        context.fillRect(px - 2, py - 1, 5, 7);
+        context.fillRect(px - 4, py + 5, 9, 3);
+        context.fillRect(px - 3, py + 8, 7, 2);
+
+        context.fillStyle = "#f8d0a8";
+        context.fillRect(px - 5 * direction, py, 3 * direction, 2);
+        context.fillRect(px + 3 * direction, py + 1, 3 * direction, 2);
+        context.fillRect(px - 2, py + 10, 1, 4);
+        context.fillRect(px + 2, py + 10, 1, 4);
+
+        drawPixelStar(
+            px + direction * 14,
+            py - 10,
+            fairy.wing,
+            1,
+            alpha
+        );
+        drawPixelStar(
+            px - direction * 15,
+            py + 2,
+            fairy.wing,
+            1,
+            alpha * 0.75
+        );
+
+        context.restore();
+    }
+
+    function drawPermanentFairies(time) {
+        permanentFairies.forEach((fairy, index) => {
+            const x = fairy.x + Math.sin(
+                time * 0.00135 * fairy.speed + fairy.phase
+            ) * (7 + index * 0.6);
+            const y = fairy.y + Math.cos(
+                time * 0.0018 * fairy.speed + fairy.phase
+            ) * (5 + index % 3);
+            const alpha = 0.68 + Math.sin(
+                time * 0.006 + fairy.phase
+            ) * 0.2;
+            const wingFrame = Math.floor(
+                time * 0.012 + index
+            ) % 2;
+
+            drawFairySprite(
+                x,
+                y,
+                fairy,
+                index % 2 === 0,
+                alpha,
+                wingFrame
+            );
+        });
+
+        context.globalAlpha = 1;
+    }
+
+    function drawFireflies(time) {
+        fireflies.forEach((firefly, index) => {
+            const x = firefly.x + Math.sin(
+                time * 0.0014 + firefly.phase
+            ) * firefly.rangeX;
+            const y = firefly.y + Math.cos(
+                time * 0.0018 + firefly.phase
+            ) * firefly.rangeY;
+            const alpha = 0.12 + Math.abs(
+                Math.sin(time * 0.0047 + firefly.phase)
+            ) * 0.75;
+
+            context.globalAlpha = alpha * 0.16;
+            context.fillStyle = index % 4 === 0 ? "#ffb8e1" : "#fff27a";
+            context.fillRect(Math.round(x - 3), Math.round(y - 3), 7, 7);
+            drawPixelStar(
+                x,
+                y,
+                index % 4 === 0 ? "#ffd0eb" : "#fff59a",
+                1,
+                alpha
+            );
+        });
+
+        context.globalAlpha = 1;
+    }
+
+    function updateAndDrawSparkles() {
+        for (let index = sparkles.length - 1; index >= 0; index--) {
+            const sparkle = sparkles[index];
+
+            sparkle.x += sparkle.velocityX;
+            sparkle.y += sparkle.velocityY;
+            sparkle.velocityX *= 0.992;
+            sparkle.velocityY += 0.012;
+            sparkle.life -= 1;
+
+            if (sparkle.life <= 0) {
+                sparkles.splice(index, 1);
+                continue;
+            }
+
+            const alpha = Math.max(0, sparkle.life / sparkle.maximumLife);
+            const colors = [
+                "#ffffff",
+                "#fff6a6",
+                "#9ffff4",
+                "#e7b5ff",
+                "#ffb3d8",
+                "#b7cbff"
+            ];
+            const color = colors[
+                Math.floor(sparkle.hue * colors.length) % colors.length
+            ];
+
+            if (sparkle.heart) {
+                drawPixelHeart(
+                    sparkle.x,
+                    sparkle.y,
+                    color,
+                    sparkle.size,
+                    alpha * 0.82
+                );
+            } else {
+                drawPixelStar(
+                    sparkle.x,
+                    sparkle.y,
+                    color,
+                    sparkle.size,
+                    alpha
+                );
+            }
+        }
+    }
+
+    function updateAndDrawBubbles() {
+        for (let index = bubbles.length - 1; index >= 0; index--) {
+            const bubble = bubbles[index];
+            bubble.x += bubble.velocityX;
+            bubble.y += bubble.velocityY;
+            bubble.life -= 1;
+
+            if (bubble.life <= 0 || bubble.y < WATER_LINE - 4) {
+                bubbles.splice(index, 1);
+                continue;
+            }
+
+            const alpha = Math.min(1, bubble.life / bubble.maximumLife);
+            const px = Math.round(bubble.x);
+            const py = Math.round(bubble.y);
+            const size = bubble.size;
+
+            context.globalAlpha = alpha * 0.62;
+            context.fillStyle = "#d8ffff";
+            context.fillRect(px, py, size, size);
+            context.fillRect(px - size, py + size, size, size);
+            context.globalAlpha = 1;
+        }
+    }
+
+    function updateAndDrawRipples() {
+        for (let index = ripples.length - 1; index >= 0; index--) {
+            const ripple = ripples[index];
+            ripple.radius += 0.62;
+            ripple.life -= 1;
+
+            if (ripple.life <= 0) {
+                ripples.splice(index, 1);
+                continue;
+            }
+
+            const alpha = ripple.life / ripple.maximumLife;
+            context.globalAlpha = alpha * 0.72;
+            context.strokeStyle = "#e1ffff";
+            context.lineWidth = 1;
+
+            context.beginPath();
+            context.ellipse(
+                Math.round(ripple.x),
+                Math.round(ripple.y),
+                Math.round(ripple.radius * 1.9),
+                Math.max(1, Math.round(ripple.radius * 0.42)),
+                0,
+                0,
+                Math.PI * 2
+            );
+            context.stroke();
+
+            if (ripple.radius > 7) {
+                context.globalAlpha = alpha * 0.3;
+                context.fillStyle = "#fff0b0";
+                context.fillRect(
+                    Math.round(ripple.x - ripple.radius),
+                    Math.round(ripple.y),
+                    Math.max(2, Math.round(ripple.radius * 0.5)),
+                    1
+                );
+            }
+        }
+
+        context.globalAlpha = 1;
+    }
+
+    function drawFrame(time) {
+        context.clearRect(0, 0, WIDTH, HEIGHT);
+        drawSky(time);
+        drawDivineLight(time);
+        drawDistantForest();
+        drawLake(time);
+        drawWaterShadow(time);
+        drawTree(-3, false, time);
+        drawTree(WIDTH + 3, true, time);
+        drawFireflies(time);
+        drawForeground(time);
+        updateAndDrawRipples();
+        updateAndDrawBubbles();
+        drawPermanentFairies(time);
+        updateAndDrawSparkles();
+        drawGlitteringWaterfall(time);
+
+        window.requestAnimationFrame(drawFrame);
+    }
+
+    canvas.addEventListener("pointermove", event => {
+        const point = canvasPoint(event);
+        pointerX = point.x;
+        pointerY = point.y;
+    });
+
+
+    canvas.addEventListener("pointerdown", event => {
+        event.preventDefault();
+        const point = canvasPoint(event);
+        pointerX = point.x;
+        pointerY = point.y;
+        makeWish(point.x, point.y, false);
+        canvas.focus({ preventScroll: true });
+    });
+
+    canvas.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            makeWish(pointerX, pointerY, true);
+        }
+    });
+
+    if (wishButton) {
+        wishButton.addEventListener("click", () => {
+            makeWish(
+                WIDTH * 0.5 + (Math.random() - 0.5) * 90,
+                WATER_LINE + 30 + Math.random() * 48,
+                true
+            );
+        });
+    }
+
+    if (resetButton) {
+        resetButton.addEventListener("click", resetMagic);
+    }
+
+    window.addEventListener("resize", resizeWaterfallCanvas);
+
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener(
+            "resize",
+            resizeWaterfallCanvas
+        );
+    }
+
+    resizeWaterfallCanvas();
+    window.requestAnimationFrame(drawFrame);
+})();

@@ -998,7 +998,7 @@ font-weight:bold;
 
 .notepad-menu button:hover {
     background: #000080;
-    color: white;
+    color: rgb(8, 8, 8);
 }
 
 .notepad-body {
@@ -1855,8 +1855,8 @@ body.desktop-loaded #windows-container {
         inset 0 1px 0 rgba(255, 255, 255, 0.55),
         inset 0 0 0 1px rgba(255, 255, 255, 0.10);
 
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(135%);
-    backdrop-filter: blur(var(--glass-blur)) saturate(135%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(155%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(155%);
 
     overflow: hidden;
 }
@@ -2488,13 +2488,18 @@ body.desktop-loaded #windows-container {
 
     color: #303030;
 
-    background: linear-gradient(
-        to bottom,
-        rgba(252, 253, 254, 0.95),
-        rgba(222, 231, 239, 0.95)
-    );
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.16),
+            rgba(226, 207, 242, 0.20)
+        ),
+        var(--lavender-window-soft) !important;
 
-    border-top: 1px solid #aebdca;
+    border-color: rgba(211, 177, 235, 0.40) !important;
+
+    -webkit-backdrop-filter: blur(12px) saturate(128%);
+    backdrop-filter: blur(12px) saturate(128%);
 
     box-shadow:
         inset 0 1px 0 rgba(255, 255, 255, 0.9);
@@ -2557,34 +2562,68 @@ body.desktop-loaded #windows-container {
 /* Large portfolio projects remain easy to read */
 
 .window .graphic-project-body {
-    background: rgba(238, 246, 252, 0.8);
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.16),
+            rgba(226, 207, 242, 0.20)
+        ),
+        var(--lavender-window-soft) !important;
+
+    border-color: rgba(211, 177, 235, 0.40) !important;
+
+    -webkit-backdrop-filter: blur(12px) saturate(128%);
+    backdrop-filter: blur(12px) saturate(128%);
 }
 
 
 .window .graphic-project-content {
-    background: rgba(255, 255, 255, 0.93);
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.16),
+            rgba(226, 207, 242, 0.20)
+        ),
+        var(--lavender-window-soft) !important;
 
-    border: 1px solid rgba(124, 157, 181, 0.65);
+    border-color: rgba(211, 177, 235, 0.40) !important;
 
-    box-shadow:
-        0 2px 8px rgba(34, 60, 80, 0.18);
+    -webkit-backdrop-filter: blur(12px) saturate(128%);
+    backdrop-filter: blur(12px) saturate(128%);
 }
 
 
 /* Photo preview */
 
 .window .image-preview-body {
-    background: rgba(218, 231, 241, 0.82);
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.16),
+            rgba(226, 207, 242, 0.20)
+        ),
+        var(--lavender-window-soft) !important;
+
+    border-color: rgba(211, 177, 235, 0.40) !important;
+
+    -webkit-backdrop-filter: blur(12px) saturate(128%);
+    backdrop-filter: blur(12px) saturate(128%);
 }
 
 
 .window .preview-image-area {
-    background: rgba(40, 48, 55, 0.78);
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.16),
+            rgba(226, 207, 242, 0.20)
+        ),
+        var(--lavender-window-soft) !important;
 
-    border: 1px solid rgba(255, 255, 255, 0.34);
+    border-color: rgba(211, 177, 235, 0.40) !important;
 
-    box-shadow:
-        inset 0 0 16px rgba(0, 0, 0, 0.28);
+    -webkit-backdrop-filter: blur(12px) saturate(128%);
+    backdrop-filter: blur(12px) saturate(128%);
 }
 
 
@@ -3241,8 +3280,8 @@ body.desktop-loaded #windows-container {
         0 14px 34px var(--glass-shadow),
         inset 0 1px 0 rgba(255, 255, 255, 0.55),
         inset 0 0 0 1px rgba(255, 255, 255, 0.10);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(135%);
-    backdrop-filter: blur(var(--glass-blur)) saturate(135%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(155%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(155%);
     overflow: hidden;
 }
 
@@ -3251,8 +3290,8 @@ body.desktop-loaded #windows-container {
 #graphic-arts-window > .window-body,
 #socials-window > .window-body {
     background: rgba(239, 236, 244, 0.42);
-    -webkit-backdrop-filter: blur(10px) saturate(135%);
-    backdrop-filter: blur(10px) saturate(135%);
+    -webkit-backdrop-filter: blur(15px) saturate(135%);
+    backdrop-filter: blur(15px) saturate(135%);
 }
 
 /* ---------- SHARED GRAY WINDOW BUTTONS ---------- */
@@ -3269,8 +3308,8 @@ body.desktop-loaded #windows-container {
         inset 1px 1px 0 rgba(255, 255, 255, 0.55),
         inset -1px -1px 0 rgba(64, 64, 64, 0.45),
         0 1px 3px rgba(0, 0, 0, 0.20);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(15px);
+    backdrop-filter: blur(15px);
     text-shadow: none;
 }
 
@@ -4489,8 +4528,8 @@ body.desktop-loaded #windows-container {
         inset 0 1px 0 rgba(255, 255, 255, 0.52),
         0 1px 0 rgba(255, 255, 255, 0.22);
 
-    -webkit-backdrop-filter: blur(9px) saturate(125%);
-    backdrop-filter: blur(9px) saturate(125%);
+    -webkit-backdrop-filter: blur(15px) saturate(125%);
+    backdrop-filter: blur(15px) saturate(125%);
 }
 
 .window .window-menu button {
@@ -4620,8 +4659,8 @@ body.desktop-loaded #windows-container {
 #about-window {
     background: rgba(215, 222, 235, 0.46);
 
-    -webkit-backdrop-filter: blur(16px) saturate(135%);
-    backdrop-filter: blur(16px) saturate(135%);
+    -webkit-backdrop-filter: blur(15px) saturate(135%);
+    backdrop-filter: blur(15px) saturate(135%);
 }
 
 #about-window .notepad-body {
@@ -4641,8 +4680,8 @@ body.desktop-loaded #windows-container {
     border-top: 1px solid rgba(255, 255, 255, 0.38);
     box-shadow: inset 0 0 18px rgba(109, 151, 184, 0.08);
 
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(15px);
+    backdrop-filter: blur(15px);
 }
 
 #about-window .notepad-text {
@@ -4679,8 +4718,8 @@ body.desktop-loaded #windows-container {
     border-top: 1px solid rgba(126, 153, 174, 0.68);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.46);
 
-    -webkit-backdrop-filter: blur(7px);
-    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(15px);
+    backdrop-filter: blur(15px);
 }
 
 @media (max-width: 620px) {
@@ -5006,12 +5045,12 @@ textarea:disabled,
         1px solid rgba(255, 255, 255, 0.38);
 
     -webkit-backdrop-filter:
-        blur(12px)
-        saturate(128%);
+        blur(15px)
+        saturate(125%);
 
     backdrop-filter:
-        blur(12px)
-        saturate(128%);
+        blur(15px)
+        saturate(125%);
 }
 
 /* Dark image viewing area */
@@ -5031,11 +5070,11 @@ textarea:disabled,
         inset 0 0 24px rgba(0, 0, 0, 0.34);
 
     -webkit-backdrop-filter:
-        blur(8px)
+        blur(15px)
         saturate(120%);
 
     backdrop-filter:
-        blur(8px)
+        blur(15px)
         saturate(120%);
 }
 
@@ -5072,12 +5111,12 @@ textarea:disabled,
         inset 0 -1px 0 rgba(0, 0, 0, 0.18);
 
     -webkit-backdrop-filter:
-        blur(14px)
-        saturate(135%);
+        blur(15px)
+        saturate(125%);
 
     backdrop-filter:
-        blur(14px)
-        saturate(135%);
+        blur(15px)
+        saturate(125%);
 }
 
 /* Left and right buttons */
@@ -7221,4 +7260,720 @@ body.booting .bibi-title {
 #startup-brand-screen,
 #startup-settings-screen {
     z-index: 1000001;
+}
+
+
+/* =========================================================
+   MAGICAL LAKE — INTERACTIVE PIXEL-ART WINDOW
+========================================================= */
+
+#magical-lake-window {
+    width: min(820px, calc(100vw - 36px));
+    height: min(610px, calc(100vh - 58px));
+    min-width: 520px;
+    min-height: 390px;
+}
+
+.magical-lake-body {
+    height: calc(100% - 54px);
+    min-height: 0;
+    padding: 8px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    overflow: hidden;
+    background: #c0c0c0;
+}
+
+.magical-lake-toolbar {
+    width: 100%;
+    height: 30px;
+    min-height: 30px;
+    flex-shrink: 0;
+    gap: 0;
+}
+
+.magical-lake-toolbar button {
+    min-width: auto;
+    white-space: nowrap;
+}
+
+#magical-lake-status {
+    min-width: 0;
+    margin-left: auto;
+    padding: 0 8px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color: #26323c;
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-size: 11px;
+    line-height: 28px;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.magical-lake-screen {
+    position: relative;
+    min-height: 0;
+    flex: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+    background: #020b18;
+
+    border: 3px solid;
+    border-color: #404040 #fff #fff #404040;
+}
+
+#magical-lake-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+
+    background: #041422;
+    outline: none;
+    cursor: crosshair;
+    touch-action: none;
+}
+
+#magical-lake-canvas:focus-visible {
+    box-shadow: inset 0 0 0 2px #fff,
+                inset 0 0 0 4px #c52aa2;
+}
+
+
+/* Cute pixel polish for the Magical Lake screen. */
+.magical-lake-screen {
+    background: #171733;
+    box-shadow:
+        inset 0 0 0 2px #121323,
+        inset 0 0 0 4px rgba(255, 207, 235, 0.18);
+}
+
+.magical-lake-screen::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+        linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+    background-size: 4px 4px;
+    mix-blend-mode: screen;
+}
+
+#magical-lake-canvas {
+    background: #171733;
+}
+
+@media (max-width: 700px) {
+    #magical-lake-window {
+        width: calc(100vw - 12px);
+        height: calc(100dvh - 48px);
+        min-width: 0;
+        min-height: 0;
+    }
+
+    .magical-lake-toolbar {
+        height: 30px;
+        min-height: 30px;
+        flex-wrap: nowrap;
+    }
+
+    .magical-lake-toolbar button {
+        min-width: 0;
+        padding-left: 6px;
+        padding-right: 6px;
+        font-size: 11px;
+    }
+
+    #magical-lake-status {
+        width: auto;
+        margin-left: auto;
+        padding: 0 5px;
+        text-align: right;
+        font-size: 10px;
+    }
+}
+
+/* =========================================================
+   MAGICAL LAKE — WATER SPILLING OUT OF THE WINDOW
+========================================================= */
+
+#magical-waterfall-canvas {
+    position: fixed;
+    inset: 0;
+
+    display: block;
+    width: 100vw;
+    height: 100vh;
+
+    opacity: 0;
+    visibility: hidden;
+
+    pointer-events: none;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+
+    transition: opacity 120ms steps(2, end);
+}
+
+#magical-waterfall-canvas.waterfall-visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+body.booting #magical-waterfall-canvas {
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+    #magical-waterfall-canvas {
+        display: none !important;
+    }
+}
+
+
+
+/* =========================================================
+   UNIFIED TOOLBAR WINDOW CHROME — VERSION 5
+   Window borders, controls, and in-window action buttons use
+   the same pale blue glass palette as the application toolbar.
+========================================================= */
+
+:root {
+    --toolbar-chrome-top: rgba(255, 255, 255, 0.88);
+    --toolbar-chrome-upper: rgba(236, 245, 253, 0.80);
+    --toolbar-chrome-lower: rgba(191, 215, 234, 0.74);
+    --toolbar-chrome-bottom: rgba(221, 235, 246, 0.82);
+    --toolbar-chrome-border: rgba(124, 157, 181, 0.90);
+    --toolbar-chrome-border-dark: rgba(72, 119, 154, 0.96);
+    --toolbar-chrome-text: #263b4d;
+    --toolbar-chrome-shadow: rgba(43, 79, 105, 0.24);
+    --toolbar-chrome-glow: rgba(92, 174, 226, 0.28);
+}
+
+/* Outer frame of every application window. */
+.window {
+    border: 1px solid var(--toolbar-chrome-border) !important;
+    border-radius: 8px 8px 6px 6px;
+
+    box-shadow:
+        0 14px 34px rgba(20, 38, 54, 0.38),
+        0 0 0 1px rgba(255, 255, 255, 0.58),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.24) !important;
+}
+
+.window:focus-within {
+    box-shadow:
+        0 16px 38px rgba(20, 38, 54, 0.42),
+        0 0 0 1px rgba(255, 255, 255, 0.68),
+        0 0 12px var(--toolbar-chrome-glow),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.30) !important;
+}
+
+/* Keep the title artwork, but join it cleanly to the toolbar-colored frame. */
+.window > .title-bar {
+    border-left: 1px solid rgba(255, 255, 255, 0.24);
+    border-right: 1px solid rgba(255, 255, 255, 0.16);
+    border-bottom: 1px solid var(--toolbar-chrome-border) !important;
+}
+
+/* Window control buttons now use the same toolbar glass and blue borders. */
+.window .window-controls button,
+.window .window-controls .close {
+    background:
+        linear-gradient(
+            to bottom,
+            var(--toolbar-chrome-top) 0%,
+            var(--toolbar-chrome-upper) 48%,
+            var(--toolbar-chrome-lower) 49%,
+            var(--toolbar-chrome-bottom) 100%
+        ) !important;
+
+    border: 1px solid var(--toolbar-chrome-border) !important;
+    border-radius: 3px;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.88),
+        0 1px 2px var(--toolbar-chrome-shadow) !important;
+}
+
+.window .window-controls button:hover,
+.window .window-controls .close:hover,
+.window .window-controls button:focus-visible {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.98) 0%,
+            rgba(221, 241, 255, 0.96) 48%,
+            rgba(163, 211, 244, 0.94) 49%,
+            rgba(205, 234, 252, 0.96) 100%
+        ) !important;
+
+    border-color: rgba(77, 144, 191, 0.94) !important;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.95),
+        0 0 5px var(--toolbar-chrome-glow) !important;
+}
+
+.window .window-controls button:active,
+.window .window-controls .close:active {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(150, 199, 234, 0.94),
+            rgba(211, 234, 249, 0.96)
+        ) !important;
+
+    border-color: var(--toolbar-chrome-border-dark) !important;
+    box-shadow: inset 0 1px 3px rgba(45, 78, 105, 0.28) !important;
+}
+
+.window .minimize::before,
+.window .close::before,
+.window .close::after {
+    background: var(--toolbar-chrome-text) !important;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.72) !important;
+}
+
+.window .maximize::before {
+    border-color: var(--toolbar-chrome-text) !important;
+    filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.72)) !important;
+}
+
+/* Raised action buttons inside application windows. Menu buttons remain flat
+   because they are already part of the toolbar itself. */
+.window .music-tab,
+.window .send-button,
+.window .photo-navigation-button,
+.window .spotify-profile-button,
+.window .shutdown-body button,
+.window .magical-lake-toolbar button,
+.window .power-button {
+    color: var(--toolbar-chrome-text) !important;
+
+    background:
+        linear-gradient(
+            to bottom,
+            var(--toolbar-chrome-top) 0%,
+            var(--toolbar-chrome-upper) 48%,
+            var(--toolbar-chrome-lower) 49%,
+            var(--toolbar-chrome-bottom) 100%
+        ) !important;
+
+    border: 1px solid var(--toolbar-chrome-border) !important;
+    border-radius: 3px !important;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.92),
+        0 1px 1px var(--toolbar-chrome-shadow) !important;
+
+    font-family: "Segoe UI", Tahoma, sans-serif !important;
+    font-size: 12px;
+    font-weight: normal;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.82) !important;
+}
+
+.window .music-tab:hover,
+.window .send-button:hover,
+.window .photo-navigation-button:hover,
+.window .spotify-profile-button:hover,
+.window .shutdown-body button:hover,
+.window .magical-lake-toolbar button:hover,
+.window .power-button:hover,
+.window .music-tab:focus-visible,
+.window .send-button:focus-visible,
+.window .photo-navigation-button:focus-visible,
+.window .spotify-profile-button:focus-visible,
+.window .shutdown-body button:focus-visible,
+.window .magical-lake-toolbar button:focus-visible,
+.window .power-button:focus-visible {
+    color: #18364d !important;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.98) 0%,
+            rgba(221, 241, 255, 0.96) 48%,
+            rgba(163, 211, 244, 0.94) 49%,
+            rgba(205, 234, 252, 0.96) 100%
+        ) !important;
+
+    border-color: rgba(77, 144, 191, 0.94) !important;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.96),
+        0 0 5px var(--toolbar-chrome-glow) !important;
+
+    outline: none;
+}
+
+.window .music-tab:active,
+.window .send-button:active,
+.window .photo-navigation-button:active,
+.window .spotify-profile-button:active,
+.window .shutdown-body button:active,
+.window .magical-lake-toolbar button:active,
+.window .power-button:active {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(150, 199, 234, 0.94),
+            rgba(211, 234, 249, 0.96)
+        ) !important;
+
+    border-color: var(--toolbar-chrome-border-dark) !important;
+    box-shadow: inset 0 1px 3px rgba(45, 78, 105, 0.28) !important;
+    transform: translateY(1px);
+}
+
+/* The Magical Lake frame now uses the same toolbar border instead of the
+   old black-and-white inset frame. */
+.magical-lake-screen {
+    border: 1px solid var(--toolbar-chrome-border-dark) !important;
+    border-radius: 3px;
+
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.72),
+        inset 0 0 0 2px #121323,
+        inset 0 0 0 4px rgba(255, 207, 235, 0.18) !important;
+}
+
+/* No fairy follows the pointer; keep a simple interactive cursor. */
+#magical-lake-canvas {
+    cursor: crosshair;
+}
+
+
+/* =========================================================
+   LAVENDER TRANSPARENT WINDOW SKIN — VERSION 6
+   Restores the previous title-bar control buttons while the
+   window interiors, menus and action buttons use lavender glass.
+========================================================= */
+
+:root {
+    --lavender-window: rgba(218, 202, 235, 0.34);
+    --lavender-window-soft: rgba(239, 230, 248, 0.24);
+    --lavender-window-deep: rgba(112, 76, 137, 0.24);
+    --lavender-border: rgba(218, 185, 241, 0.72);
+    --lavender-border-strong: rgba(164, 112, 199, 0.82);
+    --lavender-highlight: rgba(255, 255, 255, 0.54);
+    --lavender-hover: rgba(191, 139, 224, 0.48);
+    --lavender-hover-strong: rgba(173, 111, 214, 0.66);
+    --lavender-pressed: rgba(116, 75, 145, 0.38);
+    --lavender-text: #382445;
+    --lavender-glow: rgba(211, 157, 239, 0.38);
+}
+
+/* Lavender outer frame instead of the version-5 blue frame. */
+.window {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.24),
+            rgba(218, 195, 237, 0.20) 48%,
+            rgba(108, 73, 133, 0.18)
+        ),
+        var(--lavender-window) !important;
+
+    border: 1px solid var(--lavender-border) !important;
+
+    box-shadow:
+        0 14px 34px rgba(40, 24, 53, 0.38),
+        0 0 0 1px rgba(255, 255, 255, 0.38),
+        inset 0 1px 0 rgba(255, 255, 255, 0.38) !important;
+
+    -webkit-backdrop-filter: blur(16px) saturate(138%);
+    backdrop-filter: blur(16px) saturate(138%);
+}
+
+.window:focus-within {
+    box-shadow:
+        0 16px 38px rgba(40, 24, 53, 0.42),
+        0 0 0 1px rgba(255, 255, 255, 0.48),
+        0 0 13px var(--lavender-glow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.44) !important;
+}
+
+.window > .title-bar {
+    border-bottom-color: var(--lavender-border-strong) !important;
+}
+
+/* Transparent lavender interior shared by the application windows. */
+.window > .window-body,
+.window .contact-body,
+.window .socials-body,
+.window .graphic-arts-body,
+.window .music-window,
+.window .music-content,
+.window .photo-gallery,
+.window .graphic-projects,
+.window .graphic-project-body,
+.window .graphic-project-content,
+.window .notepad-body,
+#trash-window .trash-body,
+.window .shutdown-body {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.16),
+            rgba(226, 207, 242, 0.20)
+        ),
+        var(--lavender-window-soft) !important;
+
+    border-color: rgba(211, 177, 235, 0.40) !important;
+
+    -webkit-backdrop-filter: blur(12px) saturate(128%);
+    backdrop-filter: blur(12px) saturate(128%);
+}
+
+/* Keep readable fields glassy rather than solid white. */
+.window input,
+.window textarea,
+.window select,
+#about-window .notepad-text {
+    color: #24172d !important;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.38),
+            rgba(225, 204, 242, 0.25)
+        ) !important;
+
+    border-color: rgba(163, 116, 196, 0.58) !important;
+
+    box-shadow:
+        inset 0 1px 3px rgba(69, 42, 86, 0.12),
+        0 0 0 1px rgba(255, 255, 255, 0.18) !important;
+
+    -webkit-backdrop-filter: blur(8px) saturate(120%);
+    backdrop-filter: blur(8px) saturate(120%);
+}
+
+.window input:focus,
+.window textarea:focus,
+.window select:focus {
+    border-color: var(--lavender-border-strong) !important;
+    box-shadow:
+        inset 0 1px 3px rgba(69, 42, 86, 0.12),
+        0 0 0 2px rgba(205, 151, 235, 0.22) !important;
+    outline: none;
+}
+
+/* Lavender glass application/menu bars. */
+.window .window-menu,
+.window .notepad-menu,
+.window .magical-lake-toolbar {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.34) 0%,
+            rgba(232, 214, 246, 0.28) 48%,
+            rgba(191, 151, 218, 0.24) 49%,
+            rgba(220, 196, 238, 0.28) 100%
+        ) !important;
+
+    border-top-color: rgba(255, 255, 255, 0.46) !important;
+    border-bottom-color: var(--lavender-border-strong) !important;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.40),
+        0 1px 0 rgba(255, 255, 255, 0.14) !important;
+
+    -webkit-backdrop-filter: blur(10px) saturate(130%);
+    backdrop-filter: blur(10px) saturate(130%);
+}
+
+/* All in-window buttons and link-buttons become transparent lavender glass.
+   The title-bar controls are intentionally excluded. */
+.window button:not(.minimize):not(.maximize):not(.close),
+.window .spotify-profile-button {
+    color: var(--lavender-text) !important;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.30),
+            rgba(222, 194, 241, 0.22)
+        ),
+        rgba(200, 166, 224, 0.18) !important;
+
+    border: 1px solid rgba(175, 128, 207, 0.52) !important;
+    border-radius: 4px !important;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.42),
+        0 1px 2px rgba(62, 38, 78, 0.16) !important;
+
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.58) !important;
+
+    -webkit-backdrop-filter: blur(8px) saturate(125%);
+    backdrop-filter: blur(8px) saturate(125%);
+}
+
+.window button:not(.minimize):not(.maximize):not(.close):hover,
+.window button:not(.minimize):not(.maximize):not(.close):focus-visible,
+.window .spotify-profile-button:hover,
+.window .spotify-profile-button:focus-visible {
+    color: #2f183e !important;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.48),
+            rgba(210, 169, 237, 0.42)
+        ),
+        var(--lavender-hover) !important;
+
+    border-color: var(--lavender-border-strong) !important;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.56),
+        0 0 7px var(--lavender-glow),
+        0 1px 2px rgba(62, 38, 78, 0.18) !important;
+
+    outline: none;
+}
+
+.window button:not(.minimize):not(.maximize):not(.close):active,
+.window .spotify-profile-button:active {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(132, 88, 161, 0.28),
+            rgba(225, 203, 241, 0.24)
+        ),
+        var(--lavender-pressed) !important;
+
+    border-color: rgba(132, 84, 166, 0.78) !important;
+    box-shadow: inset 0 2px 4px rgba(67, 40, 83, 0.24) !important;
+}
+
+/* Replace remaining classic-blue selection/hover states with lavender. */
+.folder-item:hover,
+.photo-folder:hover span,
+.graphic-project-folder:hover span,
+.social-icon:hover,
+.window .notepad-menu button:hover,
+.window .notepad-menu button:active,
+.start-item:hover,
+.recycle-program:hover {
+    color: #ffffff !important;
+    background: var(--lavender-hover-strong) !important;
+    border-color: rgba(225, 196, 245, 0.54) !important;
+    box-shadow: 0 0 7px rgba(205, 148, 236, 0.26) !important;
+}
+
+/* Magical Lake screen keeps its dark pixel scene, with lavender framing. */
+.magical-lake-screen {
+    border-color: var(--lavender-border-strong) !important;
+
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.54),
+        inset 0 0 0 2px #17101f,
+        inset 0 0 0 4px rgba(225, 180, 246, 0.16),
+        0 0 10px rgba(199, 137, 232, 0.20) !important;
+}
+
+/* ---------------------------------------------------------
+   RESTORED TITLE-BAR CONTROLS
+   These match the controls used before the blue-toolbar pass.
+--------------------------------------------------------- */
+.window .window-controls button {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.42),
+            rgba(255, 255, 255, 0.10)
+        ) !important;
+
+    border: 1px solid rgba(255, 255, 255, 0.55) !important;
+    border-radius: 3px !important;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.42),
+        0 1px 2px rgba(0, 0, 0, 0.30) !important;
+}
+
+.window .window-controls button:hover,
+.window .window-controls button:focus-visible {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.62),
+            rgba(255, 255, 255, 0.22)
+        ) !important;
+
+    border-color: rgba(255, 255, 255, 0.62) !important;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.50),
+        0 1px 2px rgba(0, 0, 0, 0.30) !important;
+}
+
+.window .window-controls button:active {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.18),
+            rgba(255, 255, 255, 0.34)
+        ) !important;
+
+    border-color: rgba(255, 255, 255, 0.42) !important;
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.35) !important;
+}
+
+.window .window-controls .close {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 150, 160, 0.86),
+            rgba(184, 31, 58, 0.78)
+        ) !important;
+
+    border-color: rgba(255, 220, 225, 0.72) !important;
+}
+
+.window .window-controls .close:hover,
+.window .window-controls .close:focus-visible {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 185, 190, 0.96),
+            rgba(222, 42, 67, 0.90)
+        ) !important;
+
+    border-color: rgba(255, 226, 230, 0.82) !important;
+
+    box-shadow:
+        0 0 8px rgba(255, 75, 100, 0.62),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+}
+
+.window .minimize::before,
+.window .close::before,
+.window .close::after {
+    background: white !important;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.70) !important;
+}
+
+.window .maximize::before {
+    border-color: white !important;
+    filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.65)) !important;
 }

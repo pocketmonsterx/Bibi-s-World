@@ -12,7 +12,7 @@
 
 <title>𝕭𝖎𝖇𝖎</title>
 
-<link rel="stylesheet" href="style.css?v=20260731-7">
+<link rel="stylesheet" href="style.css?v=20260801-6">
 
 </head>
 
@@ -80,7 +80,7 @@
 
             <section class="bios-section">
                 <p>Initializing Bibi desktop environment...</p>
-                <p>Loading Windows 2000 interface ................. OK</p>
+                <p>Loading BIBI'S MAGICAL PORTAL interface ................. OK</p>
                 <p>Mounting A:\MAGICAL_PORTAL ...................... OK</p>
                 <p>Loading custom cursors ......................... OK</p>
                 <p>Starting animated wallpaper .................... OK</p>
@@ -94,21 +94,21 @@
             </section>
 
             <section class="bios-section bios-module-section bios-mobile-hide">
-                <p>C:\BIBI\GRAPHIC_ARTS&gt; loading creative projects</p>
+                <p>B:\BIBI\GRAPHIC_ARTS&gt; loading creative projects</p>
                 <p class="bios-status">Art direction ................................ READY</p>
                 <p class="bios-status">Visual identities ............................ READY</p>
                 <p class="bios-status">Design archive ............................... READY</p>
             </section>
 
             <section class="bios-section bios-module-section">
-                <p>C:\BIBI\MUSIC&gt; initializing audio devices</p>
+                <p>B:\BIBI\MUSIC&gt; initializing audio devices</p>
                 <p class="bios-status">Vocal engine ................................. SOPRANO</p>
                 <p class="bios-status">Songwriting module ........................... ONLINE</p>
                 <p class="bios-status bios-mobile-hide">Production console ........................... READY</p>
             </section>
 
             <section class="bios-section bios-module-section bios-mobile-hide">
-                <p>C:\BIBI\SOCIALS&gt; establishing connections</p>
+                <p>B:\BIBI\SOCIALS&gt; establishing connections</p>
                 <p class="bios-status">Instagram / Spotify .......................... CONNECTED</p>
                 <p class="bios-status">Letterboxd / Last.fm ......................... CONNECTED</p>
                 <p class="bios-status">Contact message port ......................... OPEN</p>
@@ -134,7 +134,7 @@
                 <span class="bios-desktop-prompt">Press <strong>F1</strong> or <strong>ENTER</strong> to enter Bibi's World</span>
                 <span class="bios-mobile-prompt">Tap the screen to enter Bibi's World</span>
             </p>
-            <p>07/31/2026-BIBI-MAGICAL-PORTAL-26</p>
+            <p>2026-BIBI'S-MAGICAL-PORTAL</p>
         </div>
 
     </div>
@@ -146,12 +146,16 @@
 
     <div class="startup-boot-logo">
 
-        <div class="startup-windows-name">
+        <div class="startup-name">
             Beatriz Guimarães<span>®</span>
         </div>
 
-        <div class="startup-windows-version">
-            1994
+        <div class="startup-version">
+           1994
+        </div>
+
+        <div class="startup-signature">
+           <br> Coded by Beatriz Guimarães
         </div>
 
     </div>
@@ -233,6 +237,12 @@
 <span>Contact</span>
 </div>
 
+
+<div class="icon" data-window="magical-lake">
+<img src="assets/icons/magical-lake.svg" alt="">
+<span>Magical Lake</span>
+</div>
+
 <div class="icon" data-window="trash">
 <img src="assets/icons/trash 2.ico">
 <span>Recycle Bin</span>
@@ -246,7 +256,7 @@
         ✨Start
     </button>
 
-    <div id="taskbar-windows"></div>
+    <div id="taskbar"></div>
 
     <div id="clock-area">
 
@@ -1128,6 +1138,74 @@ I work with photography, art direction, music, and visual storytelling.
 
 </div>
 
+
+<!-- ================= MAGICAL LAKE ================= -->
+
+<div
+    class="window hidden"
+    id="magical-lake-window"
+    data-window-id="magical-lake"
+>
+    <div class="title-bar">
+        <span>Magical Lake</span>
+
+        <div class="window-controls">
+            <button
+                type="button"
+                class="minimize"
+                aria-label="Minimize"
+            ></button>
+
+            <button
+                type="button"
+                class="maximize"
+                aria-label="Maximize"
+            ></button>
+
+            <button
+                type="button"
+                class="close"
+                aria-label="Close"
+            ></button>
+        </div>
+    </div>
+
+    <div class="window-menu">
+        <button type="button">File</button>
+        <button type="button">View</button>
+        <button type="button">Magic</button>
+        <button type="button">Help</button>
+    </div>
+
+    <div class="window-body magical-lake-body">
+        <div class="window-menu magical-lake-toolbar">
+            <button type="button" id="magical-wish-button">
+                ✨ Make a wish
+            </button>
+
+            <button type="button" id="magical-reset-button">
+                Reset magic
+            </button>
+
+
+            <span id="magical-lake-status" aria-live="polite">
+                The lake is listening...
+            </span>
+        </div>
+
+        <div class="magical-lake-screen">
+            <canvas
+                id="magical-lake-canvas"
+                width="480"
+                height="300"
+                tabindex="0"
+                aria-label="Interactive cute pixel-art enchanted lake with fairies, flowers, mushrooms, glittering water, and magical ripples."
+            ></canvas>
+
+        </div>
+    </div>
+</div>
+
 <!-- ================= RECYCLE BIN ================= -->
 
 <div
@@ -1207,7 +1285,7 @@ I work with photography, art direction, music, and visual storytelling.
 >
     <div class="title-bar">
 
-        <span>C:\WINDOWS\system32\cmd.exe</span>
+        <span>B:\BIBI\cmd.exe</span>
 
         <div class="window-controls">
 
@@ -1357,7 +1435,7 @@ I work with photography, art direction, music, and visual storytelling.
  
 </div>
 
-<script src="script.js?v=20260731-7"></script>
+<script src="script.js?v=20260801-6"></script>
 
 </body>
 </html>
