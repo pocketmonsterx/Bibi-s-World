@@ -6697,3 +6697,528 @@ img,
 .graphic-project-folder {
     -webkit-user-drag: none;
 }
+
+
+/* =========================================================
+   BIBI BIOS INTRO SCREEN — VERSION 5
+   Larger diagnostics with the text and logo centered as one unit.
+========================================================= */
+
+#startup-boot-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+
+    display: block;
+    overflow: hidden;
+
+    background: #000;
+    color: #c7c7c7;
+
+    font-family: "Courier New", Courier, monospace;
+    font-size: clamp(18px, 1.3vw, 25px);
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: 0.005em;
+
+    opacity: 1;
+    transition: opacity 280ms steps(4, end);
+}
+
+#startup-boot-screen::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+
+    pointer-events: none;
+
+    background: repeating-linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.015) 0,
+        rgba(255, 255, 255, 0.015) 1px,
+        rgba(0, 0, 0, 0.04) 2px,
+        rgba(0, 0, 0, 0.04) 3px
+    );
+}
+
+#startup-boot-screen.bios-exiting {
+    opacity: 0;
+}
+
+#startup-boot-screen.hidden {
+    display: none;
+}
+
+/*
+ * The text and logo now live in the same centered grid.
+ * This keeps them close together instead of pinning each one to an edge.
+ */
+.bios-screen-content {
+    position: absolute;
+    inset: 0;
+
+    display: grid;
+    grid-template-columns:
+        minmax(680px, 900px)
+        minmax(290px, 430px);
+    column-gap: clamp(32px, 4vw, 72px);
+
+    justify-content: center;
+    align-content: center;
+    align-items: start;
+
+    padding:
+        clamp(18px, 2.5vh, 30px)
+        clamp(20px, 3vw, 52px)
+        94px;
+}
+
+.bios-text {
+    position: relative;
+    z-index: 2;
+
+    width: 100%;
+    min-width: 0;
+    height: calc(100dvh - 135px);
+    max-height: none;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    overflow: visible;
+    letter-spacing: 0.02em;
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.15);
+}
+
+.bios-section {
+    flex: 0 0 auto;
+}
+
+.bios-text p,
+.bios-bottom-text p {
+    margin: 0;
+    white-space: nowrap;
+}
+
+.bios-award-icon {
+    display: inline-block;
+    margin-right: 0.18em;
+
+    color: #142fff;
+    text-shadow: 0 0 4px #142fff;
+}
+
+.bios-detection {
+    padding-left: 1.35em;
+}
+
+.bios-status {
+    padding-left: 2.1em;
+    letter-spacing: 0.01em;
+}
+
+.bios-bibi-logo {
+    position: relative;
+    z-index: 1;
+
+    display: block;
+    align-self: start;
+    justify-self: center;
+
+    width: 100%;
+    max-width: 430px;
+    height: auto;
+    max-height: 45vh;
+    margin-top: clamp(2px, 1vh, 10px);
+
+    object-fit: contain;
+    object-position: center top;
+
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+
+    user-select: none;
+    pointer-events: none;
+}
+
+/* Prompt and build date remain centered across the whole screen. */
+.bios-bottom-text {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: clamp(14px, 2.3vh, 24px);
+    z-index: 2;
+
+    width: 100%;
+    padding: 0 16px;
+
+    font-size: 1em;
+    line-height: 1.15;
+    text-align: center;
+}
+
+.bios-continue-prompt {
+    margin-bottom: 0.45em !important;
+}
+
+.bios-continue-prompt strong {
+    color: #f2f2f2;
+    font: inherit;
+}
+
+.bios-continue-prompt::after {
+    content: "_";
+    margin-left: 0.2em;
+    color: #f2f2f2;
+    animation: biosCursorBlink 780ms steps(1, end) infinite;
+}
+
+.bios-mobile-prompt {
+    display: none;
+}
+
+@keyframes biosCursorBlink {
+    0%, 48% { opacity: 1; }
+    49%, 100% { opacity: 0; }
+}
+
+@media (max-width: 1280px) {
+    #startup-boot-screen {
+        font-size: clamp(11px, 1.02vw, 14px);
+    }
+
+    .bios-screen-content {
+        grid-template-columns:
+            minmax(570px, 760px)
+            minmax(240px, 340px);
+        column-gap: clamp(24px, 3vw, 44px);
+    }
+
+    .bios-bibi-logo {
+        max-width: 340px;
+    }
+}
+
+@media (max-width: 900px) {
+    #startup-boot-screen {
+        font-size: clamp(9px, 1.4vw, 12px);
+    }
+
+    .bios-screen-content {
+        grid-template-columns:
+            minmax(500px, 1fr)
+            minmax(190px, 260px);
+        column-gap: 22px;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .bios-bibi-logo {
+        max-width: 260px;
+    }
+}
+
+@media (max-width: 720px) {
+    #startup-boot-screen {
+        font-size: clamp(8px, 2.25vw, 11px);
+        line-height: 1.08;
+    }
+
+    .bios-screen-content {
+        display: block;
+        padding: 0;
+    }
+
+    .bios-text {
+        position: absolute;
+        top: 8px;
+        left: 7px;
+
+        width: calc(100vw - 14px);
+        height: calc(100dvh - 128px);
+    }
+
+    .bios-text p {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: clip;
+    }
+
+    .bios-mobile-hide {
+        display: none;
+    }
+
+    .bios-bibi-logo {
+        position: absolute;
+        top: auto;
+        right: 7px;
+        bottom: 14vh;
+
+        width: min(58vw, 290px);
+        max-height: 27vh;
+        margin: 0;
+        opacity: 0.94;
+    }
+
+    .bios-bottom-text {
+        bottom: max(10px, env(safe-area-inset-bottom));
+        padding: 0 7px;
+    }
+
+    .bios-desktop-prompt {
+        display: none;
+    }
+
+    .bios-mobile-prompt {
+        display: inline;
+    }
+}
+
+@media (max-height: 720px) and (min-width: 721px) {
+    #startup-boot-screen {
+        font-size: clamp(9px, 0.9vw, 12px);
+    }
+
+    .bios-screen-content {
+        padding-top: 10px;
+        padding-bottom: 70px;
+    }
+
+    .bios-text {
+        height: calc(100dvh - 90px);
+    }
+
+    .bios-module-section .bios-status:last-child,
+    .bios-mobile-hide {
+        display: none;
+    }
+
+    .bios-bibi-logo {
+        max-width: 300px;
+        max-height: 38vh;
+    }
+
+    .bios-bottom-text {
+        bottom: 7px;
+    }
+}
+
+
+/* =========================================================
+   BIOS LINE-BY-LINE LOADING ANIMATION
+========================================================= */
+
+/* These rules activate only when JavaScript starts the animation. */
+#startup-boot-screen.bios-animating .bios-text p {
+    visibility: hidden;
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+}
+
+#startup-boot-screen.bios-animating .bios-text p.bios-line-visible {
+    visibility: visible;
+    opacity: 1;
+    animation: biosLineReveal 110ms steps(8, end) both;
+}
+
+#startup-boot-screen.bios-animating .bios-bibi-logo {
+    visibility: hidden;
+    opacity: 0;
+}
+
+#startup-boot-screen.bios-animating
+.bios-bibi-logo.bios-logo-visible {
+    visibility: visible;
+    animation: biosLogoPowerOn 240ms steps(4, end) both;
+}
+
+#startup-boot-screen.bios-animating .bios-bottom-text {
+    visibility: hidden;
+    opacity: 0;
+}
+
+#startup-boot-screen.bios-animating
+.bios-bottom-text.bios-prompt-visible {
+    visibility: visible;
+    animation: biosPromptAppear 140ms steps(3, end) both;
+}
+
+@keyframes biosLineReveal {
+    0% {
+        opacity: 0;
+        clip-path: inset(0 100% 0 0);
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 1;
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+@keyframes biosLogoPowerOn {
+    0% {
+        opacity: 0;
+        filter: brightness(2.2);
+        transform: translateY(1px);
+    }
+
+    35% {
+        opacity: 0.35;
+    }
+
+    65% {
+        opacity: 0.12;
+    }
+
+    100% {
+        opacity: 1;
+        filter: brightness(1);
+        transform: translateY(0);
+    }
+}
+
+@keyframes biosPromptAppear {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #startup-boot-screen.bios-animating .bios-text p,
+    #startup-boot-screen.bios-animating .bios-bibi-logo,
+    #startup-boot-screen.bios-animating .bios-bottom-text {
+        animation-duration: 1ms !important;
+    }
+}
+
+/* =========================================================
+   RESTORED BEATRIZ GUIMARÃES LOADING SCREEN
+   Sequence: BIOS -> Beatriz loading -> Welcome -> Desktop
+========================================================= */
+
+#startup-brand-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    background: #000;
+    color: #fff;
+
+    font-family: Tahoma, Arial, sans-serif;
+    caret-color: transparent;
+
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: var(--cursor-default) !important;
+}
+
+#startup-brand-screen.hidden {
+    display: none;
+}
+
+#startup-brand-screen .startup-boot-logo {
+    margin-bottom: 45px;
+    text-align: center;
+}
+
+#startup-brand-screen .startup-windows-name {
+    font-family: Arial, sans-serif;
+    font-size: 42px;
+    font-weight: bold;
+    letter-spacing: -2px;
+}
+
+#startup-brand-screen .startup-windows-name span {
+    margin-left: 3px;
+    font-size: 13px;
+    font-weight: normal;
+    vertical-align: top;
+}
+
+#startup-brand-screen .startup-windows-version {
+    margin-top: 5px;
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    letter-spacing: 4px;
+}
+
+#startup-brand-screen .startup-loading-frame {
+    width: 250px;
+    height: 22px;
+    padding: 3px;
+    background: #c0c0c0;
+    border: 2px solid;
+    border-color: #404040 #fff #fff #404040;
+    overflow: hidden;
+}
+
+#startup-brand-screen .startup-loading-track {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+}
+
+#startup-brand-screen .startup-loading-blocks {
+    position: absolute;
+    top: 2px;
+    left: -65px;
+    display: flex;
+    gap: 4px;
+    animation: startupLoading 1.15s linear infinite;
+}
+
+#startup-brand-screen .startup-loading-blocks span {
+    display: block;
+    width: 12px;
+    height: 12px;
+    background: #b584d7;
+}
+
+@media (max-width: 560px) {
+    #startup-brand-screen .startup-windows-name {
+        font-size: 32px;
+    }
+
+    #startup-brand-screen .startup-loading-frame {
+        width: min(250px, calc(100vw - 48px));
+    }
+}
+
+
+/* =========================================================
+   STARTUP TRANSITION FLASH FIX — VERSION 7
+   Keep every website layer hidden until Welcome hands off to desktop,
+   and stack the startup screens so the next one is always underneath.
+========================================================= */
+
+body.booting .wallpaper-vhs,
+body.booting .bibi-title {
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+#startup-boot-screen {
+    z-index: 1000002;
+}
+
+#startup-brand-screen,
+#startup-settings-screen {
+    z-index: 1000001;
+}

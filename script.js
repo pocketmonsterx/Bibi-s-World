@@ -102,33 +102,167 @@ window.addEventListener("DOMContentLoaded", () => {
     const bootScreen =
         document.getElementById("startup-boot-screen");
 
+    const brandScreen =
+        document.getElementById("startup-brand-screen");
+
     const settingsScreen =
         document.getElementById("startup-settings-screen");
 
-    // Black Windows 2000 boot screen
+    if (!bootScreen || !brandScreen || !settingsScreen) return;
 
-    window.setTimeout(() => {
+    const biosSections = Array.from(
+        bootScreen.querySelectorAll(".bios-section")
+    );
 
-        bootScreen.classList.add("hidden");
+    const biosLogo =
+        bootScreen.querySelector(".bios-bibi-logo");
 
-        settingsScreen.classList.remove("hidden");
+    const biosBottomText =
+        bootScreen.querySelector(".bios-bottom-text");
 
-     startWelcomeFireworks();
+    let bootSequenceFinished = false;
+    let automaticBootTimer = null;
+    let welcomeTimer = null;
 
-    }, 3500);
+    const animationTimers = [];
 
-    // Loading personal settings
+    function scheduleAnimation(callback, delay) {
+        const timer = window.setTimeout(callback, delay);
+        animationTimers.push(timer);
+        return timer;
+    }
 
-    window.setTimeout(() => {
+    function clearBiosAnimationTimers() {
+        animationTimers.forEach(timer => {
+            window.clearTimeout(timer);
+        });
 
-        settingsScreen.classList.add("hidden");
+        animationTimers.length = 0;
+    }
 
-        document.body.classList.remove("booting");
-        document.body.classList.add("desktop-loaded");
-startWallpaperVideo();
+    function finishBiosBoot() {
+        if (bootSequenceFinished) return;
 
-    }, 5200);
+        bootSequenceFinished = true;
 
+        clearBiosAnimationTimers();
+        window.clearTimeout(automaticBootTimer);
+        document.removeEventListener("keydown", handleBiosKey);
+        bootScreen.removeEventListener("click", finishBiosBoot);
+
+        /*
+         * Put the next screen underneath the BIOS before its fade starts.
+         * This prevents the wallpaper/desktop from appearing for one frame.
+         */
+        brandScreen.classList.remove("hidden");
+        brandScreen.setAttribute("aria-hidden", "false");
+
+        window.requestAnimationFrame(() => {
+            bootScreen.classList.add("bios-exiting");
+        });
+
+        window.setTimeout(() => {
+            bootScreen.classList.add("hidden");
+            bootScreen.setAttribute("aria-hidden", "true");
+
+            window.setTimeout(() => {
+                /* Show Welcome before removing the Beatriz screen. */
+                settingsScreen.classList.remove("hidden");
+                settingsScreen.setAttribute("aria-hidden", "false");
+
+                window.requestAnimationFrame(() => {
+                    brandScreen.classList.add("hidden");
+                    brandScreen.setAttribute("aria-hidden", "true");
+                });
+
+                startWelcomeFireworks();
+
+                welcomeTimer = window.setTimeout(() => {
+                    /*
+                     * Reveal the desktop underneath Welcome first, then remove
+                     * Welcome on the next frame. This keeps the hand-off solid.
+                     */
+                    document.body.classList.remove("booting");
+                    document.body.classList.add("desktop-loaded");
+
+                    startWallpaperVideo();
+
+                    window.requestAnimationFrame(() => {
+                        settingsScreen.classList.add("hidden");
+                        settingsScreen.setAttribute("aria-hidden", "true");
+                    });
+                }, 1700);
+            }, 3500);
+        }, 280);
+    }
+
+    function handleBiosKey(event) {
+        if (
+            event.key === "F1" ||
+            event.key === "Enter" ||
+            event.key === " "
+        ) {
+            event.preventDefault();
+            finishBiosBoot();
+        }
+    }
+
+    function startBiosTextAnimation() {
+        bootScreen.classList.add("bios-animating");
+
+        let elapsed = 120;
+
+        /* Power the logo on shortly after the first BIOS lines. */
+        if (biosLogo) {
+            scheduleAnimation(() => {
+                biosLogo.classList.add("bios-logo-visible");
+            }, 420);
+        }
+
+        biosSections.forEach((section, sectionIndex) => {
+            const lines = Array.from(
+                section.querySelectorAll("p")
+            );
+
+            lines.forEach((line, lineIndex) => {
+                /* Status rows load slightly faster than headings. */
+                const isFastStatusLine =
+                    line.classList.contains("bios-status") ||
+                    line.classList.contains("bios-detection");
+
+                elapsed += isFastStatusLine ? 58 : 78;
+
+                scheduleAnimation(() => {
+                    line.classList.add("bios-line-visible");
+                }, elapsed);
+            });
+
+            /* Small pause between BIOS blocks. */
+            elapsed += sectionIndex < 5 ? 125 : 90;
+        });
+
+        const promptRevealTime = elapsed + 180;
+
+        if (biosBottomText) {
+            scheduleAnimation(() => {
+                biosBottomText.classList.add(
+                    "bios-prompt-visible"
+                );
+            }, promptRevealTime);
+        }
+
+        /* Continue automatically after the loading animation finishes. */
+        automaticBootTimer = window.setTimeout(
+            finishBiosBoot,
+            promptRevealTime + 2600
+        );
+    }
+
+    document.addEventListener("keydown", handleBiosKey);
+    bootScreen.addEventListener("click", finishBiosBoot);
+
+    startBiosTextAnimation();
+    bootScreen.focus({ preventScroll: true });
 });
 
 
@@ -1919,6 +2053,9 @@ if (spotifyIcon) {
 // ====================================
 
 document.addEventListener("click", event => {
+    /* Do not draw desktop sparkles over any startup screen. */
+    if (document.body.classList.contains("booting")) return;
+
     createClickSparkles(event.clientX, event.clientY);
 });
 

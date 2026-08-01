@@ -12,7 +12,7 @@
 
 <title>𝕭𝖎𝖇𝖎</title>
 
-<link rel="stylesheet" href="style.css?v=20260730-5">
+<link rel="stylesheet" href="style.css?v=20260731-7">
 
 </head>
 
@@ -34,11 +34,116 @@
 
 
 
-<!-- ================= STARTUP BOOT SCREEN ================= -->
+<!-- ================= BIBI BIOS STARTUP SCREEN ================= -->
 
-<div id="startup-boot-screen">
+<div
+    id="startup-boot-screen"
+    role="dialog"
+    aria-label="Bibi BIOS startup screen"
+    tabindex="0"
+>
+    <div class="bios-screen-content">
 
-   
+        <div class="bios-text" aria-label="Computer startup diagnostics">
+
+            <section class="bios-section bios-header-section">
+                <p><span class="bios-award-icon" aria-hidden="true">●</span>Award Modular BIOS v4.51PG, Bibi's World Edition</p>
+                <p>Copyright (C) 1994-2026 Bibi Systems, Inc.</p>
+            </section>
+
+            <section class="bios-section">
+                <p>BIBI686MS V2.6 07312026</p>
+                <p>Build ID: MAGICAL-PORTAL-2026</p>
+            </section>
+
+            <section class="bios-section">
+                <p>CREATIVE CORE : BIBI-94 at 500 MHz&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;, Magic Bus 100MHz</p>
+                <p>Memory Test&nbsp;&nbsp;&nbsp;: 393216K OK</p>
+                <p>Imagination&nbsp;&nbsp;&nbsp;: UNLIMITED</p>
+                <p>Dream Cache&nbsp;&nbsp;&nbsp;: ENABLED</p>
+            </section>
+
+            <section class="bios-section">
+                <p>Award Plug and Play BIOS Extension v2.6A</p>
+                <p>Copyright (C) 2026, Bibi Systems, Inc.</p>
+                <p class="bios-detection">Detecting IDE Primary Master&nbsp;&nbsp;&nbsp;... BIBISWORLD</p>
+                <p class="bios-detection">Detecting IDE Primary Slave&nbsp;&nbsp;&nbsp;&nbsp;... PHOTOGRAPHY</p>
+                <p class="bios-detection">Detecting IDE Secondary Master ... GRAPHIC ARTS</p>
+                <p class="bios-detection">Detecting IDE Secondary Slave&nbsp;&nbsp;... MUSIC</p>
+                <p class="bios-detection">Detecting Network Adapter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;... SOCIALS ONLINE</p>
+            </section>
+
+            <section class="bios-section bios-mobile-hide">
+                <p>Reality mode(s) fail (40)</p>
+                <p>CMOS checksum error - Magical defaults loaded</p>
+            </section>
+
+            <section class="bios-section">
+                <p>Initializing Bibi desktop environment...</p>
+                <p>Loading Windows 2000 interface ................. OK</p>
+                <p>Mounting A:\MAGICAL_PORTAL ...................... OK</p>
+                <p>Loading custom cursors ......................... OK</p>
+                <p>Starting animated wallpaper .................... OK</p>
+            </section>
+
+            <section class="bios-section bios-module-section">
+                <p>C:\BIBI\PHOTOGRAPHY&gt; scanning gallery archive</p>
+                <p class="bios-status">Disney 2010 .................................. READY</p>
+                <p class="bios-status">Miku 2010 .................................... READY</p>
+                <p class="bios-status bios-mobile-hide">Image preview system ......................... READY</p>
+            </section>
+
+            <section class="bios-section bios-module-section bios-mobile-hide">
+                <p>C:\BIBI\GRAPHIC_ARTS&gt; loading creative projects</p>
+                <p class="bios-status">Art direction ................................ READY</p>
+                <p class="bios-status">Visual identities ............................ READY</p>
+                <p class="bios-status">Design archive ............................... READY</p>
+            </section>
+
+            <section class="bios-section bios-module-section">
+                <p>C:\BIBI\MUSIC&gt; initializing audio devices</p>
+                <p class="bios-status">Vocal engine ................................. SOPRANO</p>
+                <p class="bios-status">Songwriting module ........................... ONLINE</p>
+                <p class="bios-status bios-mobile-hide">Production console ........................... READY</p>
+            </section>
+
+            <section class="bios-section bios-module-section bios-mobile-hide">
+                <p>C:\BIBI\SOCIALS&gt; establishing connections</p>
+                <p class="bios-status">Instagram / Spotify .......................... CONNECTED</p>
+                <p class="bios-status">Letterboxd / Last.fm ......................... CONNECTED</p>
+                <p class="bios-status">Contact message port ......................... OPEN</p>
+            </section>
+
+            <section class="bios-section bios-final-section">
+                <p>Location : São Paulo, Brazil</p>
+                <p>A MAGICAL PORTAL ............................... READY</p>
+                <p>Welcome, visitor.</p>
+            </section>
+
+        </div>
+
+        <img
+            class="bios-bibi-logo"
+            src="assets/images/loading-logo.png"
+            alt="Bibi, A Magical Portal"
+            draggable="false"
+        >
+
+        <div class="bios-bottom-text">
+            <p class="bios-continue-prompt">
+                <span class="bios-desktop-prompt">Press <strong>F1</strong> or <strong>ENTER</strong> to enter Bibi's World</span>
+                <span class="bios-mobile-prompt">Tap the screen to enter Bibi's World</span>
+            </p>
+            <p>07/31/2026-BIBI-MAGICAL-PORTAL-26</p>
+        </div>
+
+    </div>
+</div>
+
+<!-- ================= ORIGINAL BEATRIZ LOADING SCREEN ================= -->
+
+<div id="startup-brand-screen" class="hidden" aria-label="Beatriz Guimarães loading screen">
+
     <div class="startup-boot-logo">
 
         <div class="startup-windows-name">
@@ -129,7 +234,7 @@
 </div>
 
 <div class="icon" data-window="trash">
-<img src="assets/icons/trash2.ico">
+<img src="assets/icons/trash 2.ico">
 <span>Recycle Bin</span>
 </div>
 
@@ -1252,7 +1357,7 @@ I work with photography, art direction, music, and visual storytelling.
  
 </div>
 
-<script src="script.js?v=20260730-5"></script>
+<script src="script.js?v=20260731-7"></script>
 
 </body>
 </html>
