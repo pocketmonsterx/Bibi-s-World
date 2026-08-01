@@ -277,57 +277,77 @@ const taskbarWindows = document.getElementById("taskbar-windows");
 
 // ====================================
 // DESKTOP ICONS
-// Open and bring windows to front
+// Open, restore, and always bring the requested window to front
 // ====================================
 
-desktopIcons.forEach(icon => {
+function markWindowAsActive(windowElement) {
+    document
+        .querySelectorAll(".task-button")
+        .forEach(button => button.classList.remove("active"));
 
-    icon.addEventListener("click", () => {
-
-        const id =
-            icon.dataset.window;
-
-        const windowElement =
-            document.querySelector(
-                `[data-window-id="${id}"]`
-            );
-
-        if (!windowElement) {
-            return;
-        }
-
-        if (typeof startMenu !== "undefined" && startMenu) {
-            startMenu.classList.add("hidden");
-        }
-
-        openWindow(windowElement);
-
-        /*
-         * Run once after the browser has restored
-         * the window's display and dimensions.
-         */
-        requestAnimationFrame(() => {
-
-            bringToFront(windowElement);
-
-            document
-                .querySelectorAll(".task-button")
-                .forEach(button => {
-                    button.classList.remove(
-                        "active"
-                    );
-                });
-
-            if (windowElement.taskButton) {
-                windowElement.taskButton.classList.add(
-                    "active"
-                );
-            }
-
+    document
+        .querySelectorAll(".window.active-window")
+        .forEach(openWindowElement => {
+            openWindowElement.classList.remove("active-window");
         });
 
-    });
+    windowElement.classList.add("active-window");
 
+    if (windowElement.taskButton) {
+        windowElement.taskButton.classList.add("active");
+    }
+}
+
+function activateWindowFromDesktopIcon(icon) {
+    const id = icon.dataset.window;
+
+    if (!id || id === "home") {
+        return;
+    }
+
+    /*
+     * Compare data values directly instead of building a CSS selector.
+     * This also works safely for IDs containing spaces.
+     */
+    const windowElement = Array
+        .from(windows)
+        .find(candidate => candidate.dataset.windowId === id);
+
+    if (!windowElement) {
+        return;
+    }
+
+    const menu = document.getElementById("start-menu");
+
+    if (menu) {
+        menu.classList.add("hidden");
+    }
+
+    openWindow(windowElement);
+    bringToFront(windowElement);
+    markWindowAsActive(windowElement);
+
+    /*
+     * Re-apply after layout and after the current click finishes. This
+     * prevents another window handler from reclaiming the top layer.
+     */
+    requestAnimationFrame(() => {
+        bringToFront(windowElement);
+        markWindowAsActive(windowElement);
+
+        window.setTimeout(() => {
+            if (!windowElement.classList.contains("hidden")) {
+                bringToFront(windowElement);
+                markWindowAsActive(windowElement);
+            }
+        }, 0);
+    });
+}
+
+desktopIcons.forEach(icon => {
+    icon.addEventListener("click", () => {
+        activateWindowFromDesktopIcon(icon);
+    });
 });
 
 // --------------------
@@ -527,39 +547,42 @@ function closeWindow(windowElement){
 // --------------------
 
 function bringToFront(windowElement) {
+    if (!windowElement) {
+        return;
+    }
 
     /*
-     * Find the highest z-index currently used by
-     * any open window. This prevents highestZ from
-     * becoming out of sync.
+     * Only visible application windows participate in stacking. Hidden
+     * dialogs can otherwise retain an old high z-index and interfere with
+     * the window the visitor has just selected from the desktop.
      */
-    const currentHighestZ = Array
-        .from(document.querySelectorAll(".window"))
-        .reduce((highestValue, currentWindow) => {
+    const visibleWindows = Array.from(
+        document.querySelectorAll(".window:not(.hidden)")
+    );
 
-            const currentZIndex =
-                Number.parseInt(
-                    window.getComputedStyle(
-                        currentWindow
-                    ).zIndex,
-                    10
-                );
-
-            if (Number.isNaN(currentZIndex)) {
-                return highestValue;
-            }
-
-            return Math.max(
-                highestValue,
-                currentZIndex
+    const currentHighestZ = visibleWindows.reduce(
+        (highestValue, currentWindow) => {
+            const currentZIndex = Number.parseInt(
+                window.getComputedStyle(currentWindow).zIndex,
+                10
             );
 
-        }, highestZ);
+            return Number.isNaN(currentZIndex)
+                ? highestValue
+                : Math.max(highestValue, currentZIndex);
+        },
+        highestZ
+    );
 
     highestZ = currentHighestZ + 1;
+    windowElement.style.zIndex = String(highestZ);
 
-    windowElement.style.zIndex =
-        String(highestZ);
+    visibleWindows.forEach(currentWindow => {
+        currentWindow.classList.toggle(
+            "active-window",
+            currentWindow === windowElement
+        );
+    });
 }
 
 // --------------------
@@ -4397,4 +4420,46 @@ window.addEventListener("DOMContentLoaded", () => {
     resizeWaterfallCanvas();
     setStatus("The lake is listening...");
     window.requestAnimationFrame(drawFrame);
+})();
+
+
+// ====================================
+// SOCIALS WINDOW FRONT-LAYER OVERRIDE
+// ====================================
+
+(() => {
+    const socialsIcon = document.querySelector(
+        '.icon[data-window="socials"]'
+    );
+    const socialsWindow = document.getElementById(
+        "socials-window"
+    );
+
+    if (!socialsIcon || !socialsWindow) {
+        return;
+    }
+
+    const forceSocialsWindowToFront = () => {
+        if (socialsWindow.classList.contains("hidden")) {
+            openWindow(socialsWindow);
+        }
+
+        bringToFront(socialsWindow);
+        markWindowAsActive(socialsWindow);
+    };
+
+    socialsIcon.addEventListener("click", () => {
+        forceSocialsWindowToFront();
+
+        /*
+         * Run again after the other desktop/window handlers finish so the
+         * Socials window always wins the stacking order for this click.
+         */
+        requestAnimationFrame(() => {
+            forceSocialsWindowToFront();
+            requestAnimationFrame(forceSocialsWindowToFront);
+        });
+
+        window.setTimeout(forceSocialsWindowToFront, 60);
+    });
 })();

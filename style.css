@@ -2476,7 +2476,7 @@ body.desktop-loaded #windows-container {
 /* Notepad status bar */
 
 .window .notepad-body::after {
-    content: "Ln 1, Col 1     100%     Windows (CRLF)     UTF-8";
+    content: "Ln 1, Col 1     100%     BIBI (CRLF)     UTF-8";
 
     grid-row: 2;
 
@@ -8429,7 +8429,7 @@ body.booting #magical-waterfall-canvas {
     --bibi-dark-control-active: rgba(111, 61, 151, 0.58);
     --bibi-dark-border: rgba(213, 177, 239, 0.48);
     --bibi-dark-border-strong: rgba(226, 198, 246, 0.68);
-    --bibi-dark-text: #f4eaff;
+    --bibi-dark-text: #ffffff;
     --bibi-dark-muted: #d8c4e8;
     --bibi-dark-shadow: rgba(18, 7, 31, 0.44);
 }
@@ -8853,4 +8853,41 @@ body.booting #magical-waterfall-canvas {
     background: rgba(157, 103, 195, 0.14) !important;
     border-color: rgba(222, 191, 244, 0.24) !important;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
+}
+
+/* Make the Notepad status bar match the dark purple glass theme */
+.window .notepad-body::after,
+#about-window .notepad-body::after {
+    color: var(--bibi-dark-muted) !important;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.10),
+            rgba(73, 38, 108, 0.16)
+        ),
+        var(--bibi-dark-bar) !important;
+
+    border-top: 1px solid var(--bibi-dark-border) !important;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.14),
+        0 -1px 4px rgba(18, 7, 31, 0.18) !important;
+
+    -webkit-backdrop-filter: blur(14px) saturate(140%) !important;
+    backdrop-filter: blur(14px) saturate(140%) !important;
+
+    text-shadow: 0 1px 2px rgba(18, 5, 30, 0.65);
+}
+
+/* Make all text inside windows white */
+.window > .window-body,
+.window > .window-body * {
+    color: #ffffff !important;
+}
+
+/* Keep form placeholder text slightly transparent */
+.window input::placeholder,
+.window textarea::placeholder {
+    color: rgba(255, 255, 255, 0.65) !important;
 }
