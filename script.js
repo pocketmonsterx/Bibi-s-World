@@ -723,8 +723,21 @@ function createTaskButton(windowElement) {
         ? title.textContent
         : windowId;
 
+    const closeTab = document.createElement("span");
+    closeTab.className = "task-button-close";
+    closeTab.textContent = "×";
+    closeTab.title = `Close ${text.textContent}`;
+    closeTab.setAttribute("aria-hidden", "true");
+
     button.appendChild(icon);
     button.appendChild(text);
+    button.appendChild(closeTab);
+
+    closeTab.addEventListener("click", event => {
+        event.preventDefault();
+        event.stopPropagation();
+        closeWindow(windowElement);
+    });
 
     button.addEventListener("click", () => {
 
@@ -2834,9 +2847,9 @@ window.addEventListener("DOMContentLoaded", () => {
     const waterShadow = {
         active: false,
         startedAt: 0,
-        duration: 2900,
+        duration: 3400,
         direction: 1,
-        y: WATER_LINE + 52,
+        splashX: WIDTH / 2,
         wobble: 0
     };
 
@@ -2922,8 +2935,22 @@ window.addEventListener("DOMContentLoaded", () => {
         rangeY: 2 + (index % 4)
     }));
 
+    let statusAnimationTimer = null;
+
     function setStatus(message) {
-        if (status) status.textContent = message;
+        if (!status) return;
+
+        status.textContent = message;
+        status.classList.remove("magical-lake-message-visible");
+
+        // Restart the little top-center message animation each time.
+        void status.offsetWidth;
+        status.classList.add("magical-lake-message-visible");
+
+        window.clearTimeout(statusAnimationTimer);
+        statusAnimationTimer = window.setTimeout(() => {
+            status.classList.remove("magical-lake-message-visible");
+        }, 3600);
     }
 
     function canvasPoint(event) {
@@ -3240,17 +3267,18 @@ window.addEventListener("DOMContentLoaded", () => {
     function triggerWaterShadow() {
         waterShadow.active = true;
         waterShadow.startedAt = performance.now();
-        waterShadow.duration = 2700 + Math.random() * 700;
+        waterShadow.duration = 3300 + Math.random() * 600;
         waterShadow.direction = Math.random() > 0.5 ? 1 : -1;
-        waterShadow.y = WATER_LINE + 38 + Math.random() * 48;
+        waterShadow.splashX = WIDTH * (0.38 + Math.random() * 0.24);
         waterShadow.wobble = Math.random() * Math.PI * 2;
 
+        /* A quiet first ripple hints that a shadow is approaching. */
         ripples.push({
-            x: waterShadow.direction > 0 ? 34 : WIDTH - 34,
-            y: waterShadow.y,
+            x: waterShadow.direction > 0 ? 38 : WIDTH - 38,
+            y: WATER_LINE + 34,
             radius: 3,
-            life: 82,
-            maximumLife: 82
+            life: 78,
+            maximumLife: 78
         });
     }
 
@@ -3267,61 +3295,199 @@ window.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        const eased = progress * progress * (3 - 2 * progress);
-        const travelWidth = WIDTH + 150;
-        const x = waterShadow.direction > 0
-            ? -75 + travelWidth * eased
-            : WIDTH + 75 - travelWidth * eased;
-        const y = waterShadow.y + Math.sin(
-            progress * Math.PI * 4 + waterShadow.wobble
-        ) * 5;
-        const fade = Math.sin(progress * Math.PI);
         const direction = waterShadow.direction;
+        const splashX = waterShadow.splashX;
+        const startX = direction > 0 ? -64 : WIDTH + 64;
+        const exitX = direction > 0 ? WIDTH + 70 : -70;
+        const fade = Math.sin(progress * Math.PI);
 
+        let x;
+        let y;
+        let angle;
+        let scale = 1;
+        let tailSwing;
+        let breachAmount = 0;
+        let splashAmount = 0;
+
+        if (progress < 0.38) {
+            /* The silhouette rises from deep water toward the surface. */
+            const local = progress / 0.38;
+            const eased = local * local * (3 - 2 * local);
+
+            x = startX + (splashX - direction * 28 - startX) * eased;
+            y = WATER_LINE + 54 - eased * 42
+                + Math.sin(local * Math.PI * 3 + waterShadow.wobble) * 3;
+            angle = -direction * (0.05 + eased * 0.26);
+            scale = 0.88 + eased * 0.12;
+            tailSwing = Math.sin(time * 0.024) * 6;
+        } else if (progress < 0.67) {
+            /* A dark fish briefly breaks the surface in a small arc. */
+            const local = (progress - 0.38) / 0.29;
+            const arc = Math.sin(local * Math.PI);
+
+            x = splashX + direction * (-28 + local * 56);
+            y = WATER_LINE + 8 - arc * 31;
+            angle = direction * (-0.44 + local * 0.88);
+            scale = 1 + arc * 0.08;
+            tailSwing = Math.sin(time * 0.035) * 8;
+            breachAmount = arc;
+
+            const firstSplash = Math.max(0, 1 - Math.abs(local - 0.08) / 0.22);
+            const secondSplash = Math.max(0, 1 - Math.abs(local - 0.92) / 0.24);
+            splashAmount = Math.min(1, firstSplash + secondSplash);
+        } else {
+            /* It disappears below the surface, leaving only ripples. */
+            const local = (progress - 0.67) / 0.33;
+            const eased = local * local * (3 - 2 * local);
+
+            x = splashX + direction * (30 + (Math.abs(exitX - splashX) - 30) * eased);
+            y = WATER_LINE + 13 + eased * 58
+                + Math.sin(local * Math.PI * 3 + waterShadow.wobble) * 3;
+            angle = direction * (0.31 - eased * 0.21);
+            scale = 1 - eased * 0.13;
+            tailSwing = Math.sin(time * 0.025) * 6;
+        }
+
+        /* Shadowy expanding surface rings around the splash point. */
+        const ringLife = Math.max(0, (progress - 0.34) / 0.66);
+        if (ringLife > 0) {
+            context.save();
+            context.lineWidth = 1;
+
+            for (let ring = 0; ring < 3; ring += 1) {
+                const delayed = Math.max(0, ringLife - ring * 0.16);
+                if (delayed <= 0) continue;
+
+                const radiusX = 10 + delayed * (38 + ring * 8);
+                const radiusY = 2 + delayed * (7 + ring * 2);
+
+                context.globalAlpha = (1 - delayed) * (0.22 - ring * 0.04);
+                context.strokeStyle = ring === 0 ? "#a6d7df" : "#315b70";
+                context.beginPath();
+                context.ellipse(
+                    Math.round(splashX),
+                    WATER_LINE + 3,
+                    radiusX,
+                    radiusY,
+                    0,
+                    0,
+                    Math.PI * 2
+                );
+                context.stroke();
+            }
+
+            context.restore();
+        }
+
+        /* Pixel droplets and a dark splash crown remain part of the shadow. */
+        if (splashAmount > 0) {
+            context.save();
+            context.globalAlpha = 0.10 + splashAmount * 0.26;
+            context.fillStyle = "#0a2638";
+
+            const crownWidth = 19 + splashAmount * 10;
+            context.fillRect(
+                Math.round(splashX - crownWidth / 2),
+                WATER_LINE - 1,
+                Math.round(crownWidth),
+                4
+            );
+            context.fillRect(
+                Math.round(splashX - 15),
+                Math.round(WATER_LINE - 5 - splashAmount * 7),
+                4,
+                Math.round(5 + splashAmount * 8)
+            );
+            context.fillRect(
+                Math.round(splashX + 11),
+                Math.round(WATER_LINE - 6 - splashAmount * 9),
+                4,
+                Math.round(6 + splashAmount * 10)
+            );
+            context.fillRect(
+                Math.round(splashX - 3),
+                Math.round(WATER_LINE - 9 - splashAmount * 11),
+                5,
+                Math.round(8 + splashAmount * 12)
+            );
+
+            context.globalAlpha = splashAmount * 0.34;
+            context.fillStyle = "#77aeb9";
+            const droplets = [
+                [-23, -13, 3],
+                [-15, -23, 2],
+                [-6, -30, 3],
+                [7, -28, 2],
+                [16, -20, 3],
+                [24, -11, 2]
+            ];
+
+            droplets.forEach(([offsetX, offsetY, size], index) => {
+                const fall = Math.abs(Math.sin(
+                    progress * Math.PI * 5 + index * 0.8
+                )) * 5;
+                context.fillRect(
+                    Math.round(splashX + offsetX * splashAmount),
+                    Math.round(WATER_LINE + offsetY * splashAmount + fall),
+                    size,
+                    size
+                );
+            });
+
+            context.restore();
+        }
+
+        /* Blocky fish silhouette: visible, but never brightly revealed. */
         context.save();
-        context.globalAlpha = 0.13 + fade * 0.31;
-        context.fillStyle = "#092336";
+        context.translate(Math.round(x), Math.round(y));
+        context.rotate(angle);
+        context.scale(direction * scale, scale);
+        context.globalAlpha = 0.14 + fade * 0.28 + breachAmount * 0.07;
+        context.fillStyle = "#061a2a";
 
-        /* A cute long pixel fish/dragon shadow beneath the lake. */
-        context.fillRect(Math.round(x - 29), Math.round(y - 6), 58, 12);
-        context.fillRect(Math.round(x - 20), Math.round(y - 10), 40, 20);
-        context.fillRect(
-            Math.round(x + direction * 27),
-            Math.round(y - 4),
-            18 * direction,
-            8
-        );
-        context.fillRect(
-            Math.round(x - direction * 31),
-            Math.round(y - 11),
-            12 * direction,
-            8
-        );
-        context.fillRect(
-            Math.round(x - direction * 31),
-            Math.round(y + 3),
-            12 * direction,
-            8
-        );
+        context.beginPath();
+        context.moveTo(-28, -5);
+        context.lineTo(-18, -10);
+        context.lineTo(9, -9);
+        context.lineTo(25, -4);
+        context.lineTo(32, 0);
+        context.lineTo(25, 4);
+        context.lineTo(9, 9);
+        context.lineTo(-18, 10);
+        context.lineTo(-28, 5);
+        context.closePath();
+        context.fill();
 
-        context.globalAlpha = fade * 0.52;
-        context.fillStyle = "#71ddea";
-        context.fillRect(
-            Math.round(x + direction * 22),
-            Math.round(y - 2),
-            2,
-            2
-        );
+        context.beginPath();
+        context.moveTo(-25, 0);
+        context.lineTo(-42, -13 - tailSwing * 0.35);
+        context.lineTo(-37, 0);
+        context.lineTo(-42, 13 + tailSwing * 0.35);
+        context.closePath();
+        context.fill();
 
-        context.globalAlpha = fade * 0.22;
-        context.fillStyle = "#bbffff";
-        context.fillRect(Math.round(x - 40), Math.round(y - 15), 24, 2);
-        context.fillRect(Math.round(x + 13), Math.round(y + 15), 35, 2);
-        context.fillRect(Math.round(x - 7), Math.round(y + 19), 18, 1);
+        context.beginPath();
+        context.moveTo(-2, -8);
+        context.lineTo(8, -17);
+        context.lineTo(13, -8);
+        context.closePath();
+        context.fill();
 
+        context.beginPath();
+        context.moveTo(2, 7);
+        context.lineTo(11, 14);
+        context.lineTo(15, 7);
+        context.closePath();
+        context.fill();
+
+        /* A subtle water sheen keeps the fish reading as a submerged shadow. */
+        context.globalAlpha = fade * 0.13;
+        context.fillStyle = "#6ca5b2";
+        context.fillRect(-14, -7, 25, 2);
+        context.fillRect(4, 6, 14, 1);
         context.restore();
 
-        if (Math.random() < 0.06) {
+        if (progress < 0.38 && Math.random() < 0.045) {
             addBubbles(x, y - 4, 1);
         }
     }
@@ -4229,5 +4395,6 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     resizeWaterfallCanvas();
+    setStatus("The lake is listening...");
     window.requestAnimationFrame(drawFrame);
 })();

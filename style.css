@@ -998,7 +998,7 @@ font-weight:bold;
 
 .notepad-menu button:hover {
     background: #000080;
-    color: rgb(8, 8, 8);
+    color: white;
 }
 
 .notepad-body {
@@ -1855,8 +1855,8 @@ body.desktop-loaded #windows-container {
         inset 0 1px 0 rgba(255, 255, 255, 0.55),
         inset 0 0 0 1px rgba(255, 255, 255, 0.10);
 
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(155%);
-    backdrop-filter: blur(var(--glass-blur)) saturate(155%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(135%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(135%);
 
     overflow: hidden;
 }
@@ -2488,18 +2488,13 @@ body.desktop-loaded #windows-container {
 
     color: #303030;
 
-    background:
-        linear-gradient(
-            to bottom,
-            rgba(255, 255, 255, 0.16),
-            rgba(226, 207, 242, 0.20)
-        ),
-        var(--lavender-window-soft) !important;
+    background: linear-gradient(
+        to bottom,
+        rgba(252, 253, 254, 0.95),
+        rgba(222, 231, 239, 0.95)
+    );
 
-    border-color: rgba(211, 177, 235, 0.40) !important;
-
-    -webkit-backdrop-filter: blur(12px) saturate(128%);
-    backdrop-filter: blur(12px) saturate(128%);
+    border-top: 1px solid #aebdca;
 
     box-shadow:
         inset 0 1px 0 rgba(255, 255, 255, 0.9);
@@ -2562,68 +2557,34 @@ body.desktop-loaded #windows-container {
 /* Large portfolio projects remain easy to read */
 
 .window .graphic-project-body {
-    background:
-        linear-gradient(
-            to bottom,
-            rgba(255, 255, 255, 0.16),
-            rgba(226, 207, 242, 0.20)
-        ),
-        var(--lavender-window-soft) !important;
-
-    border-color: rgba(211, 177, 235, 0.40) !important;
-
-    -webkit-backdrop-filter: blur(12px) saturate(128%);
-    backdrop-filter: blur(12px) saturate(128%);
+    background: rgba(238, 246, 252, 0.8);
 }
 
 
 .window .graphic-project-content {
-    background:
-        linear-gradient(
-            to bottom,
-            rgba(255, 255, 255, 0.16),
-            rgba(226, 207, 242, 0.20)
-        ),
-        var(--lavender-window-soft) !important;
+    background: rgba(255, 255, 255, 0.93);
 
-    border-color: rgba(211, 177, 235, 0.40) !important;
+    border: 1px solid rgba(124, 157, 181, 0.65);
 
-    -webkit-backdrop-filter: blur(12px) saturate(128%);
-    backdrop-filter: blur(12px) saturate(128%);
+    box-shadow:
+        0 2px 8px rgba(34, 60, 80, 0.18);
 }
 
 
 /* Photo preview */
 
 .window .image-preview-body {
-    background:
-        linear-gradient(
-            to bottom,
-            rgba(255, 255, 255, 0.16),
-            rgba(226, 207, 242, 0.20)
-        ),
-        var(--lavender-window-soft) !important;
-
-    border-color: rgba(211, 177, 235, 0.40) !important;
-
-    -webkit-backdrop-filter: blur(12px) saturate(128%);
-    backdrop-filter: blur(12px) saturate(128%);
+    background: rgba(218, 231, 241, 0.82);
 }
 
 
 .window .preview-image-area {
-    background:
-        linear-gradient(
-            to bottom,
-            rgba(255, 255, 255, 0.16),
-            rgba(226, 207, 242, 0.20)
-        ),
-        var(--lavender-window-soft) !important;
+    background: rgba(40, 48, 55, 0.78);
 
-    border-color: rgba(211, 177, 235, 0.40) !important;
+    border: 1px solid rgba(255, 255, 255, 0.34);
 
-    -webkit-backdrop-filter: blur(12px) saturate(128%);
-    backdrop-filter: blur(12px) saturate(128%);
+    box-shadow:
+        inset 0 0 16px rgba(0, 0, 0, 0.28);
 }
 
 
@@ -3280,8 +3241,8 @@ body.desktop-loaded #windows-container {
         0 14px 34px var(--glass-shadow),
         inset 0 1px 0 rgba(255, 255, 255, 0.55),
         inset 0 0 0 1px rgba(255, 255, 255, 0.10);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(155%);
-    backdrop-filter: blur(var(--glass-blur)) saturate(155%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(135%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(135%);
     overflow: hidden;
 }
 
@@ -3290,8 +3251,8 @@ body.desktop-loaded #windows-container {
 #graphic-arts-window > .window-body,
 #socials-window > .window-body {
     background: rgba(239, 236, 244, 0.42);
-    -webkit-backdrop-filter: blur(15px) saturate(135%);
-    backdrop-filter: blur(15px) saturate(135%);
+    -webkit-backdrop-filter: blur(10px) saturate(135%);
+    backdrop-filter: blur(10px) saturate(135%);
 }
 
 /* ---------- SHARED GRAY WINDOW BUTTONS ---------- */
@@ -3308,8 +3269,8 @@ body.desktop-loaded #windows-container {
         inset 1px 1px 0 rgba(255, 255, 255, 0.55),
         inset -1px -1px 0 rgba(64, 64, 64, 0.45),
         0 1px 3px rgba(0, 0, 0, 0.20);
-    -webkit-backdrop-filter: blur(15px);
-    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
     text-shadow: none;
 }
 
@@ -4528,8 +4489,8 @@ body.desktop-loaded #windows-container {
         inset 0 1px 0 rgba(255, 255, 255, 0.52),
         0 1px 0 rgba(255, 255, 255, 0.22);
 
-    -webkit-backdrop-filter: blur(15px) saturate(125%);
-    backdrop-filter: blur(15px) saturate(125%);
+    -webkit-backdrop-filter: blur(9px) saturate(125%);
+    backdrop-filter: blur(9px) saturate(125%);
 }
 
 .window .window-menu button {
@@ -4659,8 +4620,8 @@ body.desktop-loaded #windows-container {
 #about-window {
     background: rgba(215, 222, 235, 0.46);
 
-    -webkit-backdrop-filter: blur(15px) saturate(135%);
-    backdrop-filter: blur(15px) saturate(135%);
+    -webkit-backdrop-filter: blur(16px) saturate(135%);
+    backdrop-filter: blur(16px) saturate(135%);
 }
 
 #about-window .notepad-body {
@@ -4680,8 +4641,8 @@ body.desktop-loaded #windows-container {
     border-top: 1px solid rgba(255, 255, 255, 0.38);
     box-shadow: inset 0 0 18px rgba(109, 151, 184, 0.08);
 
-    -webkit-backdrop-filter: blur(15px);
-    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
 }
 
 #about-window .notepad-text {
@@ -4718,8 +4679,8 @@ body.desktop-loaded #windows-container {
     border-top: 1px solid rgba(126, 153, 174, 0.68);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.46);
 
-    -webkit-backdrop-filter: blur(15px);
-    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(7px);
+    backdrop-filter: blur(7px);
 }
 
 @media (max-width: 620px) {
@@ -5045,12 +5006,12 @@ textarea:disabled,
         1px solid rgba(255, 255, 255, 0.38);
 
     -webkit-backdrop-filter:
-        blur(15px)
-        saturate(125%);
+        blur(12px)
+        saturate(128%);
 
     backdrop-filter:
-        blur(15px)
-        saturate(125%);
+        blur(12px)
+        saturate(128%);
 }
 
 /* Dark image viewing area */
@@ -5070,11 +5031,11 @@ textarea:disabled,
         inset 0 0 24px rgba(0, 0, 0, 0.34);
 
     -webkit-backdrop-filter:
-        blur(15px)
+        blur(8px)
         saturate(120%);
 
     backdrop-filter:
-        blur(15px)
+        blur(8px)
         saturate(120%);
 }
 
@@ -5111,12 +5072,12 @@ textarea:disabled,
         inset 0 -1px 0 rgba(0, 0, 0, 0.18);
 
     -webkit-backdrop-filter:
-        blur(15px)
-        saturate(125%);
+        blur(14px)
+        saturate(135%);
 
     backdrop-filter:
-        blur(15px)
-        saturate(125%);
+        blur(14px)
+        saturate(135%);
 }
 
 /* Left and right buttons */
@@ -7976,4 +7937,920 @@ body.booting #magical-waterfall-canvas {
 .window .maximize::before {
     border-color: white !important;
     filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.65)) !important;
+}
+
+
+/* =========================================================
+   LAVENDER GLASS THEME — VERSION 7
+   Centers the loading signature, removes white gallery panels,
+   and unifies all non-window-control bars and buttons.
+========================================================= */
+
+:root {
+    --bibi-lavender-glass: rgba(218, 196, 236, 0.34);
+    --bibi-lavender-glass-soft: rgba(241, 231, 249, 0.26);
+    --bibi-lavender-glass-deep: rgba(157, 112, 190, 0.34);
+    --bibi-lavender-border: rgba(184, 137, 215, 0.68);
+    --bibi-lavender-border-strong: rgba(142, 92, 180, 0.82);
+    --bibi-lavender-highlight: rgba(255, 255, 255, 0.48);
+    --bibi-lavender-hover: rgba(202, 153, 231, 0.58);
+    --bibi-lavender-active: rgba(166, 110, 203, 0.62);
+    --bibi-lavender-text: #362243;
+    --bibi-lavender-shadow: rgba(55, 31, 72, 0.24);
+}
+
+/* Center the credit independently at the bottom of the Beatriz loader. */
+#startup-brand-screen {
+    position: fixed;
+}
+
+#startup-brand-screen .startup-windows-signature {
+    position: fixed !important;
+    left: 50% !important;
+    right: auto !important;
+    bottom: clamp(18px, 4vh, 46px) !important;
+    top: auto !important;
+
+    width: min(92vw, 720px) !important;
+    margin: 0 !important;
+    transform: translateX(-50%) !important;
+
+    text-align: center !important;
+    white-space: nowrap;
+}
+
+/* Photography and Graphic Arts are glass panels, never white canvases. */
+#photography-window,
+#graphic-arts-window {
+    background: var(--bibi-lavender-glass) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(135%);
+    backdrop-filter: blur(18px) saturate(135%);
+}
+
+#photography-window > .window-body,
+#photography-window .photo-gallery,
+#graphic-arts-window > .window-body,
+#graphic-arts-window .graphic-arts-body,
+#graphic-arts-window .graphic-projects {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.17),
+            rgba(225, 204, 241, 0.20) 55%,
+            rgba(166, 121, 198, 0.18)
+        ),
+        var(--bibi-lavender-glass-soft) !important;
+
+    border-color: var(--bibi-lavender-border) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(130%);
+    backdrop-filter: blur(14px) saturate(130%);
+}
+
+/* Title bars, menu bars, taskbar, and Start menu share one lavender skin. */
+#taskbar,
+#start-menu,
+.window > .title-bar,
+.window .window-menu,
+.window .notepad-menu,
+.window .magical-lake-toolbar {
+    color: var(--bibi-lavender-text) !important;
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.46) 0%,
+            rgba(233, 214, 246, 0.36) 46%,
+            rgba(195, 157, 221, 0.34) 48%,
+            rgba(224, 201, 240, 0.40) 100%
+        ),
+        var(--bibi-lavender-glass) !important;
+
+    border-color: var(--bibi-lavender-border) !important;
+    box-shadow:
+        inset 0 1px 0 var(--bibi-lavender-highlight),
+        0 1px 4px var(--bibi-lavender-shadow) !important;
+
+    -webkit-backdrop-filter: blur(14px) saturate(135%);
+    backdrop-filter: blur(14px) saturate(135%);
+}
+
+.window > .title-bar {
+    color: #42254f !important;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+}
+
+/* Taskbar, Start-menu, toolbar, and in-window controls use matching glass.
+   Minimize, maximize, and close are deliberately excluded. */
+#startButton,
+.task-button,
+.start-item,
+.window .window-menu button,
+.window .notepad-menu button,
+.window button:not(.minimize):not(.maximize):not(.close),
+.window .spotify-profile-button,
+#calendar-previous,
+#calendar-next,
+#calendar-today-button {
+    color: var(--bibi-lavender-text) !important;
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.36),
+            rgba(219, 191, 238, 0.26)
+        ),
+        rgba(203, 166, 226, 0.24) !important;
+
+    border: 1px solid var(--bibi-lavender-border) !important;
+    border-radius: 4px !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.48),
+        0 1px 2px var(--bibi-lavender-shadow) !important;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.62) !important;
+}
+
+#startButton:hover,
+.task-button:hover,
+.start-item:hover,
+.window .window-menu button:hover,
+.window .notepad-menu button:hover,
+.window button:not(.minimize):not(.maximize):not(.close):hover,
+.window .spotify-profile-button:hover,
+#calendar-previous:hover,
+#calendar-next:hover,
+#calendar-today-button:hover {
+    color: #32133f !important;
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.56),
+            rgba(207, 163, 234, 0.46)
+        ),
+        var(--bibi-lavender-hover) !important;
+
+    border-color: var(--bibi-lavender-border-strong) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.62),
+        0 0 8px rgba(204, 145, 235, 0.36),
+        0 1px 2px var(--bibi-lavender-shadow) !important;
+}
+
+.task-button.active,
+#startButton:active,
+.start-item:active,
+.window .window-menu button:active,
+.window .notepad-menu button:active,
+.window button:not(.minimize):not(.maximize):not(.close):active {
+    color: #ffffff !important;
+    background: var(--bibi-lavender-active) !important;
+    border-color: var(--bibi-lavender-border-strong) !important;
+    box-shadow: inset 0 2px 4px rgba(67, 39, 83, 0.28) !important;
+}
+
+/* Remove the remaining Windows-blue selection states. */
+.folder-item:hover,
+.photo-folder:hover span,
+.graphic-project-folder:hover span,
+.social-icon:hover,
+.recycle-program:hover,
+.icon:hover {
+    color: #ffffff !important;
+    background: var(--bibi-lavender-active) !important;
+    border-color: rgba(231, 204, 247, 0.64) !important;
+    box-shadow: 0 0 8px rgba(207, 151, 237, 0.30) !important;
+}
+
+/* Keep the restored title-bar controls exactly as they were. */
+.window .window-controls button,
+.window .window-controls button:hover,
+.window .window-controls button:focus-visible,
+.window .window-controls button:active,
+.window .window-controls .close,
+.window .window-controls .close:hover,
+.window .window-controls .close:focus-visible {
+    /* The rules immediately above this version continue to style these. */
+}
+
+@media (max-width: 700px) {
+    #startup-brand-screen .startup-windows-signature {
+        bottom: 18px !important;
+        font-size: 11px !important;
+    }
+}
+
+/* =========================================================
+   PHOTOGRAPHY + GRAPHIC ARTS — REMOVE INNER WHITE PANELS
+   The application window keeps its lavender glass shell while
+   every nested gallery surface becomes fully transparent.
+========================================================= */
+
+#photography-window > .window-body,
+#photography-window .photo-gallery,
+#graphic-arts-window > .window-body,
+#graphic-arts-window .graphic-arts-body,
+#graphic-arts-window .graphic-projects {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+
+    border-color: transparent !important;
+    box-shadow: none !important;
+
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+}
+
+/* Remove any inherited inset panel edge without changing spacing. */
+#photography-window .photo-gallery,
+#graphic-arts-window .graphic-projects {
+    border: 0 !important;
+    outline: 0 !important;
+}
+
+/* =========================================================
+   MUSIC WINDOW TABS — LAVENDER ONLY (VERSION 9)
+   Keeps SoundCloud and Bandcamp tabs consistent with the
+   rest of the lavender glass interface in every state.
+========================================================= */
+
+#music-window .music-tabs {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.22),
+            rgba(221, 195, 239, 0.20)
+        ),
+        rgba(206, 174, 229, 0.18) !important;
+
+    border-bottom: 1px solid var(--bibi-lavender-border) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.36),
+        0 1px 0 rgba(91, 57, 113, 0.12) !important;
+
+    -webkit-backdrop-filter: blur(10px) saturate(128%);
+    backdrop-filter: blur(10px) saturate(128%);
+}
+
+#music-window .music-tab {
+    color: var(--bibi-lavender-text) !important;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.40) 0%,
+            rgba(229, 207, 244, 0.32) 48%,
+            rgba(196, 158, 221, 0.30) 49%,
+            rgba(220, 194, 238, 0.34) 100%
+        ),
+        rgba(201, 165, 225, 0.24) !important;
+
+    border: 1px solid var(--bibi-lavender-border) !important;
+    border-radius: 3px 3px 0 0 !important;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.52),
+        0 1px 2px var(--bibi-lavender-shadow) !important;
+
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.64) !important;
+    filter: none !important;
+}
+
+#music-window .music-tab:hover,
+#music-window .music-tab:focus-visible {
+    color: #32133f !important;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.58) 0%,
+            rgba(224, 190, 243, 0.48) 48%,
+            rgba(187, 137, 216, 0.46) 49%,
+            rgba(215, 177, 237, 0.50) 100%
+        ),
+        var(--bibi-lavender-hover) !important;
+
+    border-color: var(--bibi-lavender-border-strong) !important;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.66),
+        0 0 8px rgba(204, 145, 235, 0.34),
+        0 1px 2px var(--bibi-lavender-shadow) !important;
+
+    outline: none !important;
+    filter: none !important;
+}
+
+#music-window .music-tab:active,
+#music-window .music-tab.active,
+#music-window .music-tab.active:hover,
+#music-window .music-tab.active:focus-visible {
+    color: #ffffff !important;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(194, 146, 224, 0.76),
+            rgba(150, 98, 188, 0.70)
+        ),
+        var(--bibi-lavender-active) !important;
+
+    border-color: var(--bibi-lavender-border-strong) !important;
+
+    box-shadow:
+        inset 0 2px 4px rgba(67, 39, 83, 0.26),
+        0 0 7px rgba(205, 149, 237, 0.30) !important;
+
+    text-shadow: 0 1px 2px rgba(74, 38, 93, 0.54) !important;
+    transform: none !important;
+    filter: none !important;
+}
+
+
+/* =========================================================
+   TASKBAR TAB CLOSE BUTTONS
+   A small X appears at the right edge of an open-window tab
+   only while the tab is hovered or keyboard-focused.
+========================================================= */
+
+.task-button {
+    position: relative;
+    padding-right: 27px !important;
+}
+
+.task-button-close {
+    position: absolute;
+    top: 50%;
+    right: 5px;
+    width: 17px;
+    height: 17px;
+    transform: translateY(-50%) scale(0.82);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #4b2857;
+    background: rgba(238, 216, 250, 0.32);
+    border: 1px solid transparent;
+    border-radius: 3px;
+    box-shadow: none;
+
+    font-family: Tahoma, sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 1;
+
+    opacity: 0;
+    pointer-events: none;
+    transition:
+        opacity 120ms ease,
+        transform 120ms ease,
+        background 120ms ease,
+        border-color 120ms ease;
+}
+
+.task-button:hover .task-button-close,
+.task-button:focus-visible .task-button-close,
+.task-button:focus-within .task-button-close {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(-50%) scale(1);
+}
+
+.task-button-close:hover {
+    color: #ffffff;
+    background: rgba(174, 111, 211, 0.82);
+    border-color: rgba(245, 228, 255, 0.86);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.42),
+        0 0 6px rgba(208, 154, 238, 0.58);
+}
+
+.task-button-close:active {
+    transform: translateY(-50%) scale(0.9);
+    background: rgba(132, 75, 166, 0.9);
+}
+
+@media (max-width: 700px) {
+    .task-button {
+        padding-right: 2px !important;
+    }
+
+    .task-button-close {
+        display: none;
+    }
+}
+
+/* =========================================================
+   v11: ALL WINDOWS MATCH PHOTOGRAPHY / GRAPHIC ARTS GLASS
+========================================================= */
+
+#shutdown-dialog,
+#socials-window,
+#contact-window,
+#graphic-arts-window,
+#music-window,
+#photography-window,
+#disney-window,
+#miku-window,
+#image-preview-window,
+#about-window,
+#trash-window,
+.graphic-project-window {
+    background: var(--glass-window) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: 9px 9px 6px 6px !important;
+    box-shadow:
+        0 14px 34px var(--glass-shadow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.10) !important;
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(135%) !important;
+    backdrop-filter: blur(var(--glass-blur)) saturate(135%) !important;
+    overflow: hidden;
+}
+
+#shutdown-dialog > .window-body,
+#socials-window > .window-body,
+#contact-window > .window-body,
+#graphic-arts-window > .window-body,
+#music-window > .window-body,
+#photography-window > .window-body,
+#disney-window > .window-body,
+#miku-window > .window-body,
+#image-preview-window > .window-body,
+#about-window > .window-body,
+#trash-window > .window-body,
+.graphic-project-window > .window-body {
+    background: rgba(239, 236, 244, 0.42) !important;
+    -webkit-backdrop-filter: blur(10px) saturate(135%) !important;
+    backdrop-filter: blur(10px) saturate(135%) !important;
+}
+
+.window .contact-body,
+.window .socials-body,
+.window .graphic-arts-body,
+.window .music-window,
+.window .music-content,
+.window .photo-gallery,
+.window .graphic-projects,
+.window .graphic-project-body,
+.window .graphic-project-content,
+.window .project-gallery,
+.window .image-preview-body,
+.window .preview-image-area,
+.window .shutdown-body,
+#trash-window .trash-body,
+#about-window .notepad-body {
+    background: transparent !important;
+}
+
+#about-window .notepad-text,
+#contact-window input,
+#contact-window textarea,
+#contact-window button:not(.minimize):not(.maximize):not(.close),
+#shutdown-dialog button {
+    background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.42),
+        rgba(234, 220, 247, 0.30)
+    ) !important;
+    -webkit-backdrop-filter: blur(8px) saturate(130%) !important;
+    backdrop-filter: blur(8px) saturate(130%) !important;
+}
+
+/* =========================================================
+   v12: DARKER, MORE TRANSPARENT PURPLE GLASS THEME
+========================================================= */
+
+:root {
+    --bibi-dark-window: rgba(45, 20, 72, 0.36);
+    --bibi-dark-body: rgba(73, 38, 108, 0.20);
+    --bibi-dark-bar: rgba(57, 25, 88, 0.38);
+    --bibi-dark-control: rgba(94, 52, 132, 0.28);
+    --bibi-dark-control-hover: rgba(139, 87, 177, 0.42);
+    --bibi-dark-control-active: rgba(111, 61, 151, 0.58);
+    --bibi-dark-border: rgba(213, 177, 239, 0.48);
+    --bibi-dark-border-strong: rgba(226, 198, 246, 0.68);
+    --bibi-dark-text: #f4eaff;
+    --bibi-dark-muted: #d8c4e8;
+    --bibi-dark-shadow: rgba(18, 7, 31, 0.44);
+}
+
+/* Window shells */
+#shutdown-dialog,
+.window,
+#socials-window,
+#contact-window,
+#graphic-arts-window,
+#music-window,
+#photography-window,
+#disney-window,
+#miku-window,
+#image-preview-window,
+#about-window,
+#trash-window,
+.graphic-project-window {
+    background: var(--bibi-dark-window) !important;
+    border-color: var(--bibi-dark-border) !important;
+    box-shadow:
+        0 16px 38px var(--bibi-dark-shadow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.20),
+        inset 0 0 0 1px rgba(222, 190, 244, 0.08) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(145%) !important;
+    backdrop-filter: blur(20px) saturate(145%) !important;
+}
+
+/* Window content areas */
+#shutdown-dialog > .window-body,
+.window > .window-body,
+#socials-window > .window-body,
+#contact-window > .window-body,
+#graphic-arts-window > .window-body,
+#music-window > .window-body,
+#photography-window > .window-body,
+#disney-window > .window-body,
+#miku-window > .window-body,
+#image-preview-window > .window-body,
+#about-window > .window-body,
+#trash-window > .window-body,
+.graphic-project-window > .window-body {
+    color: var(--bibi-dark-text) !important;
+    background: var(--bibi-dark-body) !important;
+    -webkit-backdrop-filter: blur(15px) saturate(140%) !important;
+    backdrop-filter: blur(15px) saturate(140%) !important;
+}
+
+/* Keep nested application surfaces clear so the glass shows through. */
+.window .contact-body,
+.window .socials-body,
+.window .graphic-arts-body,
+.window .music-window,
+.window .music-content,
+.window .photo-gallery,
+.window .graphic-projects,
+.window .graphic-project-body,
+.window .graphic-project-content,
+.window .project-gallery,
+.window .image-preview-body,
+.window .preview-image-area,
+.window .shutdown-body,
+#trash-window .trash-body,
+#about-window .notepad-body {
+    background: transparent !important;
+}
+
+/* Dark purple title bars and application bars. */
+.window > .title-bar,
+.window .window-menu,
+.window .notepad-menu,
+.window .music-tabs,
+.window .magical-lake-toolbar {
+    color: var(--bibi-dark-text) !important;
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.16) 0%,
+            rgba(117, 71, 153, 0.20) 46%,
+            rgba(50, 21, 78, 0.34) 48%,
+            rgba(75, 35, 108, 0.30) 100%
+        ),
+        var(--bibi-dark-bar) !important;
+    border-color: var(--bibi-dark-border) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.18),
+        0 1px 3px rgba(20, 8, 34, 0.30) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(145%) !important;
+    backdrop-filter: blur(16px) saturate(145%) !important;
+}
+
+.window > .title-bar {
+    color: #ffffff !important;
+    text-shadow: 0 1px 2px rgba(20, 7, 32, 0.72) !important;
+}
+
+/* Taskbar and Start menu */
+#taskbar,
+#start-menu {
+    color: var(--bibi-dark-text) !important;
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(146, 101, 181, 0.16),
+            rgba(44, 18, 70, 0.34)
+        ),
+        rgba(38, 15, 63, 0.42) !important;
+    border-color: var(--bibi-dark-border) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.20),
+        0 -2px 12px rgba(17, 5, 31, 0.26) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
+    backdrop-filter: blur(20px) saturate(150%) !important;
+}
+
+#clock,
+#clock-area,
+#clock-calendar {
+    color: var(--bibi-dark-text) !important;
+    background: rgba(60, 27, 91, 0.24) !important;
+    border-color: var(--bibi-dark-border) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(140%) !important;
+    backdrop-filter: blur(14px) saturate(140%) !important;
+}
+
+/* All ordinary buttons and taskbar tabs. Window controls stay untouched. */
+#startButton,
+.task-button,
+.start-item,
+.window .window-menu button,
+.window .notepad-menu button,
+.window .music-tab,
+.window button:not(.minimize):not(.maximize):not(.close),
+.window .spotify-profile-button,
+#calendar-previous,
+#calendar-next,
+#calendar-today-button {
+    color: var(--bibi-dark-text) !important;
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.13),
+            rgba(95, 51, 132, 0.16)
+        ),
+        var(--bibi-dark-control) !important;
+    border-color: var(--bibi-dark-border) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.16),
+        0 1px 3px rgba(18, 6, 31, 0.24) !important;
+    text-shadow: 0 1px 2px rgba(18, 5, 30, 0.66) !important;
+    -webkit-backdrop-filter: blur(10px) saturate(140%) !important;
+    backdrop-filter: blur(10px) saturate(140%) !important;
+}
+
+#startButton:hover,
+.task-button:hover,
+.start-item:hover,
+.window .window-menu button:hover,
+.window .window-menu button:focus-visible,
+.window .notepad-menu button:hover,
+.window .music-tab:hover,
+.window .music-tab:focus-visible,
+.window button:not(.minimize):not(.maximize):not(.close):hover,
+.window .spotify-profile-button:hover,
+#calendar-previous:hover,
+#calendar-next:hover,
+#calendar-today-button:hover {
+    color: #ffffff !important;
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.19),
+            rgba(152, 96, 190, 0.24)
+        ),
+        var(--bibi-dark-control-hover) !important;
+    border-color: var(--bibi-dark-border-strong) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.24),
+        0 0 9px rgba(174, 111, 216, 0.24) !important;
+}
+
+.task-button.active,
+#startButton:active,
+.start-item:active,
+.window .window-menu button:active,
+.window .notepad-menu button:active,
+.window .music-tab:active,
+.window .music-tab.active,
+.window button:not(.minimize):not(.maximize):not(.close):active {
+    color: #ffffff !important;
+    background: var(--bibi-dark-control-active) !important;
+    border-color: var(--bibi-dark-border-strong) !important;
+    box-shadow: inset 0 2px 5px rgba(22, 7, 37, 0.46) !important;
+}
+
+/* Transparent purple form and text surfaces. */
+#about-window .notepad-text,
+#contact-window input,
+#contact-window textarea,
+#contact-window button:not(.minimize):not(.maximize):not(.close),
+#shutdown-dialog button {
+    color: var(--bibi-dark-text) !important;
+    background: rgba(63, 28, 94, 0.22) !important;
+    border-color: var(--bibi-dark-border) !important;
+    -webkit-backdrop-filter: blur(12px) saturate(140%) !important;
+    backdrop-filter: blur(12px) saturate(140%) !important;
+}
+
+#contact-window input::placeholder,
+#contact-window textarea::placeholder {
+    color: rgba(231, 214, 244, 0.72) !important;
+}
+
+/* Folder labels and hover selections stay purple rather than blue. */
+.folder-item:hover,
+.photo-folder:hover span,
+.graphic-project-folder:hover span,
+.social-icon:hover,
+.recycle-program:hover,
+.icon:hover {
+    color: #ffffff !important;
+    background: rgba(118, 65, 157, 0.58) !important;
+    border-color: var(--bibi-dark-border-strong) !important;
+    box-shadow: 0 0 8px rgba(166, 104, 207, 0.24) !important;
+}
+
+.task-button-close {
+    color: var(--bibi-dark-muted) !important;
+    background: rgba(87, 43, 121, 0.20) !important;
+}
+
+.task-button-close:hover {
+    color: #ffffff !important;
+    background: rgba(148, 82, 190, 0.64) !important;
+    border-color: var(--bibi-dark-border-strong) !important;
+}
+
+
+/* =========================================================
+   v14: MAGICAL LAKE MESSAGES OVER THE WATER
+========================================================= */
+
+/* The old wish/reset toolbar was removed from the HTML. */
+.magical-lake-body {
+    gap: 0 !important;
+}
+
+.magical-lake-screen {
+    position: relative;
+}
+
+#magical-lake-status.magical-lake-message {
+    position: absolute;
+    z-index: 8;
+    top: 12px;
+    left: 50%;
+
+    width: max-content;
+    max-width: calc(100% - 34px);
+    min-width: 0;
+    margin: 0;
+    padding: 7px 13px 8px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+
+    color: #fff5ff !important;
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.18),
+            rgba(76, 32, 108, 0.46)
+        ),
+        rgba(36, 15, 58, 0.58) !important;
+
+    border: 1px solid rgba(226, 180, 255, 0.62);
+    border-radius: 9px;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.22),
+        0 4px 14px rgba(17, 5, 30, 0.34),
+        0 0 12px rgba(211, 143, 255, 0.20);
+
+    -webkit-backdrop-filter: blur(12px) saturate(145%);
+    backdrop-filter: blur(12px) saturate(145%);
+
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: 0.01em;
+    text-shadow: 0 1px 2px rgba(17, 5, 30, 0.82);
+
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, -8px) scale(0.97);
+
+    transition:
+        opacity 180ms ease,
+        transform 220ms ease,
+        visibility 180ms linear;
+}
+
+#magical-lake-status.magical-lake-message-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0) scale(1);
+}
+
+@media (max-width: 700px) {
+    #magical-lake-status.magical-lake-message {
+        top: 9px;
+        max-width: calc(100% - 22px);
+        padding: 6px 10px 7px;
+        font-size: 11px;
+    }
+}
+
+/* =========================================================
+   v15: MUSIC TABS MATCH THE DARK PURPLE GLASS THEME
+========================================================= */
+
+#music-window .music-tabs {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.12),
+            rgba(78, 37, 112, 0.18) 48%,
+            rgba(39, 16, 64, 0.28) 49%,
+            rgba(55, 24, 84, 0.26)
+        ),
+        var(--bibi-dark-bar) !important;
+    border-color: var(--bibi-dark-border) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.15),
+        0 1px 3px rgba(18, 7, 31, 0.28) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(145%) !important;
+    backdrop-filter: blur(16px) saturate(145%) !important;
+}
+
+#music-window .music-tab,
+#music-window .music-tab:link,
+#music-window .music-tab:visited {
+    color: var(--bibi-dark-text) !important;
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.11),
+            rgba(87, 44, 124, 0.14)
+        ),
+        var(--bibi-dark-control) !important;
+    border: 1px solid var(--bibi-dark-border) !important;
+    border-radius: 4px 4px 0 0 !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.15),
+        0 1px 3px rgba(18, 6, 31, 0.24) !important;
+    text-shadow: 0 1px 2px rgba(18, 5, 30, 0.68) !important;
+    -webkit-backdrop-filter: blur(11px) saturate(140%) !important;
+    backdrop-filter: blur(11px) saturate(140%) !important;
+    filter: none !important;
+}
+
+#music-window .music-tab:hover,
+#music-window .music-tab:focus-visible {
+    color: #ffffff !important;
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.16),
+            rgba(121, 69, 158, 0.20)
+        ),
+        var(--bibi-dark-control-hover) !important;
+    border-color: var(--bibi-dark-border-strong) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.22),
+        0 0 8px rgba(168, 103, 209, 0.20) !important;
+    outline: none !important;
+    filter: none !important;
+}
+
+#music-window .music-tab:active,
+#music-window .music-tab.active,
+#music-window .music-tab.active:hover,
+#music-window .music-tab.active:focus-visible {
+    color: #ffffff !important;
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(120, 69, 158, 0.36),
+            rgba(67, 29, 101, 0.46)
+        ),
+        var(--bibi-dark-control-active) !important;
+    border-color: var(--bibi-dark-border-strong) !important;
+    box-shadow:
+        inset 0 2px 5px rgba(22, 7, 37, 0.46),
+        0 0 7px rgba(169, 108, 210, 0.16) !important;
+    text-shadow: 0 1px 2px rgba(18, 5, 30, 0.76) !important;
+    transform: none !important;
+    filter: none !important;
+}
+
+/* =========================================================
+   v16: CLOCK BLENDS INTO THE TASKBAR
+========================================================= */
+
+/* Remove the stacked dark panels so the clock is never darker than its bar. */
+#taskbar #clock-area,
+#taskbar #clock {
+    background: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+}
+
+#taskbar #clock:hover,
+#taskbar #clock:focus-visible {
+    background: rgba(157, 103, 195, 0.14) !important;
+    border-color: rgba(222, 191, 244, 0.24) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
 }
