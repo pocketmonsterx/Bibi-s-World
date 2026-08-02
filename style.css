@@ -8119,15 +8119,6 @@ body.booting #magical-waterfall-canvas {
 }
 
 /* Keep the restored title-bar controls exactly as they were. */
-.window .window-controls button,
-.window .window-controls button:hover,
-.window .window-controls button:focus-visible,
-.window .window-controls button:active,
-.window .window-controls .close,
-.window .window-controls .close:hover,
-.window .window-controls .close:focus-visible {
-    /* The rules immediately above this version continue to style these. */
-}
 
 @media (max-width: 700px) {
     #startup-brand-screen .startup-windows-signature {
