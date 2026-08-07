@@ -429,11 +429,10 @@ function openWindow(windowElement) {
 
     if (wasHidden) {
 
-        // About Me always opens in the same place
+        // The wider About Me window opens centered so it stays on-screen.
         if (windowElement.id === "about-window") {
 
-            windowElement.style.left = "120px";
-            windowElement.style.top = "90px";
+            centerWindow(windowElement);
 
         }
 
@@ -461,8 +460,10 @@ function openWindow(windowElement) {
 
         // Large portfolio projects always open centered
 else if (
+    windowElement.id === "universe-window" ||
     windowElement.id === "disney-window" ||
     windowElement.id === "miku-window" ||
+    windowElement.id === "san-francisco-window" ||
     windowElement.id === "magical-lake-window" ||
     windowElement.classList.contains("graphic-project-window")
 ) {
@@ -657,11 +658,13 @@ windows.forEach(windowElement=>{
                 windowElement.dataset.top=
                 windowElement.style.top;
 
-                windowElement.dataset.width=
-                windowElement.style.width;
+                windowElement.dataset.width =
+                    windowElement.style.width ||
+                    `${windowElement.offsetWidth}px`;
 
-                windowElement.dataset.height=
-                windowElement.style.height;
+                windowElement.dataset.height =
+                    windowElement.style.height ||
+                    `${windowElement.offsetHeight}px`;
 
                 windowElement.style.left="0";
 
@@ -712,9 +715,11 @@ function createTaskButton(windowElement) {
 
     const iconPaths = {
         about: "assets/icons/about me.ico",
+        universe: "assets/icons/computer.ico",
         photography: "assets/icons/photography.ico",
         "disney 2010": "assets/icons/photography.ico",
         "miku 2010": "assets/icons/photography.ico",
+        "san francisco 2012": "assets/icons/photography.ico",
         "graphic-arts": "assets/icons/graphic arts.ico",
         "graphic-project-one": "assets/icons/graphic arts.ico",
         "graphic-project-two": "assets/icons/graphic arts.ico",
@@ -1324,6 +1329,156 @@ photoFolders.forEach(folder => {
 });
 
 // ====================================
+// AUTOMATIC NUMBERED PHOTO GALLERIES
+// ====================================
+
+const numberedPhotoExtensions = [
+    "jpg",
+    "JPG",
+    "jpeg",
+    "JPEG",
+    "png",
+    "PNG",
+    "webp",
+    "WEBP"
+];
+
+function resolveNumberedPhotoExtension(
+    folderPath,
+    photoNumber,
+    onResolved,
+    onMissing
+) {
+    let extensionIndex = 0;
+    const probeImage = new Image();
+
+    function tryNextExtension() {
+        if (extensionIndex >= numberedPhotoExtensions.length) {
+            probeImage.onload = null;
+            probeImage.onerror = null;
+
+            if (typeof onMissing === "function") {
+                onMissing();
+            }
+
+            return;
+        }
+
+        const extension =
+            numberedPhotoExtensions[extensionIndex];
+
+        extensionIndex += 1;
+
+        probeImage.onload = () => {
+            probeImage.onload = null;
+            probeImage.onerror = null;
+            onResolved(extension);
+        };
+
+        probeImage.onerror = tryNextExtension;
+        probeImage.src =
+            `${folderPath}/${photoNumber}.${extension}`;
+    }
+
+    tryNextExtension();
+}
+
+// Load the San Francisco folder thumbnail without requiring a fixed extension.
+document
+    .querySelectorAll("[data-numbered-thumbnail]")
+    .forEach(thumbnail => {
+        const folderPath = thumbnail.dataset.photoFolder;
+        const photoNumber = Number.parseInt(
+            thumbnail.dataset.photoNumber,
+            10
+        ) || 1;
+
+        if (!folderPath) {
+            return;
+        }
+
+        resolveNumberedPhotoExtension(
+            folderPath,
+            photoNumber,
+            extension => {
+                thumbnail.src =
+                    `${folderPath}/${photoNumber}.${extension}`;
+            },
+            () => {
+                thumbnail.src = "assets/icons/photography.ico";
+                thumbnail.classList.add(
+                    "photo-folder-fallback-icon"
+                );
+            }
+        );
+    });
+
+// Build galleries from numbered files such as 1.jpg, 2.jpg, 3.jpg...
+document
+    .querySelectorAll("[data-numbered-gallery]")
+    .forEach(gallery => {
+        const folderPath = gallery.dataset.photoFolder;
+        const photoCount = Number.parseInt(
+            gallery.dataset.photoCount,
+            10
+        ) || 12;
+        const galleryTitle =
+            gallery.dataset.galleryTitle || "Gallery";
+
+        if (!folderPath || photoCount < 1) {
+            return;
+        }
+
+        resolveNumberedPhotoExtension(
+            folderPath,
+            1,
+            extension => {
+                const galleryFragment =
+                    document.createDocumentFragment();
+
+                for (
+                    let photoNumber = 1;
+                    photoNumber <= photoCount;
+                    photoNumber += 1
+                ) {
+                    const galleryImage =
+                        document.createElement("img");
+
+                    galleryImage.src =
+                        `${folderPath}/${photoNumber}.${extension}`;
+                    galleryImage.alt =
+                        `${galleryTitle} ${String(photoNumber).padStart(2, "0")}`;
+                    galleryImage.loading = "lazy";
+                    galleryImage.decoding = "async";
+
+                    // Missing numbers do not leave broken-image boxes.
+                    galleryImage.addEventListener(
+                        "error",
+                        () => galleryImage.remove(),
+                        { once: true }
+                    );
+
+                    galleryFragment.appendChild(galleryImage);
+                }
+
+                gallery.appendChild(galleryFragment);
+            },
+            () => {
+                const emptyMessage =
+                    document.createElement("p");
+
+                emptyMessage.className =
+                    "numbered-gallery-empty";
+                emptyMessage.textContent =
+                    "No numbered photos were found in this folder.";
+
+                gallery.appendChild(emptyMessage);
+            }
+        );
+    });
+
+
+// ====================================
 // IMAGE PREVIEW NAVIGATION
 // ====================================
 
@@ -1384,31 +1539,34 @@ function showPreviewPhoto(index) {
 }
 
 
-// Opens the clicked photo
-document
-    .querySelectorAll(
+// Opens static and dynamically generated gallery photos.
+document.addEventListener("click", event => {
+
+    const img = event.target.closest(
         ".project-gallery img, .graphic-project-gallery img"
-    )
-    .forEach(img => {
+    );
 
-    img.addEventListener("click", () => {
+    if (!img) {
+        return;
+    }
 
-        const gallery =
-    img.closest(
+    const gallery = img.closest(
         ".project-gallery, .graphic-project-gallery"
     );
 
-        currentGalleryImages =
-            Array.from(gallery.querySelectorAll("img"));
+    if (!gallery) {
+        return;
+    }
 
-        currentPhotoIndex =
-            currentGalleryImages.indexOf(img);
+    currentGalleryImages =
+        Array.from(gallery.querySelectorAll("img"));
 
-        showPreviewPhoto(currentPhotoIndex);
+    currentPhotoIndex =
+        currentGalleryImages.indexOf(img);
 
-        openWindow(previewWindow);
+    showPreviewPhoto(currentPhotoIndex);
 
-    });
+    openWindow(previewWindow);
 
 });
 
@@ -4463,3 +4621,346 @@ window.addEventListener("DOMContentLoaded", () => {
         window.setTimeout(forceSocialsWindowToFront, 60);
     });
 })();
+
+// ====================================
+// INTERACTIVE PORTFOLIO UNIVERSE
+// ====================================
+
+(() => {
+    const universeWindow =
+        document.getElementById("universe-window");
+
+    const stage =
+        document.getElementById("universe-stage");
+
+    const world =
+        document.getElementById("universe-world");
+
+    if (!universeWindow || !stage || !world) {
+        return;
+    }
+
+    const projects = Array.from(
+        world.querySelectorAll(".universe-project")
+    );
+
+    const layoutButtons = Array.from(
+        universeWindow.querySelectorAll("[data-universe-layout]")
+    );
+
+    const zoomInButton =
+        document.getElementById("universe-zoom-in");
+
+    const zoomOutButton =
+        document.getElementById("universe-zoom-out");
+
+    const resetButton =
+        document.getElementById("universe-reset");
+
+    const view = {
+        x: 0,
+        y: 0,
+        scale: 0.78
+    };
+
+    const drag = {
+        active: false,
+        pointerId: null,
+        startPointerX: 0,
+        startPointerY: 0,
+        startViewX: 0,
+        startViewY: 0
+    };
+
+    let currentLayout = "spatial";
+
+    function defaultScale() {
+        return window.matchMedia("(max-width: 700px)").matches
+            ? 0.54
+            : 0.78;
+    }
+
+    function clampScale(value) {
+        return Math.min(2.1, Math.max(0.32, value));
+    }
+
+    function renderUniverse() {
+        world.style.transform =
+            `translate3d(${view.x}px, ${view.y}px, 0) scale(${view.scale})`;
+    }
+
+    function applySpatialLayout() {
+        currentLayout = "spatial";
+        stage.classList.remove("universe-grid-layout");
+
+        projects.forEach(project => {
+            const x = Number(project.dataset.x || 0);
+            const y = Number(project.dataset.y || 0);
+            const rotation = Number(project.dataset.rotation || 0);
+            const width = Number(project.dataset.width || 210);
+
+            project.style.left = `${x}px`;
+            project.style.top = `${y}px`;
+            project.style.width = `${width}px`;
+            project.style.transform =
+                `translate(-50%, -50%) rotate(${rotation}deg)`;
+        });
+    }
+
+    function applyGridLayout() {
+        currentLayout = "grid";
+        stage.classList.add("universe-grid-layout");
+
+        const mobile =
+            window.matchMedia("(max-width: 700px)").matches;
+
+        const columns = mobile ? 2 : 4;
+        const horizontalGap = mobile ? 150 : 245;
+        const verticalGap = mobile ? 190 : 245;
+        const cardWidth = mobile ? 132 : 190;
+        const rowCount = Math.ceil(projects.length / columns);
+
+        projects.forEach((project, index) => {
+            const column = index % columns;
+            const row = Math.floor(index / columns);
+
+            const x =
+                (column - (columns - 1) / 2) * horizontalGap;
+
+            const y =
+                (row - (rowCount - 1) / 2) * verticalGap;
+
+            project.style.left = `${x}px`;
+            project.style.top = `${y}px`;
+            project.style.width = `${cardWidth}px`;
+            project.style.transform =
+                "translate(-50%, -50%) rotate(0deg)";
+        });
+    }
+
+    function setActiveLayoutButton(layoutName) {
+        layoutButtons.forEach(button => {
+            button.classList.toggle(
+                "is-active",
+                button.dataset.universeLayout === layoutName
+            );
+        });
+    }
+
+    function resetUniverseView() {
+        view.x = 0;
+        view.y = 0;
+        view.scale = defaultScale();
+        renderUniverse();
+    }
+
+    function zoomAroundPoint(nextScale, clientX, clientY) {
+        const rectangle = stage.getBoundingClientRect();
+
+        const pointerX =
+            clientX - rectangle.left - rectangle.width / 2;
+
+        const pointerY =
+            clientY - rectangle.top - rectangle.height / 2;
+
+        const worldX =
+            (pointerX - view.x) / view.scale;
+
+        const worldY =
+            (pointerY - view.y) / view.scale;
+
+        view.scale = clampScale(nextScale);
+
+        view.x =
+            pointerX - worldX * view.scale;
+
+        view.y =
+            pointerY - worldY * view.scale;
+
+        renderUniverse();
+    }
+
+    function zoomFromCenter(multiplier) {
+        const rectangle = stage.getBoundingClientRect();
+
+        zoomAroundPoint(
+            view.scale * multiplier,
+            rectangle.left + rectangle.width / 2,
+            rectangle.top + rectangle.height / 2
+        );
+    }
+
+    stage.addEventListener(
+        "wheel",
+        event => {
+            event.preventDefault();
+
+            zoomAroundPoint(
+                view.scale * (event.deltaY < 0 ? 1.1 : 0.9),
+                event.clientX,
+                event.clientY
+            );
+        },
+        { passive: false }
+    );
+
+    stage.addEventListener("pointerdown", event => {
+        if (
+            event.button !== 0 ||
+            event.target.closest(".universe-project") ||
+            event.target.closest(".universe-controls")
+        ) {
+            return;
+        }
+
+        event.preventDefault();
+
+        drag.active = true;
+        drag.pointerId = event.pointerId;
+        drag.startPointerX = event.clientX;
+        drag.startPointerY = event.clientY;
+        drag.startViewX = view.x;
+        drag.startViewY = view.y;
+
+        stage.classList.add("is-panning");
+        stage.setPointerCapture(event.pointerId);
+    });
+
+    stage.addEventListener("pointermove", event => {
+        if (
+            !drag.active ||
+            event.pointerId !== drag.pointerId
+        ) {
+            return;
+        }
+
+        view.x =
+            drag.startViewX + event.clientX - drag.startPointerX;
+
+        view.y =
+            drag.startViewY + event.clientY - drag.startPointerY;
+
+        renderUniverse();
+    });
+
+    function finishUniversePan(event) {
+        if (
+            !drag.active ||
+            event.pointerId !== drag.pointerId
+        ) {
+            return;
+        }
+
+        drag.active = false;
+        drag.pointerId = null;
+        stage.classList.remove("is-panning");
+
+        if (stage.hasPointerCapture(event.pointerId)) {
+            stage.releasePointerCapture(event.pointerId);
+        }
+    }
+
+    stage.addEventListener("pointerup", finishUniversePan);
+    stage.addEventListener("pointercancel", finishUniversePan);
+
+    layoutButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            const layout = button.dataset.universeLayout;
+
+            if (layout === "grid") {
+                applyGridLayout();
+            } else {
+                applySpatialLayout();
+            }
+
+            setActiveLayoutButton(layout);
+            resetUniverseView();
+        });
+    });
+
+    zoomInButton.addEventListener("click", () => {
+        zoomFromCenter(1.2);
+    });
+
+    zoomOutButton.addEventListener("click", () => {
+        zoomFromCenter(0.82);
+    });
+
+    resetButton.addEventListener("click", () => {
+        if (currentLayout === "grid") {
+            applyGridLayout();
+        } else {
+            applySpatialLayout();
+        }
+
+        resetUniverseView();
+    });
+
+    projects.forEach(project => {
+        project.addEventListener("click", event => {
+            event.stopPropagation();
+
+            const targetId =
+                project.dataset.targetWindow;
+
+            const targetWindow =
+                document.getElementById(targetId);
+
+            if (!targetWindow) {
+                console.warn(
+                    "Universe target window was not found:",
+                    targetId
+                );
+                return;
+            }
+
+            openWindow(targetWindow);
+            bringToFront(targetWindow);
+            markWindowAsActive(targetWindow);
+        });
+    });
+
+    stage.addEventListener("keydown", event => {
+        const step = event.shiftKey ? 80 : 35;
+
+        if (event.key === "+" || event.key === "=") {
+            event.preventDefault();
+            zoomFromCenter(1.15);
+        } else if (event.key === "-" || event.key === "_") {
+            event.preventDefault();
+            zoomFromCenter(0.87);
+        } else if (event.key === "0") {
+            event.preventDefault();
+            resetUniverseView();
+        } else if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            view.x += step;
+            renderUniverse();
+        } else if (event.key === "ArrowRight") {
+            event.preventDefault();
+            view.x -= step;
+            renderUniverse();
+        } else if (event.key === "ArrowUp") {
+            event.preventDefault();
+            view.y += step;
+            renderUniverse();
+        } else if (event.key === "ArrowDown") {
+            event.preventDefault();
+            view.y -= step;
+            renderUniverse();
+        }
+    });
+
+    window.addEventListener("resize", () => {
+        if (currentLayout === "grid") {
+            applyGridLayout();
+        }
+
+        view.scale = defaultScale();
+        renderUniverse();
+    });
+
+    applySpatialLayout();
+    resetUniverseView();
+})();
+

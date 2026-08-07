@@ -12,7 +12,7 @@
 
 <title>𝕭𝖎𝖇𝖎</title>
 
-<link rel="stylesheet" href="style.css?v=20260801-18">
+<link rel="stylesheet" href="style.css?v=20260806-22">
 
 </head>
 
@@ -90,6 +90,7 @@
                 <p>B:\BIBI\PHOTOGRAPHY&gt; scanning gallery archive</p>
                 <p class="bios-status">Disney 2010 .................................. READY</p>
                 <p class="bios-status">Miku 2010 .................................... READY</p>
+                <p class="bios-status">San Francisco 2012 ........................... READY</p>
                 <p class="bios-status bios-mobile-hide">Image preview system ......................... READY</p>
             </section>
 
@@ -205,6 +206,11 @@
 <div class="icon" data-window="home">
 <img src="assets/icons/computer.ico">
 <span>Home</span>
+</div>
+
+<div class="icon" data-window="universe">
+<img src="assets/icons/computer.ico" alt="">
+<span>Universe</span>
 </div>
 
 <div class="icon" data-window="about">
@@ -328,6 +334,10 @@
 
     <button class="start-item" data-window="about">
         📄 About Me
+    </button>
+
+    <button class="start-item" data-window="universe">
+        ✦ Universe
     </button>
 
     <button class="start-item" data-window="contact">
@@ -491,6 +501,20 @@
          alt="Miku 2010 project">
         <span>
             Miku 2010
+        </span>
+
+    </div>
+
+    <div class="photo-folder" data-gallery="san francisco 2012">
+
+        <img
+            data-numbered-thumbnail
+            data-photo-folder="assets/photos/San Francisco 2012"
+            data-photo-number="1"
+            alt="San Francisco 2012 project"
+        >
+        <span>
+            San Francisco 2012
         </span>
 
     </div>
@@ -674,6 +698,114 @@
 
 </div>
 
+<!-- ================= SAN FRANCISCO 2012 GALLERY ================= -->
+
+<div
+    class="window hidden photo-project-window"
+    id="san-francisco-window"
+    data-window-id="san francisco 2012"
+>
+
+    <div class="title-bar">
+
+        <span>San Francisco 2012</span>
+
+        <div class="window-controls">
+            <button class="minimize"></button>
+            <button class="maximize"></button>
+            <button class="close"></button>
+        </div>
+
+    </div>
+
+    <div class="window-menu">
+        <button type="button">File</button>
+        <button type="button">Edit</button>
+        <button type="button">View</button>
+        <button type="button">Tools</button>
+        <button type="button">Help</button>
+    </div>
+
+    <div class="window-body">
+
+        <!--
+            The script checks numbered files from 1 through 30.
+            Missing numbers are skipped automatically. Change 30 if needed.
+        -->
+        <div class="project-gallery san-francisco-gallery">
+
+    <!-- Row 1: one photograph -->
+    <div class="gallery-row one">
+        <img
+            src="assets/photos/San Francisco 2012/1.jpg"
+            alt="San Francisco 2012 01"
+            loading="lazy"
+        >
+    </div>
+
+    <!-- Row 2: two photographs -->
+    <div class="gallery-row two">
+        <img
+            src="assets/photos/San Francisco 2012/2.jpg"
+            alt="San Francisco 2012 02"
+            loading="lazy"
+        >
+
+        <img
+            src="assets/photos/San Francisco 2012/3.jpg"
+            alt="San Francisco 2012 03"
+            loading="lazy"
+        >
+    </div>
+
+    <!-- Row 3: one photograph -->
+    <div class="gallery-row one">
+        <img
+            src="assets/photos/San Francisco 2012/4.jpg"
+            alt="San Francisco 2012 04"
+            loading="lazy"
+        >
+    </div>
+
+    <!-- Row 4: one photograph -->
+    <div class="gallery-row one">
+        <img
+            src="assets/photos/San Francisco 2012/5.jpg"
+            alt="San Francisco 2012 05"
+            loading="lazy"
+        >
+    </div>
+
+    <!-- Row 5: two photographs -->
+    <div class="gallery-row two">
+        <img
+            src="assets/photos/San Francisco 2012/6.jpg"
+            alt="San Francisco 2012 06"
+            loading="lazy"
+        >
+
+        <img
+            src="assets/photos/San Francisco 2012/7.jpg"
+            alt="San Francisco 2012 07"
+            loading="lazy"
+        >
+    </div>
+
+    <!-- Row 6: one photograph -->
+    <div class="gallery-row one">
+        <img
+            src="assets/photos/San Francisco 2012/8.jpg"
+            alt="San Francisco 2012 08"
+            loading="lazy"
+        >
+    </div>
+
+</div>
+
+    </div>
+
+</div>
+
         </div>
 
     </div>
@@ -776,14 +908,38 @@
 
     <div class="window-body notepad-body">
 
-        <textarea class="notepad-text" spellcheck="false" readonly>Hi, I’m Beatriz, a multidisciplinary creative based in São Paulo.
+    <div class="notepad-content">
 
-I work across photography, art direction, music, design, and visual storytelling. With a background in graphic design and studies in cinematography and art direction, I create work guided by atmosphere, emotion, and strong visual concepts.
+        <img
+            class="about-me-picture"
+            src="assets/images/about-me.png"
+            alt="Portrait of Beatriz"
+            draggable="false"
+        >
 
-I’m interested in transforming ideas into images, sounds, and stories that feel expressive, intentional, and memorable.
-</textarea>
+        <div class="about-me-text">
+
+            <p>
+                Hi, I’m Beatriz, a multidisciplinary creative based in São Paulo.
+            </p>
+
+            <p>
+                I work across photography, art direction, music, design, and
+                visual storytelling. With a background in graphic design and
+                studies in cinematography and art direction, I create work
+                guided by atmosphere, emotion, and strong visual concepts.
+            </p>
+
+            <p>
+                I’m interested in transforming ideas into images, sounds, and
+                stories that feel expressive, intentional, and memorable.
+            </p>
+
+        </div>
 
     </div>
+
+</div>
 
 </div>
 
@@ -1136,6 +1292,361 @@ I’m interested in transforming ideas into images, sounds, and stories that fee
 </div>
 
 
+
+<!-- ================= PORTFOLIO UNIVERSE ================= -->
+
+<div
+    class="window hidden"
+    id="universe-window"
+    data-window-id="universe"
+>
+    <div class="title-bar">
+        <span>Beatriz Universe</span>
+
+        <div class="window-controls">
+            <button
+                type="button"
+                class="minimize"
+                aria-label="Minimize"
+            ></button>
+
+            <button
+                type="button"
+                class="maximize"
+                aria-label="Maximize"
+            ></button>
+
+            <button
+                type="button"
+                class="close"
+                aria-label="Close"
+            ></button>
+        </div>
+    </div>
+
+    <div class="window-menu">
+        <button type="button">File</button>
+        <button type="button">View</button>
+        <button type="button">Navigate</button>
+        <button type="button">Help</button>
+    </div>
+
+    <div class="window-body universe-body">
+        <section
+            class="portfolio-universe"
+            aria-label="Interactive map of Beatriz's portfolio"
+        >
+            <header class="universe-toolbar">
+                <div class="universe-brand">
+                    <span class="universe-kicker">BIBI'S WORLD</span>
+                    <strong>Creative Universe</strong>
+                    <span class="universe-subtitle">
+                        Drag to explore · scroll or use Near/Far to zoom
+                    </span>
+                </div>
+
+                <div
+                    class="universe-controls"
+                    aria-label="Universe controls"
+                >
+                    <div class="universe-layout-controls">
+                        <button
+                            type="button"
+                            class="universe-control is-active"
+                            data-universe-layout="spatial"
+                        >
+                            Spatial
+                        </button>
+
+                        <button
+                            type="button"
+                            class="universe-control"
+                            data-universe-layout="grid"
+                        >
+                            Grid
+                        </button>
+                    </div>
+
+                    <div class="universe-zoom-controls">
+                        <button
+                            type="button"
+                            class="universe-control"
+                            id="universe-zoom-out"
+                            aria-label="Zoom farther away"
+                        >
+                            Far
+                        </button>
+
+                        <button
+                            type="button"
+                            class="universe-control"
+                            id="universe-zoom-in"
+                            aria-label="Zoom closer"
+                        >
+                            Near
+                        </button>
+
+                        <button
+                            type="button"
+                            class="universe-control"
+                            id="universe-reset"
+                        >
+                            Reset
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <div
+                class="universe-stage"
+                id="universe-stage"
+                tabindex="0"
+                aria-label="Portfolio universe. Drag the empty space to move around."
+            >
+                <div class="universe-vignette" aria-hidden="true"></div>
+
+                <div
+                    class="universe-world"
+                    id="universe-world"
+                >
+                    <svg
+                        class="universe-connections"
+                        viewBox="0 0 1400 1120"
+                        aria-hidden="true"
+                    >
+                        <path d="M250 310 C430 250 560 225 640 210"></path>
+                        <path d="M640 210 C815 220 955 260 1060 340"></path>
+                        <path d="M250 310 C300 515 330 610 350 730"></path>
+                        <path d="M350 730 C520 650 645 640 750 720"></path>
+                        <path d="M750 720 C895 665 1010 690 1120 770"></path>
+                        <path d="M640 210 C650 400 690 540 750 720"></path>
+                        <path d="M350 730 C425 880 535 965 650 1000"></path>
+                        <path d="M750 720 C660 825 635 910 650 1000"></path>
+                    </svg>
+
+                    <div class="universe-center-mark" aria-hidden="true">
+                        <span></span>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="universe-project"
+                        data-target-window="disney-window"
+                        data-x="-450"
+                        data-y="-250"
+                        data-rotation="-7"
+                        data-width="230"
+                        aria-label="Open Disney 2010 photography"
+                    >
+                        <span class="universe-project-card">
+                            <span class="universe-project-number">01</span>
+                            <span class="universe-project-media">
+                                <img
+                                    src="assets/photos/disney 2010/4.jpg"
+                                    alt="Disney 2010"
+                                    draggable="false"
+                                >
+                            </span>
+                            <span class="universe-project-copy">
+                                <strong>Disney 2010</strong>
+                                <small>Photography archive</small>
+                            </span>
+                        </span>
+                    </button>
+
+                    <button
+                        type="button"
+                        class="universe-project"
+                        data-target-window="miku-window"
+                        data-x="-70"
+                        data-y="-360"
+                        data-rotation="5"
+                        data-width="190"
+                        aria-label="Open Miku 2010 photography"
+                    >
+                        <span class="universe-project-card">
+                            <span class="universe-project-number">02</span>
+                            <span class="universe-project-media">
+                                <img
+                                    src="assets/photos/miku 2010/1.jpg"
+                                    alt="Miku 2010"
+                                    draggable="false"
+                                >
+                            </span>
+                            <span class="universe-project-copy">
+                                <strong>Miku 2010</strong>
+                                <small>Portrait series</small>
+                            </span>
+                        </span>
+                    </button>
+
+                    <button
+                        type="button"
+                        class="universe-project"
+                        data-target-window="san-francisco-window"
+                        data-x="390"
+                        data-y="-220"
+                        data-rotation="-4"
+                        data-width="275"
+                        aria-label="Open San Francisco 2012 photography"
+                    >
+                        <span class="universe-project-card">
+                            <span class="universe-project-number">03</span>
+                            <span class="universe-project-media">
+                                <img
+                                    src="assets/photos/San Francisco 2012/1.jpg"
+                                    alt="San Francisco 2012"
+                                    draggable="false"
+                                >
+                            </span>
+                            <span class="universe-project-copy">
+                                <strong>San Francisco 2012</strong>
+                                <small>Travel photography</small>
+                            </span>
+                        </span>
+                    </button>
+
+                    <button
+                        type="button"
+                        class="universe-project"
+                        data-target-window="graphic-project-one-window"
+                        data-x="-380"
+                        data-y="210"
+                        data-rotation="4"
+                        data-width="205"
+                        aria-label="Open Snow White Theater Poster"
+                    >
+                        <span class="universe-project-card">
+                            <span class="universe-project-number">04</span>
+                            <span class="universe-project-media universe-project-media--poster">
+                                <img
+                                    src="assets/photos/graphic arts/1207de21569681.563053077b87c.webp"
+                                    alt="Snow White Theater Poster"
+                                    draggable="false"
+                                >
+                            </span>
+                            <span class="universe-project-copy">
+                                <strong>Snow White</strong>
+                                <small>Art direction · 2014</small>
+                            </span>
+                        </span>
+                    </button>
+
+                    <button
+                        type="button"
+                        class="universe-project"
+                        data-target-window="graphic-project-two-window"
+                        data-x="60"
+                        data-y="185"
+                        data-rotation="-5"
+                        data-width="230"
+                        aria-label="Open Pop Art Exposition Poster"
+                    >
+                        <span class="universe-project-card">
+                            <span class="universe-project-number">05</span>
+                            <span class="universe-project-media universe-project-media--poster">
+                                <img
+                                    src="assets/photos/graphic arts/a5e69e21569481.5630531846654.webp"
+                                    alt="Pop Art Exposition Poster"
+                                    draggable="false"
+                                >
+                            </span>
+                            <span class="universe-project-copy">
+                                <strong>Pop Art Exposition</strong>
+                                <small>Graphic design · 2014</small>
+                            </span>
+                        </span>
+                    </button>
+
+                    <button
+                        type="button"
+                        class="universe-project universe-project--logo"
+                        data-target-window="music-window"
+                        data-x="470"
+                        data-y="255"
+                        data-rotation="7"
+                        data-width="205"
+                        aria-label="Open Music"
+                    >
+                        <span class="universe-project-card">
+                            <span class="universe-project-number">06</span>
+                            <span class="universe-project-media">
+                                <img
+                                    src="assets/images/loading-logo.png"
+                                    alt="Bibi Music"
+                                    draggable="false"
+                                >
+                            </span>
+                            <span class="universe-project-copy">
+                                <strong>Music</strong>
+                                <small>Songs · voice · production</small>
+                            </span>
+                        </span>
+                    </button>
+
+                    <button
+                        type="button"
+                        class="universe-project"
+                        data-target-window="about-window"
+                        data-x="-70"
+                        data-y="510"
+                        data-rotation="2"
+                        data-width="220"
+                        aria-label="Open About Me"
+                    >
+                        <span class="universe-project-card">
+                            <span class="universe-project-number">07</span>
+                            <span class="universe-project-media universe-project-media--portrait">
+                                <img
+                                    src="assets/images/about-me.png"
+                                    alt="About Beatriz"
+                                    draggable="false"
+                                >
+                            </span>
+                            <span class="universe-project-copy">
+                                <strong>About Me</strong>
+                                <small>Beatriz Guimarães</small>
+                            </span>
+                        </span>
+                    </button>
+
+                    <button
+                        type="button"
+                        class="universe-project universe-project--icon"
+                        data-target-window="magical-lake-window"
+                        data-x="-500"
+                        data-y="520"
+                        data-rotation="-4"
+                        data-width="185"
+                        aria-label="Open Magical Lake"
+                    >
+                        <span class="universe-project-card">
+                            <span class="universe-project-number">08</span>
+                            <span class="universe-project-media">
+                                <img
+                                    src="assets/icons/magical-lake.svg"
+                                    alt="Magical Lake"
+                                    draggable="false"
+                                >
+                            </span>
+                            <span class="universe-project-copy">
+                                <strong>Magical Lake</strong>
+                                <small>Interactive experiment</small>
+                            </span>
+                        </span>
+                    </button>
+                </div>
+
+                <div class="universe-stage-help" aria-hidden="true">
+                    <span>Drag</span>
+                    <span>Scroll to zoom</span>
+                    <span>Click a project to open</span>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
 <!-- ================= MAGICAL LAKE ================= -->
 
 <div
@@ -1423,7 +1934,7 @@ I’m interested in transforming ideas into images, sounds, and stories that fee
  
 </div>
 
-<script src="script.js?v=20260801-18"></script>
+<script src="script.js?v=20260806-22"></script>
 
 </body>
 </html>
