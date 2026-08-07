@@ -12,7 +12,7 @@
 
 <title>𝕭𝖎𝖇𝖎</title>
 
-<link rel="stylesheet" href="style.css?v=20260806-22">
+<link rel="stylesheet" href="style.css?v=20260807-clean4">
 
 </head>
 
@@ -52,7 +52,7 @@
             </section>
 
             <section class="bios-section">
-                <p>BIBI686MS V2.6 07312026</p>
+                <p>BIBI686MS V8.26 08062026</p>
                 <p>Build ID: MAGICAL-PORTAL-2026</p>
             </section>
 
@@ -71,6 +71,8 @@
                 <p class="bios-detection">Detecting IDE Secondary Master ... GRAPHIC ARTS</p>
                 <p class="bios-detection">Detecting IDE Secondary Slave&nbsp;&nbsp;... MUSIC</p>
                 <p class="bios-detection">Detecting Network Adapter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;... SOCIALS ONLINE</p>
+                <p class="bios-detection">Detecting Archive Controller&nbsp;&nbsp;&nbsp;&nbsp;... MEMORIES.EXE</p>
+                <p class="bios-detection">Detecting Simulation Device&nbsp;&nbsp;&nbsp;&nbsp;... MAGICAL LAKE</p>
             </section>
 
             <section class="bios-section bios-mobile-hide">
@@ -84,6 +86,15 @@
                 <p>Mounting B:\MAGICAL_PORTAL ...................... OK</p>
                 <p>Loading custom cursors ......................... OK</p>
                 <p>Starting animated wallpaper .................... OK</p>
+            </section>
+
+            <section class="bios-section bios-module-section bios-program-section">
+                <p>B:\BIBI\PROGRAMS&gt; registering desktop applications</p>
+                <p class="bios-status">Home / About Me.txt .......................... READY</p>
+                <p class="bios-status">Memories.exe / Photography ................... READY</p>
+                <p class="bios-status">Graphic Arts / Music ......................... READY</p>
+                <p class="bios-status">Socials / Contact ............................ ONLINE</p>
+                <p class="bios-status">Magical Lake / Recycle Bin ................... READY</p>
             </section>
 
             <section class="bios-section bios-module-section">
@@ -120,6 +131,21 @@
                 <p>A MAGICAL PORTAL ............................... READY</p>
                 <p>Welcome, visitor.</p>
             </section>
+
+            <section
+    class="bios-section bios-ascii-section"
+    aria-label="Bibi computer ASCII art"
+>
+<p class="bios-ascii-line">            /＾&gt;》, -―‐‐＜＾}</p>
+<p class="bios-ascii-line">           ./:::::::/,≠´:::::;::::::::ヽ.</p>
+<p class="bios-ascii-line">          /:::::::〃::::::::::／}::::丿ハ</p>
+<p class="bios-ascii-line">         ./:::::::::i{l|:::::／ ﾉ／ }::::::}   .ᐟ.ᐟ</p>
+<p class="bios-ascii-line">        /:::::::::::瓜イ⸝⸝o  ´  O, ':::::ﾉ  &lt; woah im getting attention!!111!! )</p>
+<p class="bios-ascii-line">       ./:::::::::::::|ﾉﾍ.{､  ヮ_.ノﾉイ</p>
+<p class="bios-ascii-line">       |:::::::::::::::| ／,}｀ｽ/￣￣￣￣/</p>
+<p class="bios-ascii-line">       |::::::::::::::::|(_::::つ/             /</p>
+<p class="bios-ascii-line">                      ￣￣￣￣￣＼/＿＿＿＿/</p>
+</section>
 
         </div>
 
@@ -208,11 +234,6 @@
 <span>Home</span>
 </div>
 
-<div class="icon" data-window="universe">
-<img src="assets/icons/computer.ico" alt="">
-<span>Universe</span>
-</div>
-
 <div class="icon" data-window="about">
 <img src="assets/icons/about me.ico">
 <span>About Me.txt</span>
@@ -247,6 +268,11 @@
 <div class="icon" data-window="magical-lake">
 <img src="assets/icons/magical-lake.svg" alt="">
 <span>Magical Lake</span>
+</div>
+
+<div class="icon memories-desktop-icon" data-window="memories">
+<img src="assets/icons/memories.svg" alt="">
+<span>Memories.exe</span>
 </div>
 
 <div class="icon" data-window="trash">
@@ -336,8 +362,8 @@
         📄 About Me
     </button>
 
-    <button class="start-item" data-window="universe">
-        ✦ Universe
+    <button class="start-item" data-window="memories">
+        ✦ Memories.exe
     </button>
 
     <button class="start-item" data-window="contact">
@@ -400,15 +426,7 @@
 
     </div>
 
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">Edit</button>
-        <button type="button">View</button>
-        <button type="button">Tools</button>
-        <button type="button">Help</button>
-    </div>
-
-    <div class="window-body socials-body">
+<div class="window-body socials-body">
 
         <a class="social-icon"
            href="https://letterboxd.com/bibihn/"
@@ -472,15 +490,7 @@
 
         </div>
 
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">Edit</button>
-        <button type="button">View</button>
-        <button type="button">Tools</button>
-        <button type="button">Help</button>
-    </div>
-
-        <div class="window-body">
+<div class="window-body">
 
             <div class="photo-gallery">
 
@@ -519,6 +529,19 @@
 
     </div>
 
+    <div class="photo-folder" data-gallery="in my room 2017">
+
+        <img
+            src="assets/photos/In My Room 2017/1.webp"
+            alt="In My Room 2017 project"
+            loading="lazy"
+        >
+        <span>
+            In My Room 2017
+        </span>
+
+    </div>
+
 </div>
 
 </div>
@@ -543,15 +566,7 @@
 
     </div>
 
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">Edit</button>
-        <button type="button">View</button>
-        <button type="button">Tools</button>
-        <button type="button">Help</button>
-    </div>
-
-    <div class="window-body">
+<div class="window-body">
 
         <div class="project-gallery">
 
@@ -638,15 +653,7 @@
 
     </div>
 
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">Edit</button>
-        <button type="button">View</button>
-        <button type="button">Tools</button>
-        <button type="button">Help</button>
-    </div>
-
-    <div class="window-body">
+<div class="window-body">
 
         <div class="project-gallery">
 
@@ -718,15 +725,7 @@
 
     </div>
 
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">Edit</button>
-        <button type="button">View</button>
-        <button type="button">Tools</button>
-        <button type="button">Help</button>
-    </div>
-
-    <div class="window-body">
+<div class="window-body">
 
         <!--
             The script checks numbered files from 1 through 30.
@@ -811,6 +810,84 @@
     </div>
 </div>
 
+
+<!-- ================= IN MY ROOM 2017 GALLERY ================= -->
+
+<div
+    class="window hidden photo-project-window"
+    id="in-my-room-window"
+    data-window-id="in my room 2017"
+>
+
+    <div class="title-bar">
+
+        <span>In My Room 2017</span>
+
+        <div class="window-controls">
+            <button class="minimize" aria-label="Minimize"></button>
+            <button class="maximize" aria-label="Maximize"></button>
+            <button class="close" aria-label="Close"></button>
+        </div>
+
+    </div>
+
+<div class="window-body">
+
+        <div class="project-gallery in-my-room-gallery">
+
+            <!-- Row 1: one photograph -->
+            <div class="gallery-row one">
+                <img
+                    src="assets/photos/In My Room 2017/1.webp"
+                    alt="2017 In My Room 01"
+                    loading="lazy"
+                    decoding="async"
+                >
+            </div>
+
+            <!-- Row 2: two photographs -->
+            <div class="gallery-row two">
+                <img
+                    src="assets/photos/In My Room 2017/2.webp"
+                    alt="2017 In My Room 02"
+                    loading="lazy"
+                    decoding="async"
+                >
+
+                <img
+                    src="assets/photos/In My Room 2017/3.webp"
+                    alt="2017 In My Room 03"
+                    loading="lazy"
+                    decoding="async"
+                >
+            </div>
+
+            <!-- Row 3: one photograph -->
+            <div class="gallery-row one">
+                <img
+                    src="assets/photos/In My Room 2017/4.webp"
+                    alt="2017 In My Room 04"
+                    loading="lazy"
+                    decoding="async"
+                >
+            </div>
+
+            <!-- Row 4: one photograph -->
+            <div class="gallery-row one">
+                <img
+                    src="assets/photos/In My Room 2017/5.webp"
+                    alt="2017 In My Room 05"
+                    loading="lazy"
+                    decoding="async"
+                >
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
 <!-- ================= IMAGE PREVIEW ================= -->
 
 <div
@@ -831,21 +908,23 @@
 
     </div>
 
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">Edit</button>
-        <button type="button">View</button>
-        <button type="button">Image</button>
-        <button type="button">Help</button>
-    </div>
-
-    <div class="window-body image-preview-body">
+<div class="window-body image-preview-body">
 
     <div class="preview-image-area">
         <img
             id="preview-image"
             alt="Selected gallery photo"
         >
+
+        <video
+            id="preview-video"
+            class="hidden"
+            controls
+            muted
+            playsinline
+            preload="metadata"
+            aria-label="Selected memory video"
+        ></video>
     </div>
 
     <div class="photo-navigation">
@@ -899,14 +978,7 @@
 
     </div>
 
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">Edit</button>
-        <button type="button">Search</button>
-        <button type="button">Help</button>
-    </div>
-
-    <div class="window-body notepad-body">
+<div class="window-body notepad-body">
 
     <div class="notepad-content">
 
@@ -917,7 +989,7 @@
             draggable="false"
         >
 
-        <div class="about-me-text">
+        <div class="about-me-text about-me-art-only">
 
             <p>
                 Hi, I’m Beatriz, a multidisciplinary creative based in São Paulo.
@@ -935,7 +1007,36 @@
                 stories that feel expressive, intentional, and memorable.
             </p>
 
-        </div>
+<pre
+    class="about-cat-art"
+    aria-label="Cat casting a magical spell"
+>　 　∧＿∧
+　　(｡･ω･｡)つ━☆・*。
+　 ⊂| ~ |　　　・゜
+　　しーＪ　　　°。+ * 。
+　　　　　　　　　　　　.・゜</pre>
+
+<pre
+    class="about-whale-art"
+    aria-label="Decorative Braille artwork"
+>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⣤⣤⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⠋⠀⠀⠙⢿⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⡇⠀⠀⠀⠀⠀⠙⢿⣦⡀⠀⠀⢀⣀⣀⣠⣤⣀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⠇⠀⠀⠀⠀⠀⠀⠀⠙⠿⠿⠟⠛⠛⠋⠉⠉⠛⣷⡄
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡇
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣶⠿⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⡿⠃
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣶⠿⠛⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⡿⠃⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⡿⠁⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣧⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣷⡀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠿⣶⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣷⡄⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠿⣶⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⡄
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡇
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⡆⠀⠀⠀⠀⠀⠀⠀⠀⣠⣶⣶⣦⣤⣤⣄⣀⣀⣤⡿⠃
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⡇⠀⠀⠀⠀⠀⣠⣾⠏⠀⠀⠀⠈⠉⠉⠙⠛⠉⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⣄⠀⠀⣠⣾⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠛⠛⠛⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</pre>
+
+</div>
 
     </div>
 
@@ -961,15 +1062,7 @@
 
     </div>
 
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">Edit</button>
-        <button type="button">View</button>
-        <button type="button">Tools</button>
-        <button type="button">Help</button>
-    </div>
-
-    <div class="window-body contact-body">
+<div class="window-body contact-body">
 
         <form
     class="contact-form"
@@ -1053,15 +1146,7 @@
 
     </div>
 
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">Edit</button>
-        <button type="button">View</button>
-        <button type="button">Tools</button>
-        <button type="button">Help</button>
-    </div>
-
-    <div class="window-body graphic-arts-body">
+<div class="window-body graphic-arts-body">
 
         <div class="graphic-projects">
 
@@ -1116,16 +1201,7 @@
 
     </div>
 
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">Edit</button>
-        <button type="button">View</button>
-        <button type="button">Image</button>
-        <button type="button">Tools</button>
-        <button type="button">Help</button>
-    </div>
-
-    <div class="window-body graphic-project-body">
+<div class="window-body graphic-project-body">
 
         <div class="graphic-project-content">
 
@@ -1169,16 +1245,7 @@
 
     </div>
 
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">Edit</button>
-        <button type="button">View</button>
-        <button type="button">Image</button>
-        <button type="button">Tools</button>
-        <button type="button">Help</button>
-    </div>
-
-    <div class="window-body graphic-project-body">
+<div class="window-body graphic-project-body">
 
         <div class="graphic-project-content">
 
@@ -1219,15 +1286,7 @@
 
         </div>
 
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">Edit</button>
-        <button type="button">View</button>
-        <button type="button">Playback</button>
-        <button type="button">Help</button>
-    </div>
-
-        <div class="window-body music-window">
+<div class="window-body music-window">
 
     <div class="music-tabs">
 
@@ -1293,354 +1352,47 @@
 
 
 
-<!-- ================= PORTFOLIO UNIVERSE ================= -->
+<!-- ================= MEMORIES.EXE ================= -->
 
 <div
     class="window hidden"
-    id="universe-window"
-    data-window-id="universe"
+    id="memories-window"
+    data-window-id="memories"
 >
     <div class="title-bar">
-        <span>Beatriz Universe</span>
+        <span>Memories.exe</span>
 
         <div class="window-controls">
-            <button
-                type="button"
-                class="minimize"
-                aria-label="Minimize"
-            ></button>
-
-            <button
-                type="button"
-                class="maximize"
-                aria-label="Maximize"
-            ></button>
-
-            <button
-                type="button"
-                class="close"
-                aria-label="Close"
-            ></button>
+            <button type="button" class="minimize" aria-label="Minimize"></button>
+            <button type="button" class="maximize" aria-label="Maximize"></button>
+            <button type="button" class="close" aria-label="Close"></button>
         </div>
     </div>
 
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">View</button>
-        <button type="button">Navigate</button>
-        <button type="button">Help</button>
-    </div>
-
-    <div class="window-body universe-body">
-        <section
-            class="portfolio-universe"
-            aria-label="Interactive map of Beatriz's portfolio"
-        >
-            <header class="universe-toolbar">
-                <div class="universe-brand">
-                    <span class="universe-kicker">BIBI'S WORLD</span>
-                    <strong>Creative Universe</strong>
-                    <span class="universe-subtitle">
-                        Drag to explore · scroll or use Near/Far to zoom
-                    </span>
+<div class="window-body memories-body">
+        <section class="memories-app" aria-label="Interactive archive of Bibi's memories">
+            <header class="memories-toolbar">
+                <div class="memories-heading">
+                    <span class="memories-kicker">BIBI'S ARCHIVE</span>
+                    <strong>Memories.exe</strong>
                 </div>
 
-                <div
-                    class="universe-controls"
-                    aria-label="Universe controls"
-                >
-                    <div class="universe-layout-controls">
-                        <button
-                            type="button"
-                            class="universe-control is-active"
-                            data-universe-layout="spatial"
-                        >
-                            Spatial
-                        </button>
-
-                        <button
-                            type="button"
-                            class="universe-control"
-                            data-universe-layout="grid"
-                        >
-                            Grid
-                        </button>
-                    </div>
-
-                    <div class="universe-zoom-controls">
-                        <button
-                            type="button"
-                            class="universe-control"
-                            id="universe-zoom-out"
-                            aria-label="Zoom farther away"
-                        >
-                            Far
-                        </button>
-
-                        <button
-                            type="button"
-                            class="universe-control"
-                            id="universe-zoom-in"
-                            aria-label="Zoom closer"
-                        >
-                            Near
-                        </button>
-
-                        <button
-                            type="button"
-                            class="universe-control"
-                            id="universe-reset"
-                        >
-                            Reset
-                        </button>
-                    </div>
+                <div class="memories-controls" aria-label="Memories view controls">
+                    <button type="button" id="memories-reset" class="memories-control">Reset view</button>
                 </div>
             </header>
 
             <div
-                class="universe-stage"
-                id="universe-stage"
+                id="memories-stage"
+                class="memories-stage"
                 tabindex="0"
-                aria-label="Portfolio universe. Drag the empty space to move around."
+                aria-label="Draggable three-dimensional field of memory previews"
             >
-                <div class="universe-vignette" aria-hidden="true"></div>
+                <div class="memories-field" aria-hidden="true"></div>
+                <div id="memories-world" class="memories-world"></div>
 
-                <div
-                    class="universe-world"
-                    id="universe-world"
-                >
-                    <svg
-                        class="universe-connections"
-                        viewBox="0 0 1400 1120"
-                        aria-hidden="true"
-                    >
-                        <path d="M250 310 C430 250 560 225 640 210"></path>
-                        <path d="M640 210 C815 220 955 260 1060 340"></path>
-                        <path d="M250 310 C300 515 330 610 350 730"></path>
-                        <path d="M350 730 C520 650 645 640 750 720"></path>
-                        <path d="M750 720 C895 665 1010 690 1120 770"></path>
-                        <path d="M640 210 C650 400 690 540 750 720"></path>
-                        <path d="M350 730 C425 880 535 965 650 1000"></path>
-                        <path d="M750 720 C660 825 635 910 650 1000"></path>
-                    </svg>
-
-                    <div class="universe-center-mark" aria-hidden="true">
-                        <span></span>
-                    </div>
-
-                    <button
-                        type="button"
-                        class="universe-project"
-                        data-target-window="disney-window"
-                        data-x="-450"
-                        data-y="-250"
-                        data-rotation="-7"
-                        data-width="230"
-                        aria-label="Open Disney 2010 photography"
-                    >
-                        <span class="universe-project-card">
-                            <span class="universe-project-number">01</span>
-                            <span class="universe-project-media">
-                                <img
-                                    src="assets/photos/disney 2010/4.jpg"
-                                    alt="Disney 2010"
-                                    draggable="false"
-                                >
-                            </span>
-                            <span class="universe-project-copy">
-                                <strong>Disney 2010</strong>
-                                <small>Photography archive</small>
-                            </span>
-                        </span>
-                    </button>
-
-                    <button
-                        type="button"
-                        class="universe-project"
-                        data-target-window="miku-window"
-                        data-x="-70"
-                        data-y="-360"
-                        data-rotation="5"
-                        data-width="190"
-                        aria-label="Open Miku 2010 photography"
-                    >
-                        <span class="universe-project-card">
-                            <span class="universe-project-number">02</span>
-                            <span class="universe-project-media">
-                                <img
-                                    src="assets/photos/miku 2010/1.jpg"
-                                    alt="Miku 2010"
-                                    draggable="false"
-                                >
-                            </span>
-                            <span class="universe-project-copy">
-                                <strong>Miku 2010</strong>
-                                <small>Portrait series</small>
-                            </span>
-                        </span>
-                    </button>
-
-                    <button
-                        type="button"
-                        class="universe-project"
-                        data-target-window="san-francisco-window"
-                        data-x="390"
-                        data-y="-220"
-                        data-rotation="-4"
-                        data-width="275"
-                        aria-label="Open San Francisco 2012 photography"
-                    >
-                        <span class="universe-project-card">
-                            <span class="universe-project-number">03</span>
-                            <span class="universe-project-media">
-                                <img
-                                    src="assets/photos/San Francisco 2012/1.jpg"
-                                    alt="San Francisco 2012"
-                                    draggable="false"
-                                >
-                            </span>
-                            <span class="universe-project-copy">
-                                <strong>San Francisco 2012</strong>
-                                <small>Travel photography</small>
-                            </span>
-                        </span>
-                    </button>
-
-                    <button
-                        type="button"
-                        class="universe-project"
-                        data-target-window="graphic-project-one-window"
-                        data-x="-380"
-                        data-y="210"
-                        data-rotation="4"
-                        data-width="205"
-                        aria-label="Open Snow White Theater Poster"
-                    >
-                        <span class="universe-project-card">
-                            <span class="universe-project-number">04</span>
-                            <span class="universe-project-media universe-project-media--poster">
-                                <img
-                                    src="assets/photos/graphic arts/1207de21569681.563053077b87c.webp"
-                                    alt="Snow White Theater Poster"
-                                    draggable="false"
-                                >
-                            </span>
-                            <span class="universe-project-copy">
-                                <strong>Snow White</strong>
-                                <small>Art direction · 2014</small>
-                            </span>
-                        </span>
-                    </button>
-
-                    <button
-                        type="button"
-                        class="universe-project"
-                        data-target-window="graphic-project-two-window"
-                        data-x="60"
-                        data-y="185"
-                        data-rotation="-5"
-                        data-width="230"
-                        aria-label="Open Pop Art Exposition Poster"
-                    >
-                        <span class="universe-project-card">
-                            <span class="universe-project-number">05</span>
-                            <span class="universe-project-media universe-project-media--poster">
-                                <img
-                                    src="assets/photos/graphic arts/a5e69e21569481.5630531846654.webp"
-                                    alt="Pop Art Exposition Poster"
-                                    draggable="false"
-                                >
-                            </span>
-                            <span class="universe-project-copy">
-                                <strong>Pop Art Exposition</strong>
-                                <small>Graphic design · 2014</small>
-                            </span>
-                        </span>
-                    </button>
-
-                    <button
-                        type="button"
-                        class="universe-project universe-project--logo"
-                        data-target-window="music-window"
-                        data-x="470"
-                        data-y="255"
-                        data-rotation="7"
-                        data-width="205"
-                        aria-label="Open Music"
-                    >
-                        <span class="universe-project-card">
-                            <span class="universe-project-number">06</span>
-                            <span class="universe-project-media">
-                                <img
-                                    src="assets/images/loading-logo.png"
-                                    alt="Bibi Music"
-                                    draggable="false"
-                                >
-                            </span>
-                            <span class="universe-project-copy">
-                                <strong>Music</strong>
-                                <small>Songs · voice · production</small>
-                            </span>
-                        </span>
-                    </button>
-
-                    <button
-                        type="button"
-                        class="universe-project"
-                        data-target-window="about-window"
-                        data-x="-70"
-                        data-y="510"
-                        data-rotation="2"
-                        data-width="220"
-                        aria-label="Open About Me"
-                    >
-                        <span class="universe-project-card">
-                            <span class="universe-project-number">07</span>
-                            <span class="universe-project-media universe-project-media--portrait">
-                                <img
-                                    src="assets/images/about-me.png"
-                                    alt="About Beatriz"
-                                    draggable="false"
-                                >
-                            </span>
-                            <span class="universe-project-copy">
-                                <strong>About Me</strong>
-                                <small>Beatriz Guimarães</small>
-                            </span>
-                        </span>
-                    </button>
-
-                    <button
-                        type="button"
-                        class="universe-project universe-project--icon"
-                        data-target-window="magical-lake-window"
-                        data-x="-500"
-                        data-y="520"
-                        data-rotation="-4"
-                        data-width="185"
-                        aria-label="Open Magical Lake"
-                    >
-                        <span class="universe-project-card">
-                            <span class="universe-project-number">08</span>
-                            <span class="universe-project-media">
-                                <img
-                                    src="assets/icons/magical-lake.svg"
-                                    alt="Magical Lake"
-                                    draggable="false"
-                                >
-                            </span>
-                            <span class="universe-project-copy">
-                                <strong>Magical Lake</strong>
-                                <small>Interactive experiment</small>
-                            </span>
-                        </span>
-                    </button>
-                </div>
-
-                <div class="universe-stage-help" aria-hidden="true">
-                    <span>Drag</span>
-                    <span>Scroll to zoom</span>
-                    <span>Click a project to open</span>
+                <div class="memories-stage-help" aria-hidden="true">
+                    <span>move cursor to look · left-drag to pan · right-drag or scroll to travel</span>
                 </div>
             </div>
         </section>
@@ -1678,14 +1430,7 @@
         </div>
     </div>
 
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">View</button>
-        <button type="button">Magic</button>
-        <button type="button">Help</button>
-    </div>
-
-    <div class="window-body magical-lake-body">
+<div class="window-body magical-lake-body">
         <div class="magical-lake-screen">
             <span
                 id="magical-lake-status"
@@ -1737,19 +1482,6 @@
         </div>
 
     </div>
-
-    <!-- Explorer menu -->
-
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">Edit</button>
-        <button type="button">View</button>
-        <button type="button">Tools</button>
-        <button type="button">Help</button>
-    </div>
-
-
-    <!-- Main Explorer content -->
 
     <div class="window-body trash-body">
 
@@ -1810,17 +1542,7 @@
 
     </div>
 
-    <!-- Same menu structure as the other website windows -->
-
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">Edit</button>
-        <button type="button">View</button>
-        <button type="button">Tools</button>
-        <button type="button">Help</button>
-    </div>
-
-    <div class="window-body trojan-body">
+<div class="window-body trojan-body">
 
         <!-- Hacking text -->
 
@@ -1934,7 +1656,7 @@
  
 </div>
 
-<script src="script.js?v=20260806-22"></script>
+<script src="script.js?v=20260807-clean4"></script>
 
 </body>
 </html>

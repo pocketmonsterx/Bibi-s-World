@@ -1,3 +1,11 @@
+/* ============================================================
+   BIBI'S WORLD — MAIN STYLESHEET
+   Base desktop → applications → responsive/mobile overrides.
+
+   Cascade order is intentional. Dead legacy selectors and fully
+   superseded rules were removed without reordering live rules.
+============================================================ */
+
 *{
 margin:0;
 padding:0;
@@ -67,11 +75,7 @@ display:block;
 
 }
 
-.icon:hover{
 
-background:rgba(255,255,255,.2);
-
-}
 
 #taskbar{
 
@@ -130,18 +134,7 @@ font-weight:bold;
 
 }
 
-#wallpaper-video {
-    position: fixed;
-    inset: 0;
 
-    width: 100%;
-    height: 100%;
-
-    object-fit: cover;
-
-    z-index: 0;
-    pointer-events: none;
-}
 
 #windows-container {
     position: fixed;
@@ -210,16 +203,7 @@ font-weight:bold;
 
 }
 
-.window-controls button{
 
-    width:22px;
-    height:20px;
-
-    padding:0;
-
-    cursor:pointer;
-
-}
 
 .window-body{
 
@@ -229,21 +213,9 @@ font-weight:bold;
 
 }
 
-.folder-item{
 
-    padding:8px;
 
-    cursor:pointer;
 
-}
-
-.folder-item:hover{
-
-    background:#000080;
-
-    color:white;
-
-}
 
 .window-controls{
 
@@ -270,11 +242,7 @@ font-weight:bold;
 
 }
 
-.window-controls button:active{
 
-    border-color:#404040 white white #404040;
-
-}
 
 .minimize::before{
 
@@ -389,11 +357,7 @@ font-weight:bold;
 
 }
 
-.task-button.active{
 
-    border-color:#404040 white white #404040;
-
-}
 
 .photo-gallery {
 
@@ -566,62 +530,10 @@ font-weight:bold;
 
 }
 
-.spotify-profile-button {
-
-    display: inline-block;
-
-    margin-bottom: 15px;
-
-    padding: 6px 14px;
-
-    background: #d4d0c8;
-
-    color: black;
-
-    text-decoration: none;
-
-    font-family: "MS Sans Serif", Arial, sans-serif;
-
-    font-size: 14px;
-
-    border-top: 2px solid white;
-    border-left: 2px solid white;
-    border-right: 2px solid #808080;
-    border-bottom: 2px solid #808080;
-
-    cursor: pointer;
-
-}
 
 
-.spotify-profile-button {
 
-    display: block;
 
-    width: fit-content;
-
-    margin: 15px auto; /* this centers it */
-
-    padding: 6px 14px;
-
-    background: #d4d0c8;
-
-    color: black;
-
-    text-decoration: none;
-
-    font-family: "MS Sans Serif", Arial, sans-serif;
-
-    font-size: 14px;
-
-    border-top: 2px solid white;
-    border-left: 2px solid white;
-    border-right: 2px solid #808080;
-    border-bottom: 2px solid #808080;
-
-    cursor: pointer;
-
-}
 
 
 .photo-folder:hover img {
@@ -791,27 +703,11 @@ font-weight:bold;
     background: white;
 }
 
-.graphic-project-header {
-    max-width: 760px;
 
-    margin: 0 auto 36px;
 
-    color: black;
-}
 
-.graphic-project-header h1 {
-    margin-bottom: 12px;
 
-    font-family: Arial, sans-serif;
-    font-size: 30px;
-    line-height: 1.1;
-}
 
-.graphic-project-header p {
-    font-family: Arial, sans-serif;
-    font-size: 15px;
-    line-height: 1.6;
-}
 
 .graphic-project-gallery {
     display: flex;
@@ -973,33 +869,13 @@ font-weight:bold;
 
 /* ================= NOTEPAD ================= */
 
-#about-window {
-    width: 650px;
-    height: 500px;
-}
 
-.notepad-menu {
-    height: 26px;
-    display: flex;
-    align-items: center;
-    padding: 0 4px;
-    background: #c0c0c0;
-    border-bottom: 1px solid #808080;
-}
 
-.notepad-menu button {
-    padding: 3px 8px;
-    background: transparent;
-    border: none;
-    font-family: Tahoma, sans-serif;
-    font-size: 12px;
-    cursor: pointer;
-}
 
-.notepad-menu button:hover {
-    background: #000080;
-    color: white;
-}
+
+
+
+
 
 .notepad-body {
     height: calc(100% - 54px);
@@ -1007,25 +883,7 @@ font-weight:bold;
     background: #c0c0c0;
 }
 
-.notepad-text {
-    width: 100%;
-    height: 100%;
-    resize: none;
-    padding: 8px;
 
-    background: white;
-    color: black;
-
-    border: 2px solid;
-    border-color: #808080 white white #808080;
-
-    font-family: "Courier New", monospace;
-    font-size: 14px;
-    line-height: 1.5;
-
-    outline: none;
-    overflow: auto;
-}
 
 /* ================= CONTACT ================= */
 
@@ -1167,13 +1025,7 @@ font-weight:bold;
 
 }
 
-.start-item:hover{
 
-    background:#000080;
-
-    color:white;
-
-}
 
 .start-separator{
 
@@ -1306,9 +1158,7 @@ body.booting #shutdown-dialog {
     font-family: Tahoma, Arial, sans-serif;
 }
 
-#startup-boot-screen.hidden {
-    display: none;
-}
+
 
 .startup-boot-logo {
     margin-bottom: 45px;
@@ -1759,12 +1609,7 @@ body.desktop-loaded #windows-container {
    SOCIALS WINDOW
 ==================================== */
 
-#socials-window{
 
-    width:430px;
-    height:260px;
-
-}
 
 .socials-body{
 
@@ -1886,17 +1731,10 @@ body.desktop-loaded #windows-container {
     padding: 0 7px 0 10px;
 }
 
-.window > .window-body {
-    background: var(--glass-window-body);
-}
+
 
 /* Small glass shine around an active window */
-.window:focus-within {
-    box-shadow:
-        0 16px 38px rgba(0, 0, 0, 0.44),
-        0 0 15px rgba(231, 147, 222, 0.20),
-        inset 0 1px 0 rgba(255, 255, 255, 0.65);
-}
+
 
 /* ---------- WINDOW BUTTONS ---------- */
 
@@ -2155,7 +1993,6 @@ body.desktop-loaded #windows-container {
 
 /* ---------- INTERNAL WINDOW BARS ---------- */
 
-.notepad-menu,
 .music-tabs,
 .photo-navigation {
     background: rgba(230, 225, 236, 0.48);
@@ -2166,7 +2003,6 @@ body.desktop-loaded #windows-container {
 }
 
 .music-tab,
-.spotify-profile-button,
 .send-button,
 .photo-navigation-button,
 #shutdown-confirm,
@@ -2253,7 +2089,6 @@ body.desktop-loaded #windows-container {
 
 /* Vista-style toolbar areas */
 
-.window .notepad-menu,
 .window .music-tabs,
 .window .photo-navigation {
     background: linear-gradient(
@@ -2278,22 +2113,14 @@ body.desktop-loaded #windows-container {
 
 /* Notepad menu */
 
-.window .notepad-menu {
-    height: 30px;
-    padding: 0 5px;
 
-    display: flex;
-    align-items: center;
-}
 
 
 /* Vista buttons used inside windows */
 
-.window .notepad-menu button,
 .window .music-tab,
 .window .send-button,
 .window .photo-navigation-button,
-.window .spotify-profile-button,
 .window .shutdown-body button {
     color: #111;
 
@@ -2324,25 +2151,14 @@ body.desktop-loaded #windows-container {
 
 /* Menu buttons need flatter spacing */
 
-.window .notepad-menu button {
-    min-width: 40px;
-    height: 23px;
 
-    padding: 1px 9px 2px;
-
-    background: transparent;
-    border-color: transparent;
-    box-shadow: none;
-}
 
 
 /* Blue Vista hover for internal buttons */
 
-.window .notepad-menu button:hover,
 .window .music-tab:hover,
 .window .send-button:hover,
 .window .photo-navigation-button:hover,
-.window .spotify-profile-button:hover,
 .window .shutdown-body button:hover {
     color: #111;
 
@@ -2364,7 +2180,6 @@ body.desktop-loaded #windows-container {
 
 /* Pressed buttons */
 
-.window .notepad-menu button:active,
 .window .music-tab:active,
 .window .send-button:active,
 .window .photo-navigation-button:active,
@@ -2423,15 +2238,7 @@ body.desktop-loaded #windows-container {
 
 /* Focus glow for forms */
 
-.window input:focus,
-.window textarea:focus,
-.window select:focus {
-    border-color: #3c8dcc;
 
-    box-shadow:
-        inset 1px 1px 2px rgba(52, 76, 99, 0.12),
-        0 0 4px rgba(45, 145, 220, 0.45);
-}
 
 
 /* Notepad writing area */
@@ -2449,28 +2256,7 @@ body.desktop-loaded #windows-container {
 }
 
 
-.window .notepad-text {
-    grid-row: 1;
 
-    width: 100%;
-    height: auto;
-    min-height: 0;
-
-    margin: 0;
-    padding: 10px 11px;
-
-    resize: none;
-    overflow: auto;
-
-    background: rgba(255, 255, 255, 0.97);
-
-    border: 1px solid #7f9db9;
-    border-radius: 0;
-
-    font-family: "Lucida Console", Consolas, monospace;
-    font-size: 13px;
-    line-height: 1.55;
-}
 
 
 /* Notepad status bar */
@@ -3257,7 +3043,6 @@ body.desktop-loaded #windows-container {
 
 /* ---------- SHARED GRAY WINDOW BUTTONS ---------- */
 
-.window .spotify-profile-button,
 .window .send-button,
 .window .photo-navigation-button,
 .window .shutdown-body button {
@@ -3274,7 +3059,6 @@ body.desktop-loaded #windows-container {
     text-shadow: none;
 }
 
-.window .spotify-profile-button:hover,
 .window .send-button:hover,
 .window .photo-navigation-button:hover,
 .window .shutdown-body button:hover {
@@ -3287,7 +3071,6 @@ body.desktop-loaded #windows-container {
         0 1px 4px rgba(0, 0, 0, 0.25);
 }
 
-.window .spotify-profile-button:active,
 .window .send-button:active,
 .window .photo-navigation-button:active,
 .window .shutdown-body button:active {
@@ -3299,30 +3082,9 @@ body.desktop-loaded #windows-container {
 
 /* ---------- NOTEPAD MENU: ORIGINAL STYLE ---------- */
 
-.window .notepad-menu button {
-    min-width: auto;
-    height: auto;
-    padding: 3px 8px;
-    color: #000;
-    background: transparent;
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
-    text-shadow: none;
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-    font-family: Tahoma, sans-serif;
-    font-size: 12px;
-    cursor: pointer;
-}
 
-.window .notepad-menu button:hover,
-.window .notepad-menu button:active {
-    color: #fff;
-    background: #000080;
-    border: none;
-    box-shadow: none;
-}
+
+
 
 /* ---------- MUSIC TABS: PINK ---------- */
 
@@ -3504,16 +3266,7 @@ body.desktop-loaded #windows-container {
     transition: transform 0.18s ease, filter 0.18s ease;
 }
 
-#socials-window .social-icon span {
-    display: block;
-    color: #fff;
-    font-family: Tahoma, sans-serif;
-    font-size: 12px;
-    line-height: 1.2;
-    text-shadow:
-        0 1px 2px rgba(0, 0, 0, 0.95),
-        0 0 4px rgba(0, 0, 0, 0.65);
-}
+
 
 #socials-window .social-icon:hover {
     background: linear-gradient(
@@ -3623,200 +3376,36 @@ body.desktop-loaded #windows-container {
    EXPLORER MENU
 ========================================= */
 
-.explorer-menu {
-    height: 29px;
-    flex-shrink: 0;
 
-    display: flex;
-    align-items: center;
 
-    padding: 0 5px;
 
-    background:
-        linear-gradient(
-            to bottom,
-            rgba(255, 255, 255, 0.94),
-            rgba(224, 235, 244, 0.94)
-        );
 
-    border-bottom: 1px solid #9baebe;
-}
 
-.explorer-menu button {
-    min-width: 38px;
-    height: 23px;
-
-    padding: 1px 8px;
-
-    color: #111;
-    background: transparent;
-
-    border: 1px solid transparent;
-    border-radius: 3px;
-
-    font-family: "Segoe UI", Tahoma, sans-serif;
-    font-size: 12px;
-
-    cursor: pointer;
-}
-
-.explorer-menu button:hover {
-    background:
-        linear-gradient(
-            to bottom,
-            rgba(255, 255, 255, 0.98),
-            rgba(205, 231, 250, 0.98) 48%,
-            rgba(167, 211, 243, 0.98) 49%,
-            rgba(205, 232, 250, 0.98)
-        );
-
-    border-color: #5f98c1;
-
-    box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, 0.72),
-        0 0 4px rgba(67, 153, 218, 0.35);
-}
 
 /* =========================================
    EXPLORER TOOLBAR
 ========================================= */
 
-.explorer-toolbar {
-    min-height: 42px;
-    flex-shrink: 0;
 
-    display: flex;
-    align-items: center;
-    gap: 4px;
 
-    padding: 5px 8px;
 
-    background:
-        linear-gradient(
-            to bottom,
-            rgba(247, 251, 254, 0.96),
-            rgba(216, 230, 241, 0.94)
-        );
-
-    border-bottom: 1px solid #a4b6c4;
-}
-
-.explorer-toolbar-button {
-    min-height: 29px;
-
-    display: flex;
-    align-items: center;
-    gap: 5px;
-
-    padding: 3px 9px;
-
-    color: #17202a;
-    background: transparent;
-
-    border: 1px solid transparent;
-    border-radius: 3px;
-
-    font-family: "Segoe UI", Tahoma, sans-serif;
-    font-size: 12px;
-
-    cursor: pointer;
-}
 
 
 /* =========================================
    ADDRESS BAR
 ========================================= */
 
-.explorer-address-row {
-    min-height: 35px;
-    flex-shrink: 0;
 
-    display: flex;
-    align-items: center;
-    gap: 6px;
 
-    padding: 4px 7px;
 
-    background:
-        linear-gradient(
-            to bottom,
-            rgba(239, 246, 251, 0.96),
-            rgba(218, 231, 241, 0.96)
-        );
 
-    border-bottom: 1px solid #9fb1bf;
-}
 
-.explorer-address-label {
-    color: #303030;
 
-    font-family: "Segoe UI", Tahoma, sans-serif;
-    font-size: 12px;
-}
 
-.explorer-address-bar {
-    min-width: 0;
-    height: 25px;
-    flex: 1;
 
-    display: flex;
-    align-items: center;
-    gap: 6px;
 
-    padding: 2px 7px;
 
-    color: #111;
-    background: rgba(255, 255, 255, 0.96);
 
-    border: 1px solid #7f9db9;
-    border-radius: 2px;
-
-    box-shadow:
-        inset 1px 1px 2px rgba(52, 76, 99, 0.12);
-
-    font-family: "Segoe UI", Tahoma, sans-serif;
-    font-size: 12px;
-}
-
-.explorer-address-bar img {
-    width: 17px;
-    height: 17px;
-
-    object-fit: contain;
-}
-
-.explorer-go-button {
-    height: 25px;
-    padding: 2px 10px;
-
-    color: #111;
-
-    background:
-        linear-gradient(
-            to bottom,
-            #ffffff,
-            #d4e6f3
-        );
-
-    border: 1px solid #7d9eb7;
-    border-radius: 3px;
-
-    font-family: "Segoe UI", Tahoma, sans-serif;
-    font-size: 12px;
-
-    cursor: pointer;
-}
-
-.explorer-go-button:hover {
-    background:
-        linear-gradient(
-            to bottom,
-            #ffffff,
-            #b9ddf5
-        );
-
-    border-color: #4389bb;
-}
 
 /* =========================================
    RECYCLE BIN CONTENT
@@ -3965,64 +3554,17 @@ body.desktop-loaded #windows-container {
    DETAILS / STATUS BAR
 ========================================= */
 
-.explorer-details-bar {
-    min-height: 53px;
-    flex-shrink: 0;
 
-    display: flex;
-    align-items: center;
-    gap: 10px;
 
-    padding: 6px 10px;
 
-    color: #17202a;
 
-    background:
-        linear-gradient(
-            to bottom,
-            rgba(239, 247, 252, 0.98),
-            rgba(210, 226, 238, 0.98)
-        );
 
-    border-top: 1px solid #9eb1c0;
 
-    font-family: "Segoe UI", Tahoma, sans-serif;
-    font-size: 11px;
-}
 
-.explorer-details-bar > img {
-    width: 32px;
-    height: 32px;
 
-    object-fit: contain;
-}
 
-.explorer-details-text {
-    min-width: 0;
 
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
 
-.explorer-details-text strong {
-    font-size: 12px;
-}
-
-.explorer-details-text span {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.explorer-item-count {
-    margin-left: auto;
-    padding-left: 12px;
-
-    white-space: nowrap;
-
-    border-left: 1px solid #a8bac8;
-}
 
 /* =========================================
    MOBILE RECYCLE BIN
@@ -4035,26 +3577,14 @@ body.desktop-loaded #windows-container {
         height: calc(100vh - 58px);
     }
 
-    .explorer-address-label,
     
-    .explorer-details-text span {
-        display: none;
-    }
 }
 
 /* =========================================
    TROJAN.EXE CMD WINDOW
 ========================================= */
 
-#trojan-window {
-    width: 720px;
-    height: 500px;
 
-    max-width: calc(100vw - 20px);
-    max-height: calc(100vh - 58px);
-
-    overflow: hidden;
-}
 
 #trojan-window .title-bar {
     background:
@@ -4285,14 +3815,7 @@ body.desktop-loaded #windows-container {
         transform 0.75s ease;
 }
 
-.trojan-steam-image-link:hover img,
-.trojan-steam-image-link:focus-visible img {
-    filter:
-        brightness(1.06)
-        contrast(1.02);
 
-    transform: scale(1.008);
-}
 
 .trojan-steam-image-link:hover img,
 .trojan-steam-image-link:focus-visible img {
@@ -4450,9 +3973,7 @@ body.desktop-loaded #windows-container {
         font-size: 11px;
     }
 
-    .trojan-reveal-title {
-        letter-spacing: 2px;
-    }
+    
 }
 
 /* =========================================================
@@ -4460,95 +3981,13 @@ body.desktop-loaded #windows-container {
    Final overrides for the unified glass interface
 ========================================================= */
 
-.window .window-menu {
-    position: relative;
-    z-index: 3;
 
-    width: 100%;
-    height: 30px;
-    flex-shrink: 0;
 
-    display: flex;
-    align-items: center;
 
-    padding: 0 5px;
 
-    background:
-        linear-gradient(
-            to bottom,
-            rgba(255, 255, 255, 0.48) 0%,
-            rgba(236, 245, 253, 0.38) 48%,
-            rgba(191, 215, 234, 0.34) 49%,
-            rgba(221, 235, 246, 0.38) 100%
-        );
 
-    border-top: 1px solid rgba(255, 255, 255, 0.58);
-    border-bottom: 1px solid rgba(124, 157, 181, 0.65);
 
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.52),
-        0 1px 0 rgba(255, 255, 255, 0.22);
 
-    -webkit-backdrop-filter: blur(9px) saturate(125%);
-    backdrop-filter: blur(9px) saturate(125%);
-}
-
-.window .window-menu button {
-    min-width: 39px;
-    height: 23px;
-
-    padding: 1px 8px 2px;
-
-    color: #17202a;
-    background: transparent;
-
-    border: 1px solid transparent;
-    border-radius: 3px;
-    box-shadow: none;
-
-    font-family: "Segoe UI", Tahoma, sans-serif;
-    font-size: 12px;
-    font-weight: normal;
-    line-height: 1;
-
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.75);
-
-    cursor: pointer;
-}
-
-.window .window-menu button:hover,
-.window .window-menu button:focus-visible {
-    color: #111;
-
-    background:
-        linear-gradient(
-            to bottom,
-            rgba(255, 255, 255, 0.78),
-            rgba(205, 231, 250, 0.72) 48%,
-            rgba(167, 211, 243, 0.72) 49%,
-            rgba(205, 232, 250, 0.72)
-        );
-
-    border-color: rgba(77, 144, 191, 0.82);
-
-    box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, 0.55),
-        0 0 4px rgba(67, 153, 218, 0.24);
-
-    outline: none;
-}
-
-.window .window-menu button:active {
-    background:
-        linear-gradient(
-            to bottom,
-            rgba(153, 200, 234, 0.76),
-            rgba(205, 229, 246, 0.72)
-        );
-
-    border-color: rgba(72, 119, 154, 0.9);
-    box-shadow: inset 0 1px 3px rgba(45, 78, 105, 0.22);
-}
 
 /* Every menu-equipped application window behaves as a vertical shell. */
 #photography-window,
@@ -4645,26 +4084,7 @@ body.desktop-loaded #windows-container {
     backdrop-filter: blur(10px);
 }
 
-#about-window .notepad-text {
-    color: #111;
 
-    background:
-        linear-gradient(
-            to bottom,
-            rgba(255, 255, 255, 0.50),
-            rgba(242, 248, 252, 0.38)
-        );
-
-    border: 1px solid rgba(110, 143, 168, 0.72);
-
-    box-shadow:
-        inset 1px 1px 3px rgba(52, 76, 99, 0.12),
-        inset 0 0 18px rgba(255, 255, 255, 0.16),
-        0 0 0 1px rgba(255, 255, 255, 0.26);
-
-    -webkit-backdrop-filter: blur(7px) saturate(115%);
-    backdrop-filter: blur(7px) saturate(115%);
-}
 
 #about-window .notepad-body::after {
     color: #26323b;
@@ -4684,14 +4104,9 @@ body.desktop-loaded #windows-container {
 }
 
 @media (max-width: 620px) {
-    .window .window-menu {
-        overflow-x: auto;
-        overflow-y: hidden;
-    }
+    
 
-    .window .window-menu button {
-        flex: 0 0 auto;
-    }
+    
 }
 
 /* =========================================================
@@ -4951,19 +4366,13 @@ button,
 #startButton,
 #clock,
 .window-controls button,
-.window-menu button,
 .photo-navigation-button {
     cursor: var(--cursor-pointer);
 }
 
 /* Text areas and editable fields */
 
-input,
-textarea,
-.notepad-text,
-[contenteditable="true"] {
-    cursor: var(--cursor-text);
-}
+
 
 /* Window dragging */
 
@@ -4973,12 +4382,7 @@ textarea,
 
 /* Disabled elements */
 
-button:disabled,
-input:disabled,
-textarea:disabled,
-[aria-disabled="true"] {
-    cursor: var(--cursor-forbidden);
-}
+
 
 .resize-left,
 .resize-right {
@@ -5244,7 +4648,6 @@ button,
 #clock,
 .task-button,
 .window-controls button,
-.window-menu button,
 .music-tab,
 .photo-folder,
 .graphic-project-folder,
@@ -5269,7 +4672,6 @@ button,
 
 input,
 textarea,
-.notepad-text,
 [contenteditable="true"] {
     cursor: var(--cursor-text) !important;
 }
@@ -5708,11 +5110,7 @@ textarea:disabled,
  * same shared sheer menu as the other windows.
  */
 
-#trojan-window > .window-menu {
-    width: 100%;
-    height: 30px;
-    flex-shrink: 0;
-}
+
 
 /*
  * Main content area.
@@ -6073,15 +5471,8 @@ body {
         white-space: nowrap;
     }
 
-    .window-menu {
-        max-width: 100%;
-        overflow-x: auto;
-        overflow-y: hidden;
-        white-space: nowrap;
-        scrollbar-width: none;
-    }
+    
 
-    .window-menu::-webkit-scrollbar,
     #taskbar-windows::-webkit-scrollbar {
         display: none;
     }
@@ -6119,9 +5510,7 @@ body {
         padding: 10px;
     }
 
-    .graphic-project-header h1 {
-        font-size: clamp(21px, 7vw, 28px);
-    }
+    
 
     .contact-body {
         padding: 10px;
@@ -6224,11 +5613,7 @@ body {
    Keep these rules at the absolute end of style.css
 ========================================================= */
 
-#wallpaper-video {
-    display: block !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-}
+
 
 @media (max-width: 700px) {
     .wallpaper-vhs {
@@ -6352,9 +5737,7 @@ body {
     pointer-events: none !important;
 }
 
-#wallpaper-video.wallpaper-playing {
-    opacity: 1 !important;
-}
+
 
 #wallpaper-video.wallpaper-failed {
     opacity: 0 !important;
@@ -6670,7 +6053,6 @@ body,
 #startup-settings-screen,
 .bibi-title,
 .window,
-.window-menu,
 .title-bar,
 .icon,
 .photo-folder,
@@ -7248,18 +6630,9 @@ body.booting .bibi-title {
     background: #c0c0c0;
 }
 
-.magical-lake-toolbar {
-    width: 100%;
-    height: 30px;
-    min-height: 30px;
-    flex-shrink: 0;
-    gap: 0;
-}
 
-.magical-lake-toolbar button {
-    min-width: auto;
-    white-space: nowrap;
-}
+
+
 
 #magical-lake-status {
     min-width: 0;
@@ -7346,18 +6719,9 @@ body.booting .bibi-title {
         min-height: 0;
     }
 
-    .magical-lake-toolbar {
-        height: 30px;
-        min-height: 30px;
-        flex-wrap: nowrap;
-    }
+    
 
-    .magical-lake-toolbar button {
-        min-width: 0;
-        padding-left: 6px;
-        padding-right: 6px;
-        font-size: 11px;
-    }
+    
 
     #magical-lake-status {
         width: auto;
@@ -7438,13 +6802,7 @@ body.booting #magical-waterfall-canvas {
         inset 0 0 0 1px rgba(255, 255, 255, 0.24) !important;
 }
 
-.window:focus-within {
-    box-shadow:
-        0 16px 38px rgba(20, 38, 54, 0.42),
-        0 0 0 1px rgba(255, 255, 255, 0.68),
-        0 0 12px var(--toolbar-chrome-glow),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.30) !important;
-}
+
 
 /* Keep the title artwork, but join it cleanly to the toolbar-colored frame. */
 .window > .title-bar {
@@ -7505,26 +6863,16 @@ body.booting #magical-waterfall-canvas {
     box-shadow: inset 0 1px 3px rgba(45, 78, 105, 0.28) !important;
 }
 
-.window .minimize::before,
-.window .close::before,
-.window .close::after {
-    background: var(--toolbar-chrome-text) !important;
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.72) !important;
-}
 
-.window .maximize::before {
-    border-color: var(--toolbar-chrome-text) !important;
-    filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.72)) !important;
-}
+
+
 
 /* Raised action buttons inside application windows. Menu buttons remain flat
    because they are already part of the toolbar itself. */
 .window .music-tab,
 .window .send-button,
 .window .photo-navigation-button,
-.window .spotify-profile-button,
 .window .shutdown-body button,
-.window .magical-lake-toolbar button,
 .window .power-button {
     color: var(--toolbar-chrome-text) !important;
 
@@ -7553,16 +6901,12 @@ body.booting #magical-waterfall-canvas {
 .window .music-tab:hover,
 .window .send-button:hover,
 .window .photo-navigation-button:hover,
-.window .spotify-profile-button:hover,
 .window .shutdown-body button:hover,
-.window .magical-lake-toolbar button:hover,
 .window .power-button:hover,
 .window .music-tab:focus-visible,
 .window .send-button:focus-visible,
 .window .photo-navigation-button:focus-visible,
-.window .spotify-profile-button:focus-visible,
 .window .shutdown-body button:focus-visible,
-.window .magical-lake-toolbar button:focus-visible,
 .window .power-button:focus-visible {
     color: #18364d !important;
 
@@ -7587,9 +6931,7 @@ body.booting #magical-waterfall-canvas {
 .window .music-tab:active,
 .window .send-button:active,
 .window .photo-navigation-button:active,
-.window .spotify-profile-button:active,
 .window .shutdown-body button:active,
-.window .magical-lake-toolbar button:active,
 .window .power-button:active {
     background:
         linear-gradient(
@@ -7706,8 +7048,7 @@ body.booting #magical-waterfall-canvas {
 /* Keep readable fields glassy rather than solid white. */
 .window input,
 .window textarea,
-.window select,
-#about-window .notepad-text {
+.window select {
     color: #24172d !important;
 
     background:
@@ -7738,33 +7079,11 @@ body.booting #magical-waterfall-canvas {
 }
 
 /* Lavender glass application/menu bars. */
-.window .window-menu,
-.window .notepad-menu,
-.window .magical-lake-toolbar {
-    background:
-        linear-gradient(
-            to bottom,
-            rgba(255, 255, 255, 0.34) 0%,
-            rgba(232, 214, 246, 0.28) 48%,
-            rgba(191, 151, 218, 0.24) 49%,
-            rgba(220, 196, 238, 0.28) 100%
-        ) !important;
 
-    border-top-color: rgba(255, 255, 255, 0.46) !important;
-    border-bottom-color: var(--lavender-border-strong) !important;
-
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.40),
-        0 1px 0 rgba(255, 255, 255, 0.14) !important;
-
-    -webkit-backdrop-filter: blur(10px) saturate(130%);
-    backdrop-filter: blur(10px) saturate(130%);
-}
 
 /* All in-window buttons and link-buttons become transparent lavender glass.
    The title-bar controls are intentionally excluded. */
-.window button:not(.minimize):not(.maximize):not(.close),
-.window .spotify-profile-button {
+.window button:not(.minimize):not(.maximize):not(.close) {
     color: var(--lavender-text) !important;
 
     background:
@@ -7789,9 +7108,7 @@ body.booting #magical-waterfall-canvas {
 }
 
 .window button:not(.minimize):not(.maximize):not(.close):hover,
-.window button:not(.minimize):not(.maximize):not(.close):focus-visible,
-.window .spotify-profile-button:hover,
-.window .spotify-profile-button:focus-visible {
+.window button:not(.minimize):not(.maximize):not(.close):focus-visible {
     color: #2f183e !important;
 
     background:
@@ -7812,8 +7129,7 @@ body.booting #magical-waterfall-canvas {
     outline: none;
 }
 
-.window button:not(.minimize):not(.maximize):not(.close):active,
-.window .spotify-profile-button:active {
+.window button:not(.minimize):not(.maximize):not(.close):active {
     background:
         linear-gradient(
             to bottom,
@@ -7827,12 +7143,9 @@ body.booting #magical-waterfall-canvas {
 }
 
 /* Replace remaining classic-blue selection/hover states with lavender. */
-.folder-item:hover,
 .photo-folder:hover span,
 .graphic-project-folder:hover span,
 .social-icon:hover,
-.window .notepad-menu button:hover,
-.window .notepad-menu button:active,
 .start-item:hover,
 .recycle-program:hover {
     color: #ffffff !important;
@@ -7987,32 +7300,12 @@ body.booting #magical-waterfall-canvas {
     backdrop-filter: blur(18px) saturate(135%);
 }
 
-#photography-window > .window-body,
-#photography-window .photo-gallery,
-#graphic-arts-window > .window-body,
-#graphic-arts-window .graphic-arts-body,
-#graphic-arts-window .graphic-projects {
-    background:
-        linear-gradient(
-            145deg,
-            rgba(255, 255, 255, 0.17),
-            rgba(225, 204, 241, 0.20) 55%,
-            rgba(166, 121, 198, 0.18)
-        ),
-        var(--bibi-lavender-glass-soft) !important;
 
-    border-color: var(--bibi-lavender-border) !important;
-    -webkit-backdrop-filter: blur(14px) saturate(130%);
-    backdrop-filter: blur(14px) saturate(130%);
-}
 
 /* Title bars, menu bars, taskbar, and Start menu share one lavender skin. */
 #taskbar,
 #start-menu,
-.window > .title-bar,
-.window .window-menu,
-.window .notepad-menu,
-.window .magical-lake-toolbar {
+.window > .title-bar {
     color: var(--bibi-lavender-text) !important;
     background:
         linear-gradient(
@@ -8033,20 +7326,14 @@ body.booting #magical-waterfall-canvas {
     backdrop-filter: blur(14px) saturate(135%);
 }
 
-.window > .title-bar {
-    color: #42254f !important;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55) !important;
-}
+
 
 /* Taskbar, Start-menu, toolbar, and in-window controls use matching glass.
    Minimize, maximize, and close are deliberately excluded. */
 #startButton,
 .task-button,
 .start-item,
-.window .window-menu button,
-.window .notepad-menu button,
 .window button:not(.minimize):not(.maximize):not(.close),
-.window .spotify-profile-button,
 #calendar-previous,
 #calendar-next,
 #calendar-today-button {
@@ -8070,10 +7357,7 @@ body.booting #magical-waterfall-canvas {
 #startButton:hover,
 .task-button:hover,
 .start-item:hover,
-.window .window-menu button:hover,
-.window .notepad-menu button:hover,
 .window button:not(.minimize):not(.maximize):not(.close):hover,
-.window .spotify-profile-button:hover,
 #calendar-previous:hover,
 #calendar-next:hover,
 #calendar-today-button:hover {
@@ -8096,8 +7380,6 @@ body.booting #magical-waterfall-canvas {
 .task-button.active,
 #startButton:active,
 .start-item:active,
-.window .window-menu button:active,
-.window .notepad-menu button:active,
 .window button:not(.minimize):not(.maximize):not(.close):active {
     color: #ffffff !important;
     background: var(--bibi-lavender-active) !important;
@@ -8106,17 +7388,7 @@ body.booting #magical-waterfall-canvas {
 }
 
 /* Remove the remaining Windows-blue selection states. */
-.folder-item:hover,
-.photo-folder:hover span,
-.graphic-project-folder:hover span,
-.social-icon:hover,
-.recycle-program:hover,
-.icon:hover {
-    color: #ffffff !important;
-    background: var(--bibi-lavender-active) !important;
-    border-color: rgba(231, 204, 247, 0.64) !important;
-    box-shadow: 0 0 8px rgba(207, 151, 237, 0.30) !important;
-}
+
 
 /* Keep the restored title-bar controls exactly as they were. */
 
@@ -8204,55 +7476,9 @@ body.booting #magical-waterfall-canvas {
     filter: none !important;
 }
 
-#music-window .music-tab:hover,
-#music-window .music-tab:focus-visible {
-    color: #32133f !important;
 
-    background:
-        linear-gradient(
-            to bottom,
-            rgba(255, 255, 255, 0.58) 0%,
-            rgba(224, 190, 243, 0.48) 48%,
-            rgba(187, 137, 216, 0.46) 49%,
-            rgba(215, 177, 237, 0.50) 100%
-        ),
-        var(--bibi-lavender-hover) !important;
 
-    border-color: var(--bibi-lavender-border-strong) !important;
 
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.66),
-        0 0 8px rgba(204, 145, 235, 0.34),
-        0 1px 2px var(--bibi-lavender-shadow) !important;
-
-    outline: none !important;
-    filter: none !important;
-}
-
-#music-window .music-tab:active,
-#music-window .music-tab.active,
-#music-window .music-tab.active:hover,
-#music-window .music-tab.active:focus-visible {
-    color: #ffffff !important;
-
-    background:
-        linear-gradient(
-            to bottom,
-            rgba(194, 146, 224, 0.76),
-            rgba(150, 98, 188, 0.70)
-        ),
-        var(--bibi-lavender-active) !important;
-
-    border-color: var(--bibi-lavender-border-strong) !important;
-
-    box-shadow:
-        inset 0 2px 4px rgba(67, 39, 83, 0.26),
-        0 0 7px rgba(205, 149, 237, 0.30) !important;
-
-    text-shadow: 0 1px 2px rgba(74, 38, 93, 0.54) !important;
-    transform: none !important;
-    filter: none !important;
-}
 
 
 /* =========================================================
@@ -8375,37 +7601,9 @@ body.booting #magical-waterfall-canvas {
     backdrop-filter: blur(10px) saturate(135%) !important;
 }
 
-.window .contact-body,
-.window .socials-body,
-.window .graphic-arts-body,
-.window .music-window,
-.window .music-content,
-.window .photo-gallery,
-.window .graphic-projects,
-.window .graphic-project-body,
-.window .graphic-project-content,
-.window .project-gallery,
-.window .image-preview-body,
-.window .preview-image-area,
-.window .shutdown-body,
-#trash-window .trash-body,
-#about-window .notepad-body {
-    background: transparent !important;
-}
 
-#about-window .notepad-text,
-#contact-window input,
-#contact-window textarea,
-#contact-window button:not(.minimize):not(.maximize):not(.close),
-#shutdown-dialog button {
-    background: linear-gradient(
-        to bottom,
-        rgba(255, 255, 255, 0.42),
-        rgba(234, 220, 247, 0.30)
-    ) !important;
-    -webkit-backdrop-filter: blur(8px) saturate(130%) !important;
-    backdrop-filter: blur(8px) saturate(130%) !important;
-}
+
+
 
 /* =========================================================
    v12: DARKER, MORE TRANSPARENT PURPLE GLASS THEME
@@ -8490,10 +7688,7 @@ body.booting #magical-waterfall-canvas {
 
 /* Dark purple title bars and application bars. */
 .window > .title-bar,
-.window .window-menu,
-.window .notepad-menu,
-.window .music-tabs,
-.window .magical-lake-toolbar {
+.window .music-tabs {
     color: var(--bibi-dark-text) !important;
     background:
         linear-gradient(
@@ -8550,11 +7745,8 @@ body.booting #magical-waterfall-canvas {
 #startButton,
 .task-button,
 .start-item,
-.window .window-menu button,
-.window .notepad-menu button,
 .window .music-tab,
 .window button:not(.minimize):not(.maximize):not(.close),
-.window .spotify-profile-button,
 #calendar-previous,
 #calendar-next,
 #calendar-today-button {
@@ -8578,13 +7770,9 @@ body.booting #magical-waterfall-canvas {
 #startButton:hover,
 .task-button:hover,
 .start-item:hover,
-.window .window-menu button:hover,
-.window .window-menu button:focus-visible,
-.window .notepad-menu button:hover,
 .window .music-tab:hover,
 .window .music-tab:focus-visible,
 .window button:not(.minimize):not(.maximize):not(.close):hover,
-.window .spotify-profile-button:hover,
 #calendar-previous:hover,
 #calendar-next:hover,
 #calendar-today-button:hover {
@@ -8605,8 +7793,6 @@ body.booting #magical-waterfall-canvas {
 .task-button.active,
 #startButton:active,
 .start-item:active,
-.window .window-menu button:active,
-.window .notepad-menu button:active,
 .window .music-tab:active,
 .window .music-tab.active,
 .window button:not(.minimize):not(.maximize):not(.close):active {
@@ -8617,7 +7803,6 @@ body.booting #magical-waterfall-canvas {
 }
 
 /* Transparent purple form and text surfaces. */
-#about-window .notepad-text,
 #contact-window input,
 #contact-window textarea,
 #contact-window button:not(.minimize):not(.maximize):not(.close),
@@ -8635,7 +7820,6 @@ body.booting #magical-waterfall-canvas {
 }
 
 /* Folder labels and hover selections stay purple rather than blue. */
-.folder-item:hover,
 .photo-folder:hover span,
 .graphic-project-folder:hover span,
 .social-icon:hover,
@@ -9204,744 +8388,153 @@ body.booting #magical-waterfall-canvas {
     }
 }
 
-/* =========================================================
-   v21: INTERACTIVE PORTFOLIO UNIVERSE
-========================================================= */
-
-#universe-window {
-    width: min(1180px, calc(100vw - 36px));
-    height: min(780px, calc(100vh - 58px));
-    min-width: 580px;
-    min-height: 430px;
-
-    display: flex;
-    flex-direction: column;
-}
-
-#universe-window.hidden {
-    display: none;
-}
-
-#universe-window > .title-bar,
-#universe-window > .window-menu {
-    flex-shrink: 0;
-}
-
-#universe-window > .universe-body {
-    min-width: 0;
-    min-height: 0;
-    height: auto;
-    flex: 1;
-
-    padding: 0 !important;
-    overflow: hidden !important;
-
-    color: #ffffff !important;
-    background: #07040d !important;
-    -webkit-backdrop-filter: none !important;
-    backdrop-filter: none !important;
-}
-
-.portfolio-universe,
-.portfolio-universe * {
-    box-sizing: border-box;
-}
-
-.portfolio-universe {
-    position: relative;
-
-    width: 100%;
-    height: 100%;
-    min-width: 0;
-    min-height: 0;
-
-    display: flex;
-    flex-direction: column;
-
-    overflow: hidden;
-
-    color: #ffffff;
-    background: #07040d;
-
-    font-family: "Segoe UI", Tahoma, sans-serif;
-}
-
-.universe-toolbar {
-    position: relative;
-    z-index: 20;
-
-    min-height: 72px;
-    flex-shrink: 0;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 18px;
-
-    padding: 12px 15px;
-
-    background:
-        linear-gradient(
-            to bottom,
-            rgba(36, 18, 54, 0.96),
-            rgba(13, 8, 22, 0.92)
-        );
-
-    border-bottom: 1px solid rgba(222, 189, 244, 0.22);
-    box-shadow:
-        0 8px 28px rgba(0, 0, 0, 0.28),
-        inset 0 1px 0 rgba(255, 255, 255, 0.08);
-
-    -webkit-backdrop-filter: blur(18px) saturate(140%);
-    backdrop-filter: blur(18px) saturate(140%);
-}
-
-.universe-brand {
-    min-width: 0;
-
-    display: grid;
-    grid-template-columns: auto 1fr;
-    align-items: baseline;
-    column-gap: 10px;
-    row-gap: 2px;
-}
-
-.universe-kicker {
-    grid-column: 1;
-    grid-row: 1;
-
-    color: #c998eb !important;
-
-    font-size: 9px;
-    font-weight: 700;
-    line-height: 1;
-    letter-spacing: 0.18em;
-}
-
-.universe-brand strong {
-    grid-column: 2;
-    grid-row: 1;
-
-    color: #ffffff !important;
-
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: clamp(20px, 2.1vw, 31px);
-    font-weight: 400;
-    line-height: 1;
-    letter-spacing: -0.035em;
-}
-
-.universe-subtitle {
-    grid-column: 1 / -1;
-    grid-row: 2;
-
-    max-width: 480px;
-
-    color: rgba(236, 220, 247, 0.62) !important;
-
-    font-size: 10px;
-    line-height: 1.25;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-}
-
-.universe-controls {
-    flex-shrink: 0;
-
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 9px;
-}
-
-.universe-layout-controls,
-.universe-zoom-controls {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.universe-layout-controls {
-    padding-right: 9px;
-    border-right: 1px solid rgba(222, 189, 244, 0.18);
-}
-
-#universe-window .universe-control {
-    min-width: 48px;
-    height: 28px;
-
-    padding: 0 9px;
-
-    color: rgba(245, 235, 252, 0.74) !important;
-    background: rgba(108, 65, 143, 0.16) !important;
-
-    border: 1px solid rgba(212, 173, 239, 0.24) !important;
-    border-radius: 999px !important;
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.08),
-        0 3px 10px rgba(0, 0, 0, 0.16) !important;
-
-    font-family: "Segoe UI", Tahoma, sans-serif;
-    font-size: 9px;
-    font-weight: 600;
-    line-height: 1;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-
-    cursor: pointer;
-
-    transition:
-        color 160ms ease,
-        background 160ms ease,
-        border-color 160ms ease,
-        transform 160ms ease;
-}
-
-#universe-window .universe-control:hover,
-#universe-window .universe-control:focus-visible {
-    color: #ffffff !important;
-    background: rgba(165, 101, 207, 0.34) !important;
-    border-color: rgba(232, 204, 249, 0.62) !important;
-    outline: none;
-    transform: translateY(-1px);
-}
-
-#universe-window .universe-control:active,
-#universe-window .universe-control.is-active {
-    color: #16091f !important;
-    background: #e9cef8 !important;
-    border-color: #f6eaff !important;
-    box-shadow:
-        inset 0 1px 2px rgba(80, 37, 108, 0.18),
-        0 0 18px rgba(196, 127, 235, 0.18) !important;
-    transform: none;
-}
-
-.universe-stage {
-    position: relative;
-
-    min-width: 0;
-    min-height: 0;
-    flex: 1;
-
-    overflow: hidden;
-
-    cursor: grab;
-    touch-action: none;
-    user-select: none;
-    outline: none;
-
-    background:
-        radial-gradient(
-            circle at 50% 44%,
-            rgba(128, 73, 165, 0.23) 0%,
-            rgba(53, 28, 78, 0.13) 28%,
-            rgba(7, 4, 13, 0) 62%
-        ),
-        radial-gradient(
-            circle at 15% 22%,
-            rgba(217, 151, 244, 0.08) 0 1px,
-            transparent 1.6px
-        ) 0 0 / 46px 46px,
-        radial-gradient(
-            circle at 73% 64%,
-            rgba(168, 121, 218, 0.08) 0 1px,
-            transparent 1.5px
-        ) 0 0 / 68px 68px,
-        linear-gradient(145deg, #0b0712, #040307 76%);
-}
-
-.universe-stage::before {
-    content: "";
-
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-
-    pointer-events: none;
-
-    opacity: 0.26;
-
-    background-image:
-        linear-gradient(
-            rgba(217, 184, 239, 0.05) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            90deg,
-            rgba(217, 184, 239, 0.05) 1px,
-            transparent 1px
-        );
-    background-size: 70px 70px;
-
-    -webkit-mask-image:
-        radial-gradient(circle at center, black, transparent 78%);
-    mask-image:
-        radial-gradient(circle at center, black, transparent 78%);
-}
-
-.universe-stage:focus-visible {
-    box-shadow: inset 0 0 0 2px rgba(223, 184, 247, 0.45);
-}
-
-.universe-stage.is-panning {
-    cursor: grabbing;
-}
-
-.universe-vignette {
-    position: absolute;
-    inset: 0;
-    z-index: 10;
-
-    pointer-events: none;
-
-    box-shadow:
-        inset 0 0 105px rgba(0, 0, 0, 0.68),
-        inset 0 -55px 95px rgba(0, 0, 0, 0.58);
-}
-
-.universe-world {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    z-index: 2;
-
-    width: 0;
-    height: 0;
-
-    transform-origin: 0 0;
-    will-change: transform;
-}
-
-.universe-connections {
-    position: absolute;
-    left: -700px;
-    top: -560px;
-
-    width: 1400px;
-    height: 1120px;
-
-    overflow: visible;
-    pointer-events: none;
-
-    opacity: 0.44;
-
-    transition: opacity 420ms ease;
-}
-
-.universe-connections path {
-    fill: none;
-    stroke: rgba(206, 161, 232, 0.34);
-    stroke-width: 1;
-    stroke-dasharray: 3 8;
-    vector-effect: non-scaling-stroke;
-}
-
-.universe-grid-layout .universe-connections,
-.universe-grid-layout .universe-center-mark {
-    opacity: 0;
-}
-
-.universe-center-mark {
-    position: absolute;
-    left: 0;
-    top: 0;
-
-    width: 130px;
-    height: 130px;
-
-    border: 1px solid rgba(211, 162, 239, 0.16);
-    border-radius: 50%;
-
-    pointer-events: none;
-
-    transform: translate(-50%, -50%);
-
-    transition: opacity 420ms ease;
-}
-
-.universe-center-mark::before,
-.universe-center-mark::after {
-    content: "";
-
-    position: absolute;
-    left: 50%;
-    top: 50%;
-
-    border: 1px solid rgba(211, 162, 239, 0.12);
-    border-radius: 50%;
-
-    transform: translate(-50%, -50%);
-}
-
-.universe-center-mark::before {
-    width: 74px;
-    height: 74px;
-}
-
-.universe-center-mark::after {
-    width: 16px;
-    height: 16px;
-
-    background: rgba(222, 184, 244, 0.24);
-    box-shadow:
-        0 0 14px rgba(198, 122, 237, 0.42),
-        0 0 42px rgba(198, 122, 237, 0.22);
-}
-
-.universe-project {
-    position: absolute;
-    left: 0;
-    top: 0;
-    z-index: 3;
-
-    display: block;
-
-    width: 210px;
-    margin: 0;
-    padding: 0;
-
-    color: #ffffff !important;
-    background: transparent !important;
-    border: 0 !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-
-    text-align: left;
-
-    cursor: pointer;
-    appearance: none;
-
-    transform-origin: center;
-    will-change: left, top, width, transform;
-
-    transition:
-        left 650ms cubic-bezier(0.22, 1, 0.36, 1),
-        top 650ms cubic-bezier(0.22, 1, 0.36, 1),
-        width 650ms cubic-bezier(0.22, 1, 0.36, 1),
-        transform 650ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.universe-project-card {
-    position: relative;
-
-    display: block;
-    width: 100%;
-
-    transition:
-        transform 220ms ease,
-        filter 220ms ease;
-}
-
-.universe-project:hover {
-    z-index: 12;
-}
-
-.universe-project:hover .universe-project-card,
-.universe-project:focus-visible .universe-project-card {
-    transform: translateY(-7px) scale(1.035);
-    filter: brightness(1.09);
-}
-
-.universe-project:focus-visible {
-    outline: none;
-}
-
-.universe-project:focus-visible .universe-project-media {
-    box-shadow:
-        0 0 0 2px rgba(244, 225, 255, 0.88),
-        0 22px 58px rgba(0, 0, 0, 0.62),
-        0 0 40px rgba(181, 105, 226, 0.26);
-}
-
-.universe-project-number {
-    position: absolute;
-    left: -23px;
-    top: 7px;
-    z-index: 2;
-
-    color: rgba(231, 205, 246, 0.52) !important;
-
-    font-family: "Courier New", monospace;
-    font-size: 9px;
-    line-height: 1;
-    letter-spacing: 0.08em;
-}
-
-.universe-project-media {
-    position: relative;
-
-    display: block;
-    width: 100%;
-    aspect-ratio: 4 / 3;
-
-    overflow: hidden;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(116, 64, 151, 0.50),
-            rgba(24, 12, 36, 0.88)
-        );
-
-    border: 1px solid rgba(230, 205, 246, 0.26);
-    border-radius: 2px;
-
-    box-shadow:
-        0 22px 58px rgba(0, 0, 0, 0.55),
-        0 0 0 1px rgba(255, 255, 255, 0.04),
-        0 0 34px rgba(153, 86, 197, 0.10);
-
-    transition:
-        border-color 220ms ease,
-        box-shadow 220ms ease;
-}
-
-.universe-project:hover .universe-project-media {
-    border-color: rgba(240, 219, 252, 0.62);
-    box-shadow:
-        0 28px 72px rgba(0, 0, 0, 0.68),
-        0 0 0 1px rgba(255, 255, 255, 0.10),
-        0 0 46px rgba(177, 99, 224, 0.25);
-}
-
-.universe-project-media::after {
-    content: "";
-
-    position: absolute;
-    inset: 0;
-
-    pointer-events: none;
-
-    background:
-        linear-gradient(
-            120deg,
-            rgba(255, 255, 255, 0.13),
-            transparent 25%,
-            transparent 70%,
-            rgba(119, 61, 155, 0.16)
-        );
-}
-
-.universe-project-media img {
-    display: block;
-    width: 100%;
-    height: 100%;
-
-    object-fit: cover;
-    object-position: center;
-
-    pointer-events: none;
-    -webkit-user-drag: none;
-
-    filter: saturate(0.84) contrast(1.03);
-}
-
-.universe-project-media--poster {
-    aspect-ratio: 4 / 5;
-}
-
-.universe-project-media--poster img {
-    object-fit: cover;
-    object-position: top center;
-}
-
-.universe-project-media--portrait {
-    aspect-ratio: 4 / 5;
-}
-
-.universe-project--logo .universe-project-media,
-.universe-project--icon .universe-project-media {
-    display: grid;
-    place-items: center;
-
-    background:
-        radial-gradient(
-            circle at center,
-            rgba(157, 88, 200, 0.45),
-            rgba(30, 14, 45, 0.93) 68%
-        );
-}
-
-.universe-project--logo .universe-project-media img {
-    width: 86%;
-    height: 86%;
-    object-fit: contain;
-    filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.42));
-}
-
-.universe-project--icon .universe-project-media img {
-    width: 68%;
-    height: 68%;
-    object-fit: contain;
-    filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.46));
-}
-
-.universe-project-copy {
-    display: grid;
-    gap: 3px;
-
-    margin-top: 8px;
-}
-
-.universe-project-copy strong {
-    color: #ffffff !important;
-
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 15px;
-    font-weight: 400;
-    line-height: 1.1;
-    letter-spacing: -0.01em;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.80);
-}
-
-.universe-project-copy small {
-    color: rgba(227, 205, 241, 0.60) !important;
-
-    font-family: "Segoe UI", Tahoma, sans-serif;
-    font-size: 8px;
-    font-weight: 600;
-    line-height: 1.2;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.80);
-}
-
-.universe-stage-help {
-    position: absolute;
-    right: 12px;
-    bottom: 10px;
-    z-index: 15;
-
-    display: flex;
-    gap: 7px;
-
-    pointer-events: none;
-}
-
-.universe-stage-help span {
-    padding: 5px 8px;
-
-    color: rgba(235, 216, 246, 0.58) !important;
-    background: rgba(18, 9, 27, 0.58);
-
-    border: 1px solid rgba(218, 178, 242, 0.15);
-    border-radius: 999px;
-
-    font-size: 8px;
-    line-height: 1;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 @media (max-width: 700px) {
-    #universe-window {
-        min-width: 0;
-        min-height: 0;
-    }
+    
 
-    #universe-window > .universe-body {
-        overflow: hidden !important;
-    }
+    
 
-    .universe-toolbar {
-        min-height: 88px;
-        align-items: flex-start;
-        gap: 7px;
-        padding: 9px 8px;
-    }
+    
 
-    .universe-brand {
-        display: block;
-        max-width: 42%;
-    }
+    
 
-    .universe-kicker {
-        display: block;
-        margin-bottom: 4px;
-        font-size: 7px;
-    }
+    
 
-    .universe-brand strong {
-        display: block;
-        font-size: clamp(17px, 5.6vw, 23px);
-        line-height: 0.95;
-    }
+    
 
-    .universe-subtitle {
-        display: none;
-    }
+    
 
-    .universe-controls {
-        max-width: 58%;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-        gap: 4px;
-    }
+    
 
-    .universe-layout-controls {
-        padding-right: 0;
-        border-right: 0;
-    }
+    
 
-    #universe-window .universe-control {
-        min-width: 42px;
-        height: 25px;
-        padding: 0 6px;
-        font-size: 7px;
-    }
+    
 
-    .universe-stage-help {
-        right: 6px;
-        bottom: 6px;
-        gap: 4px;
-    }
+    
 
-    .universe-stage-help span {
-        display: none;
-        padding: 4px 6px;
-        font-size: 7px;
-    }
+    
 
-    .universe-stage-help span:first-child,
-    .universe-stage-help span:last-child {
-        display: block;
-    }
+    
 
-    .universe-project-number {
-        left: -17px;
-    }
+    
 }
 
 @media (max-width: 420px) {
-    .universe-toolbar {
-        min-height: 82px;
-    }
+    
 
-    .universe-brand {
-        max-width: 38%;
-    }
+    
 
-    .universe-controls {
-        max-width: 62%;
-    }
+    
 
-    #universe-window .universe-control {
-        min-width: 38px;
-        padding: 0 5px;
-        font-size: 6.5px;
-    }
+    
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .universe-project,
-    .universe-project-card,
-    #universe-window .universe-control {
-        transition: none !important;
-    }
+    
 }
 
 
@@ -10160,5 +8753,2019 @@ body.booting #magical-waterfall-canvas {
 
     .bios-text {
         gap: 2px !important;
+    }
+}
+
+/* =========================================================
+   MOBILE BOOT, MOBILE WELCOME + WALLPAPER SEAM
+========================================================= */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Phone-only welcome animation that avoids unsupported CSS multiplication. */
+.mobile-welcome-effect {
+    position: fixed;
+    inset: 0;
+    z-index: 1000003;
+    overflow: hidden;
+    pointer-events: none;
+    user-select: none;
+}
+
+.mobile-welcome-ring {
+    position: fixed;
+    width: 30px;
+    height: 30px;
+    border: 2px solid rgba(255, 255, 255, 0.92);
+    border-radius: 50%;
+    box-shadow:
+        0 0 8px rgba(255, 255, 255, 0.9),
+        0 0 22px rgba(231, 126, 255, 0.72);
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.2);
+    animation: mobileWelcomeRing 900ms ease-out both;
+}
+
+.mobile-welcome-twinkle {
+    position: fixed;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 15px;
+    line-height: 1;
+    text-shadow:
+        0 0 4px currentColor,
+        0 0 10px currentColor;
+    opacity: 0;
+    transform:
+        translate(-50%, -50%)
+        scale(0.15)
+        rotate(var(--mobile-twinkle-rotation));
+    animation: mobileWelcomeTwinkle 980ms ease-out both;
+}
+
+@keyframes mobileWelcomeRing {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.2);
+    }
+
+    28% {
+        opacity: 0.95;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(7.2);
+    }
+}
+
+@keyframes mobileWelcomeTwinkle {
+    0% {
+        opacity: 0;
+        transform:
+            translate(-50%, -50%)
+            translateY(8px)
+            scale(0.15)
+            rotate(var(--mobile-twinkle-rotation));
+    }
+
+    38% {
+        opacity: 1;
+        transform:
+            translate(-50%, -50%)
+            translateY(0)
+            scale(1.25)
+            rotate(var(--mobile-twinkle-rotation));
+    }
+
+    100% {
+        opacity: 0;
+        transform:
+            translate(-50%, -50%)
+            translateY(-13px)
+            scale(0.25)
+            rotate(var(--mobile-twinkle-rotation));
+    }
+}
+
+@media (min-width: 721px) and (pointer: fine) {
+    .mobile-welcome-effect {
+        display: none !important;
+    }
+}
+
+@media (max-width: 720px) {
+    /* Put the logo in a real top row, with diagnostics underneath it. */
+    .bios-screen-content {
+        position: absolute !important;
+        inset: 0 !important;
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) !important;
+        grid-template-rows: auto minmax(0, 1fr) auto !important;
+        grid-template-areas:
+            "mobile-logo"
+            "mobile-diagnostics"
+            "mobile-prompt" !important;
+        gap: clamp(4px, 0.8vh, 8px) !important;
+        padding:
+            max(7px, env(safe-area-inset-top))
+            7px
+            max(7px, env(safe-area-inset-bottom)) !important;
+    }
+
+    .bios-bibi-logo {
+        grid-area: mobile-logo !important;
+        position: relative !important;
+        inset: auto !important;
+        z-index: 3 !important;
+        width: min(45vw, 176px) !important;
+        max-width: 176px !important;
+        height: auto !important;
+        max-height: 19dvh !important;
+        margin: 0 auto !important;
+        align-self: start !important;
+        justify-self: center !important;
+        object-position: center top !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+
+    .bios-text {
+        grid-area: mobile-diagnostics !important;
+        position: relative !important;
+        inset: auto !important;
+        z-index: 2 !important;
+        width: 100% !important;
+        height: 100% !important;
+        min-height: 0 !important;
+        padding: 0 !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .bios-text::-webkit-scrollbar {
+        display: none;
+    }
+
+    .bios-bottom-text {
+        grid-area: mobile-prompt !important;
+        position: relative !important;
+        inset: auto !important;
+        z-index: 4 !important;
+        width: 100% !important;
+        padding: 0 !important;
+    }
+
+    /* Overscan every wallpaper layer to hide mobile GPU rounding seams. */
+    html,
+    body {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+        background: #17031f !important;
+    }
+
+    .wallpaper-vhs {
+        position: fixed !important;
+        inset: -12px !important;
+        width: auto !important;
+        height: auto !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+        background: #17031f !important;
+    }
+
+    .wallpaper-css-motion {
+        inset: -62% !important;
+        min-width: 224% !important;
+        min-height: 224% !important;
+    }
+
+    .wallpaper-vhs::after {
+        inset: -24px !important;
+    }
+
+    #wallpaper-video {
+        position: absolute !important;
+        inset: -5px !important;
+        width: calc(100% + 10px) !important;
+        height: calc(100% + 10px) !important;
+        max-width: none !important;
+        object-fit: cover !important;
+        transform: translateZ(0) scale(1.01) !important;
+    }
+
+    
+
+    
+}
+
+@media (max-width: 720px) and (max-height: 640px) {
+    .bios-bibi-logo {
+        width: min(35vw, 126px) !important;
+        max-width: 126px !important;
+        max-height: 14dvh !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mobile-welcome-ring,
+    .mobile-welcome-twinkle {
+        animation-duration: 1ms !important;
+    }
+}
+
+/* =========================================================
+   MOBILE FULL-VIEWPORT WIDTH FIX — v24
+   Removes the browser scrollbar gutter that produced the
+   black strip on the right side of the phone desktop.
+========================================================= */
+@media (max-width: 720px) {
+    html,
+    body {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        width: 100dvw !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        max-width: none !important;
+        max-height: none !important;
+        margin: 0 !important;
+        overflow: hidden !important;
+        overscroll-behavior: none !important;
+        scrollbar-width: none !important;
+        scrollbar-gutter: auto !important;
+    }
+
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+    }
+
+    .wallpaper-vhs {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        width: 100dvw !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        min-width: 100vw !important;
+        min-height: 100vh !important;
+        max-width: none !important;
+        max-height: none !important;
+        margin: 0 !important;
+        transform: none !important;
+        overflow: hidden !important;
+    }
+
+    .wallpaper-css-motion {
+        position: absolute !important;
+        inset: -62% !important;
+        width: auto !important;
+        height: auto !important;
+        min-width: 224% !important;
+        min-height: 224% !important;
+        max-width: none !important;
+    }
+
+    #wallpaper-video {
+        position: absolute !important;
+        inset: -2px !important;
+        width: calc(100% + 4px) !important;
+        height: calc(100% + 4px) !important;
+        min-width: calc(100% + 4px) !important;
+        min-height: calc(100% + 4px) !important;
+        max-width: none !important;
+        max-height: none !important;
+        object-fit: cover !important;
+    }
+
+    #desktop,
+    #windows-container,
+    #taskbar {
+        width: 100vw !important;
+        width: 100dvw !important;
+        max-width: none !important;
+    }
+
+    #taskbar {
+        left: 0 !important;
+        right: 0 !important;
+    }
+}
+
+
+/* =========================================================
+   v25: MEMORIES.EXE — FLOATING SPATIAL MEDIA TOOLTIPS
+========================================================= */
+
+.memories-desktop-icon img {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+}
+
+#memories-window {
+    width: min(1160px, calc(100vw - 36px));
+    height: min(790px, calc(100vh - 58px));
+    min-width: 590px;
+    min-height: 440px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+#memories-window.hidden {
+    display: none;
+}
+
+#memories-window > .title-bar {
+    flex-shrink: 0;
+}
+
+#memories-window > .memories-body {
+    min-width: 0;
+    min-height: 0;
+    height: auto;
+    flex: 1;
+
+    padding: 0 !important;
+    overflow: hidden !important;
+
+    color: #fff !important;
+    background: #07050a !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+}
+
+.memories-app,
+.memories-app * {
+    box-sizing: border-box;
+}
+
+.memories-app {
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+    color: #fff;
+    background: #07050a;
+    font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+.memories-toolbar {
+    position: relative;
+    z-index: 80;
+
+    min-height: 74px;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+
+    padding: 12px 14px;
+
+    color: #f8efff;
+    background:
+        linear-gradient(
+            180deg,
+            rgba(30, 20, 37, 0.96),
+            rgba(12, 8, 17, 0.92)
+        );
+
+    border-bottom: 1px solid rgba(239, 210, 255, 0.16);
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+
+    -webkit-backdrop-filter: blur(18px) saturate(125%);
+    backdrop-filter: blur(18px) saturate(125%);
+}
+
+.memories-heading {
+    min-width: 0;
+
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: baseline;
+    column-gap: 10px;
+    row-gap: 2px;
+}
+
+.memories-kicker {
+    grid-column: 1 / -1;
+
+    color: rgba(226, 188, 247, 0.62);
+    font-size: 8px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.18em;
+}
+
+.memories-heading strong {
+    color: #fff;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    text-shadow: 0 0 18px rgba(212, 139, 255, 0.22);
+}
+
+
+
+.memories-controls {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+#memories-window .memories-control {
+    min-width: 48px;
+    height: 28px;
+
+    padding: 0 10px;
+
+    color: rgba(252, 244, 255, 0.90);
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.12),
+            rgba(255, 255, 255, 0.035)
+        );
+
+    border: 1px solid rgba(236, 210, 255, 0.20);
+    border-radius: 999px;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.10),
+        0 7px 20px rgba(0, 0, 0, 0.20);
+
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+
+    cursor: pointer;
+    transition:
+        background 160ms ease,
+        border-color 160ms ease,
+        transform 160ms ease;
+}
+
+#memories-window .memories-control:hover,
+#memories-window .memories-control:focus-visible {
+    color: #fff;
+    background: rgba(210, 139, 255, 0.18);
+    border-color: rgba(234, 194, 255, 0.46);
+    outline: none;
+    transform: translateY(-1px);
+}
+
+#memories-window .memories-control:active {
+    transform: translateY(0) scale(0.97);
+}
+
+.memories-stage {
+    --memories-pointer-x: 0px;
+    --memories-pointer-y: 0px;
+
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    flex: 1;
+
+    overflow: hidden;
+    isolation: isolate;
+    outline: none;
+
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+
+    background:
+        radial-gradient(
+            circle at 22% 24%,
+            rgba(123, 44, 155, 0.20),
+            transparent 31%
+        ),
+        radial-gradient(
+            circle at 78% 70%,
+            rgba(79, 38, 119, 0.18),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at 50% 52%,
+            rgba(255, 255, 255, 0.025),
+            transparent 48%
+        ),
+        #07050a;
+}
+
+.memories-stage:focus-visible {
+    box-shadow: inset 0 0 0 2px rgba(220, 155, 255, 0.55);
+}
+
+
+
+.memories-stage::before,
+.memories-stage::after {
+    content: "";
+    position: absolute;
+    inset: -18%;
+    pointer-events: none;
+}
+
+.memories-stage::before {
+    z-index: -3;
+
+    background-image:
+        radial-gradient(circle, rgba(255, 255, 255, 0.34) 0 0.7px, transparent 0.9px),
+        radial-gradient(circle, rgba(225, 175, 255, 0.24) 0 0.9px, transparent 1.1px);
+    background-position:
+        calc(20px + var(--memories-pointer-x)) calc(18px + var(--memories-pointer-y)),
+        calc(7px - var(--memories-pointer-x)) calc(3px - var(--memories-pointer-y));
+    background-size: 53px 53px, 89px 89px;
+    opacity: 0.36;
+    transform: translateZ(0);
+}
+
+.memories-stage::after {
+    z-index: 70;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            transparent 43%,
+            rgba(7, 5, 10, 0.30) 74%,
+            rgba(7, 5, 10, 0.78) 100%
+        );
+
+    pointer-events: none;
+}
+
+.memories-field {
+    position: absolute;
+    inset: -25%;
+    z-index: -2;
+    pointer-events: none;
+
+    background:
+        repeating-linear-gradient(
+            0deg,
+            transparent 0 66px,
+            rgba(229, 188, 255, 0.025) 66px 67px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            transparent 0 66px,
+            rgba(229, 188, 255, 0.025) 66px 67px
+        );
+
+    transform:
+        perspective(650px)
+        rotateX(62deg)
+        translateY(19%)
+        scale(1.35);
+    transform-origin: center bottom;
+    opacity: 0.56;
+}
+
+.memories-world {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 10;
+
+    width: 1px;
+    height: 1px;
+
+    transform-origin: 0 0;
+    will-change: transform;
+}
+
+.memory-node {
+    position: absolute;
+
+    transform:
+        translate(-50%, -50%)
+        rotate(var(--memory-rotation));
+    transform-origin: center;
+
+    pointer-events: auto;
+    will-change: transform;
+}
+
+.memory-float-shell {
+    width: 100%;
+
+    animation:
+        memoryTooltipFloat
+        var(--memory-float-duration)
+        ease-in-out
+        var(--memory-float-delay)
+        infinite
+        alternate;
+
+    will-change: transform;
+}
+
+.memory-tooltip {
+    position: relative;
+
+    width: 100%;
+    padding: 7px;
+
+    display: block;
+
+    color: #171019;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.94),
+            rgba(237, 221, 246, 0.84)
+        );
+
+    border: 1px solid rgba(255, 255, 255, 0.78);
+    border-radius: 9px;
+
+    box-shadow:
+        0 20px 55px rgba(0, 0, 0, 0.38),
+        0 7px 20px rgba(113, 42, 143, 0.20),
+        inset 0 1px 0 rgba(255, 255, 255, 0.88);
+
+    text-align: left;
+    cursor: pointer;
+
+    -webkit-backdrop-filter: blur(16px) saturate(135%);
+    backdrop-filter: blur(16px) saturate(135%);
+
+    transition:
+        transform 220ms cubic-bezier(0.2, 0.75, 0.25, 1),
+        box-shadow 220ms ease,
+        border-color 220ms ease;
+}
+
+.memory-tooltip::before {
+    content: "";
+    position: absolute;
+    left: 22px;
+    bottom: -8px;
+
+    width: 15px;
+    height: 15px;
+
+    background: rgba(239, 224, 247, 0.92);
+    border-right: 1px solid rgba(255, 255, 255, 0.72);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.72);
+
+    transform: rotate(45deg);
+    border-radius: 0 0 3px 0;
+}
+
+
+
+.memory-node:hover,
+.memory-node.is-active {
+    z-index: 1000 !important;
+}
+
+.memory-node:hover .memory-tooltip,
+.memory-node:focus-within .memory-tooltip,
+.memory-node.is-active .memory-tooltip {
+    border-color: rgba(255, 255, 255, 0.98);
+    box-shadow:
+        0 31px 85px rgba(0, 0, 0, 0.52),
+        0 0 0 1px rgba(226, 164, 255, 0.32),
+        0 0 32px rgba(196, 107, 240, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.92);
+    transform: scale(1.13) translateY(-7px);
+    outline: none;
+}
+
+.memory-node:hover .memory-tooltip::after,
+.memory-node:focus-within .memory-tooltip::after,
+.memory-node.is-active .memory-tooltip::after {
+    opacity: 1;
+    transform: translateX(38%);
+}
+
+
+
+.memory-preview {
+    position: relative;
+
+    width: 100%;
+    aspect-ratio: 4 / 3;
+
+    display: grid;
+    place-items: center;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(circle at 30% 25%, rgba(237, 170, 255, 0.42), transparent 40%),
+        linear-gradient(145deg, #22122b, #08060b 76%);
+
+    border: 1px solid rgba(43, 24, 50, 0.18);
+    border-radius: 5px;
+    box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.24);
+}
+
+.memory-preview::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.05),
+            transparent 22%,
+            transparent 75%,
+            rgba(8, 5, 11, 0.22)
+        );
+
+    pointer-events: none;
+}
+
+.memory-preview.is-missing {
+    background:
+        repeating-linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.05) 0 10px,
+            rgba(255, 255, 255, 0.01) 10px 20px
+        ),
+        #140d18;
+}
+
+.memory-media {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    object-position: center;
+
+    pointer-events: none;
+}
+
+.memory-video {
+    background: #08060b;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.memories-stage-help {
+    position: absolute;
+    right: 11px;
+    bottom: 10px;
+    z-index: 75;
+
+    display: flex;
+    gap: 6px;
+
+    pointer-events: none;
+}
+
+.memories-stage-help span {
+    padding: 5px 8px;
+
+    color: rgba(239, 219, 249, 0.58);
+    background: rgba(15, 9, 19, 0.62);
+
+    border: 1px solid rgba(224, 180, 247, 0.14);
+    border-radius: 999px;
+
+    font-size: 7px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+
+@keyframes memoryTooltipFloat {
+    0% {
+        transform: translate3d(0, calc(var(--memory-float-distance) * -0.45), 0);
+    }
+
+    50% {
+        transform: translate3d(3px, calc(var(--memory-float-distance) * 0.25), 0);
+    }
+
+    100% {
+        transform: translate3d(-2px, var(--memory-float-distance), 0);
+    }
+}
+
+@keyframes memoryPlaceholderSweep {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 720px) {
+    #memories-window {
+        width: calc(100dvw - 12px) !important;
+        height: calc(100dvh - 50px) !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+    }
+
+    .memories-toolbar {
+        min-height: 82px;
+        align-items: flex-start;
+        gap: 7px;
+        padding: 9px 8px;
+    }
+
+    .memories-heading {
+        max-width: 55%;
+        display: block;
+    }
+
+    .memories-kicker,
+.memories-heading strong {
+        display: block;
+    }
+
+    .memories-kicker {
+        margin-bottom: 4px;
+        font-size: 7px;
+    }
+
+    .memories-heading strong {
+        font-size: 20px;
+    }
+
+    
+
+    .memories-controls {
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    #memories-window .memories-control {
+        min-width: 42px;
+        height: 25px;
+        padding: 0 7px;
+        font-size: 7px;
+    }
+
+    #memories-reset {
+        flex-basis: 100%;
+    }
+
+    .memory-node:hover .memory-tooltip {
+        transform: none;
+    }
+
+    .memory-node.is-active .memory-tooltip,
+    .memory-node:focus-within .memory-tooltip {
+        transform: scale(1.12) translateY(-6px);
+    }
+
+    .memories-stage-help {
+        right: 7px;
+        bottom: 7px;
+    }
+
+    .memories-stage-help span {
+        display: none;
+    }
+
+    .memories-stage-help span:first-child {
+        display: block;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .memory-float-shell {
+        animation: none !important;
+    }
+
+    .memory-tooltip {
+        transition-duration: 1ms !important;
+    }
+}
+
+
+/* =========================================================
+   v26: 2017 IN MY ROOM PHOTO GALLERY
+========================================================= */
+
+#in-my-room-window {
+    width: min(1100px, calc(100vw - 40px));
+    height: min(900px, calc(100vh - 60px));
+    min-width: 0;
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
+}
+
+#in-my-room-window.hidden {
+    display: none;
+}
+
+#in-my-room-window > .title-bar {
+    flex-shrink: 0;
+}
+
+#in-my-room-window > .window-body {
+    min-width: 0;
+    min-height: 0;
+    height: auto;
+    flex: 1;
+
+    padding: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#in-my-room-window .in-my-room-gallery {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    align-items: stretch;
+}
+
+#in-my-room-window .in-my-room-gallery img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+
+    object-fit: contain;
+    cursor: pointer;
+}
+
+/* Preserve the requested 1, 2, 1, 1 row arrangement on phones too. */
+@media (max-width: 720px) {
+    #in-my-room-window .gallery-row.two {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 10px;
+    }
+
+    #in-my-room-window .project-gallery {
+        gap: 10px;
+        padding: 10px;
+    }
+}
+
+
+
+/* =========================================================
+   v27: SINGLE MEMORY VIEWER + GLASS SPATIAL MEMORIES
+========================================================= */
+
+#preview-video {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    background: #050307;
+    box-shadow: 0 12px 38px rgba(0, 0, 0, 0.35);
+}
+
+#preview-video.hidden {
+    display: none;
+}
+
+#image-preview-window.single-memory-preview .image-preview-body {
+    grid-template-rows: minmax(0, 1fr) !important;
+}
+
+#image-preview-window.single-memory-preview .photo-navigation {
+    display: none !important;
+}
+
+.memories-stage {
+    perspective: 1100px;
+    perspective-origin: 50% 46%;
+    background:
+        radial-gradient(
+            circle at 18% 20%,
+            rgba(189, 105, 223, 0.16),
+            transparent 34%
+        ),
+        radial-gradient(
+            circle at 82% 72%,
+            rgba(91, 48, 139, 0.19),
+            transparent 38%
+        ),
+        radial-gradient(
+            ellipse at center,
+            rgba(255, 255, 255, 0.025),
+            transparent 54%
+        ),
+        #07050a;
+}
+
+
+
+.memory-node {
+    --memory-z: 0px;
+    --memory-hover-z: 0px;
+    --memory-parallax-x: 0px;
+    --memory-parallax-y: 0px;
+    --memory-base-opacity: 0.34;
+    --memory-depth-blur: 0px;
+
+    opacity: var(--memory-base-opacity);
+    filter:
+        blur(var(--memory-depth-blur))
+        saturate(0.82)
+        brightness(0.82);
+
+    transform:
+        translate3d(
+            calc(-50% + var(--memory-parallax-x)),
+            calc(-50% + var(--memory-parallax-y)),
+            calc(var(--memory-z) + var(--memory-hover-z))
+        )
+        rotateZ(var(--memory-rotation));
+
+    transform-style: preserve-3d;
+
+    transition:
+        opacity 260ms ease,
+        filter 300ms ease,
+        transform 520ms cubic-bezier(0.18, 0.78, 0.22, 1);
+}
+
+.memory-node:hover,
+.memory-node:focus-within {
+    --memory-hover-z: 180px;
+
+    z-index: 5000 !important;
+    opacity: 1;
+    filter:
+        blur(0)
+        saturate(1.08)
+        brightness(1.02);
+}
+
+
+
+.memory-tooltip {
+    width: 100%;
+    padding: 6px;
+
+    overflow: hidden;
+
+    color: transparent;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.20),
+            rgba(224, 192, 240, 0.075) 42%,
+            rgba(94, 53, 116, 0.10)
+        );
+
+    border: 1px solid rgba(255, 255, 255, 0.34);
+    border-radius: 14px;
+
+    box-shadow:
+        0 26px 74px rgba(0, 0, 0, 0.34),
+        0 8px 25px rgba(134, 72, 164, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.38),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.055);
+
+    -webkit-backdrop-filter: blur(17px) saturate(135%);
+    backdrop-filter: blur(17px) saturate(135%);
+
+    transform: translateZ(0) scale(1);
+
+    transition:
+        transform 280ms cubic-bezier(0.18, 0.78, 0.22, 1),
+        background 240ms ease,
+        border-color 240ms ease,
+        box-shadow 280ms ease;
+}
+
+.memory-tooltip::before {
+    display: none !important;
+}
+
+.memory-tooltip::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    border-radius: inherit;
+    background:
+        linear-gradient(
+            118deg,
+            rgba(255, 255, 255, 0.18),
+            transparent 31%,
+            transparent 68%,
+            rgba(255, 255, 255, 0.075)
+        );
+
+    opacity: 0.62;
+    pointer-events: none;
+    transform: none;
+    transition: opacity 240ms ease;
+}
+
+.memory-node:hover .memory-tooltip,
+.memory-node:focus-within .memory-tooltip {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.30),
+            rgba(225, 196, 241, 0.12) 44%,
+            rgba(112, 62, 137, 0.13)
+        );
+
+    border-color: rgba(255, 255, 255, 0.68);
+
+    box-shadow:
+        0 42px 105px rgba(0, 0, 0, 0.48),
+        0 0 0 1px rgba(229, 190, 249, 0.14),
+        0 0 38px rgba(189, 112, 224, 0.20),
+        inset 0 1px 0 rgba(255, 255, 255, 0.56);
+
+    transform: translateZ(0) scale(1.065);
+    outline: none;
+}
+
+.memory-node:hover .memory-tooltip::after,
+.memory-node:focus-within .memory-tooltip::after {
+    opacity: 0.9;
+    transform: none;
+}
+
+.memory-preview {
+    width: 100%;
+    min-height: 105px;
+    aspect-ratio: 4 / 3;
+
+    overflow: hidden;
+
+    background: rgba(11, 7, 15, 0.44);
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    border-radius: 9px;
+
+    box-shadow:
+        inset 0 0 24px rgba(0, 0, 0, 0.20),
+        0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.memory-preview::after {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.075),
+            transparent 24%,
+            transparent 76%,
+            rgba(8, 5, 11, 0.15)
+        );
+}
+
+.memory-media {
+    object-fit: cover;
+}
+
+
+
+.memory-preview.is-placeholder,
+.memory-preview.is-missing {
+    min-height: 150px;
+    background:
+        radial-gradient(
+            circle at 28% 22%,
+            rgba(239, 195, 255, 0.12),
+            transparent 38%
+        ),
+        rgba(14, 9, 18, 0.42);
+}
+
+@keyframes memorySpatialDrift {
+    0% {
+        transform:
+            translate3d(
+                var(--memory-drift-x-a),
+                var(--memory-drift-y-a),
+                var(--memory-drift-z-a)
+            )
+            rotateZ(-0.65deg);
+    }
+
+    50% {
+        transform:
+            translate3d(0, 0, 0)
+            rotateZ(0.25deg);
+    }
+
+    100% {
+        transform:
+            translate3d(
+                var(--memory-drift-x-b),
+                var(--memory-drift-y-b),
+                var(--memory-drift-z-b)
+            )
+            rotateZ(0.8deg);
+    }
+}
+
+@media (max-width: 720px) {
+    .memory-node:hover,
+    .memory-node:focus-within {
+        --memory-hover-z: 105px;
+    }
+
+    .memory-node:hover .memory-tooltip,
+    .memory-node:focus-within .memory-tooltip {
+        transform: translateZ(0) scale(1.045);
+    }
+
+    .memory-tooltip {
+        padding: 5px;
+        border-radius: 12px;
+    }
+
+    .memory-preview {
+        min-height: 88px;
+        border-radius: 8px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .memory-float-shell {
+        animation: none !important;
+    }
+
+    .memory-node,
+    .memory-tooltip {
+        transition-duration: 1ms !important;
+    }
+}
+
+
+/* =========================================================
+   v28: FLUID, HIGH-SENSITIVITY MEMORIES MOTION
+========================================================= */
+
+
+
+.memory-node {
+    will-change: transform, opacity, filter;
+}
+
+
+
+
+/* =========================================================
+   v29: TRUE 3D MEMORIES CAMERA
+   Fixed objects in XYZ space; the camera pans and travels.
+========================================================= */
+
+.memories-stage {
+    perspective: 1050px !important;
+    perspective-origin: 50% 50% !important;
+    transform-style: preserve-3d;
+    overscroll-behavior: contain;
+}
+
+.memories-stage::before {
+    transition: none !important;
+}
+
+.memories-field {
+    transform:
+        perspective(760px)
+        rotateX(67deg)
+        translate3d(
+            calc(var(--memories-pointer-x) * 0.16),
+            calc(19% + var(--memories-pointer-y) * 0.12),
+            var(--memories-depth-shift)
+        )
+        scale(1.42) !important;
+    transition: none !important;
+}
+
+.memories-world {
+    left: 50% !important;
+    top: 50% !important;
+    width: 1px !important;
+    height: 1px !important;
+
+    transform-origin: 0 0 !important;
+    transform-style: preserve-3d !important;
+    will-change: transform;
+    transition: none !important;
+}
+
+.memory-node {
+    --memory-x: 0px;
+    --memory-y: 0px;
+    --memory-z: 0px;
+    --memory-hover-z: 0px;
+
+    left: 0 !important;
+    top: 0 !important;
+
+    transform:
+        translate3d(
+            var(--memory-x),
+            var(--memory-y),
+            calc(var(--memory-z) + var(--memory-hover-z))
+        )
+        translate(-50%, -50%)
+        rotateZ(var(--memory-rotation)) !important;
+
+    transform-origin: center center !important;
+    transform-style: preserve-3d !important;
+    backface-visibility: hidden;
+
+    transition:
+        opacity 260ms ease,
+        filter 300ms ease,
+        transform 380ms cubic-bezier(0.18, 0.78, 0.22, 1) !important;
+}
+
+/* The scene moves. Individual memories no longer wander independently. */
+.memory-float-shell {
+    animation: none !important;
+    transform: none !important;
+    transform-style: preserve-3d;
+}
+
+.memory-tooltip,
+.memory-preview,
+.memory-media {
+    backface-visibility: hidden;
+}
+
+.memory-node:hover,
+.memory-node:focus-within {
+    --memory-hover-z: 145px;
+}
+
+.memories-stage.is-panning,
+.memories-stage.is-panning * {
+    cursor: grabbing !important;
+}
+
+@media (max-width: 720px) {
+    .memories-stage {
+        perspective: 880px !important;
+    }
+
+    .memory-node:hover,
+    .memory-node:focus-within {
+        --memory-hover-z: 90px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .memory-float-shell {
+        animation: none !important;
+    }
+}
+
+
+/* =========================================================
+   v30: PARADIGMA-STYLE INFINITE MEMORIES NAVIGATION
+========================================================= */
+
+/* The heading now ends at Memories.exe; only Reset remains. */
+.memories-heading {
+    display: block !important;
+}
+
+.memories-heading strong {
+    display: block;
+}
+
+.memories-controls {
+    margin-left: auto;
+}
+
+#memories-reset {
+    min-width: 82px !important;
+}
+
+/* Smooth, unrestricted pan plus infinite forward/back travel. */
+.memories-stage {
+    perspective: 1120px !important;
+    perspective-origin: 50% 50% !important;
+    cursor: grab;
+}
+
+.memories-stage.is-panning {
+    cursor: grabbing !important;
+}
+
+.memories-stage.is-travelling {
+    cursor: ns-resize !important;
+}
+
+.memories-world {
+    transition: none !important;
+    will-change: transform;
+}
+
+.memory-node {
+    transition:
+        opacity 220ms ease,
+        filter 260ms ease !important;
+}
+
+/* Keep every instruction on one line, centered across the stage. */
+.memories-stage-help {
+    left: 50% !important;
+    right: auto !important;
+    bottom: 10px;
+
+    width: auto;
+    max-width: calc(100% - 22px);
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+    transform: translateX(-50%);
+}
+
+.memories-stage-help span {
+    display: block !important;
+    width: auto;
+    max-width: 100%;
+
+    overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+    .memories-toolbar {
+        min-height: 70px;
+        align-items: center;
+    }
+
+    .memories-heading {
+        max-width: calc(100% - 96px) !important;
+    }
+
+    #memories-reset {
+        flex-basis: auto !important;
+    }
+
+    .memories-stage-help {
+        max-width: calc(100% - 14px);
+    }
+
+    .memories-stage-help span {
+        font-size: 5.5px;
+        letter-spacing: 0.055em;
+    }
+}
+
+
+/* =========================================================
+   v31: COMPLETE BIOS PROGRAM LIST + SEVEN-ROW DESKTOP WRAP
+========================================================= */
+
+/* Desktop icons flow downward through seven slots before starting a new column. */
+#desktop {
+    grid-template-rows: repeat(7, 82px) !important;
+}
+
+/* Keep the complete application registry readable in the desktop BIOS. */
+.bios-program-section .bios-status {
+    padding-left: 2.1em;
+}
+
+@media (max-width: 700px) {
+    #desktop {
+        grid-template-rows: repeat(7, 68px) !important;
+    }
+}
+
+/*
+ * On phones the diagnostics occupy the full screen. The logo remains centered
+ * vertically on the right, underneath the translucent text layer.
+ */
+@media (max-width: 720px) {
+    #startup-boot-screen {
+        font-size: clamp(5.8px, 1.75vw, 8.2px) !important;
+        line-height: 1.04 !important;
+    }
+
+    .bios-screen-content {
+        position: absolute !important;
+        inset: 0 !important;
+
+        display: block !important;
+        padding: 0 !important;
+    }
+
+    .bios-bibi-logo {
+        position: absolute !important;
+        top: 50% !important;
+        right: clamp(4px, 3vw, 18px) !important;
+        bottom: auto !important;
+        left: auto !important;
+        z-index: 1 !important;
+
+        width: min(47vw, 190px) !important;
+        max-width: 190px !important;
+        height: auto !important;
+        max-height: 48dvh !important;
+        margin: 0 !important;
+
+        object-fit: contain !important;
+        object-position: center right !important;
+
+        opacity: 0.48 !important;
+        transform: translateY(-50%) !important;
+    }
+
+    .bios-text {
+        position: absolute !important;
+        top: max(5px, env(safe-area-inset-top)) !important;
+        right: 5px !important;
+        bottom: calc(34px + env(safe-area-inset-bottom)) !important;
+        left: 5px !important;
+        z-index: 2 !important;
+
+        width: auto !important;
+        height: auto !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        max-height: none !important;
+
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        gap: 1px !important;
+
+        padding: 0 !important;
+        overflow: hidden !important;
+
+        color: rgba(242, 242, 242, 0.94) !important;
+        letter-spacing: 0 !important;
+        text-shadow:
+            1px 1px 0 rgba(0, 0, 0, 0.95),
+            0 0 3px rgba(0, 0, 0, 0.9) !important;
+    }
+
+    .bios-section {
+        flex: 0 0 auto !important;
+        margin: 0 !important;
+    }
+
+    .bios-text p,
+    .bios-bottom-text p {
+        max-width: 100% !important;
+        margin: 0 !important;
+
+        white-space: normal !important;
+        overflow: visible !important;
+        overflow-wrap: anywhere !important;
+        text-overflow: clip !important;
+    }
+
+    .bios-detection {
+        padding-left: 0.7em !important;
+    }
+
+    .bios-status,
+    .bios-program-section .bios-status {
+        padding-left: 1.05em !important;
+        letter-spacing: 0 !important;
+    }
+
+    .bios-bottom-text {
+        position: absolute !important;
+        right: 0 !important;
+        bottom: max(5px, env(safe-area-inset-bottom)) !important;
+        left: 0 !important;
+        z-index: 3 !important;
+
+        width: 100% !important;
+        padding: 0 5px !important;
+
+        font-size: 1em !important;
+        line-height: 1.05 !important;
+        text-align: center !important;
+    }
+}
+
+@media (max-width: 720px) and (max-height: 640px) {
+    #startup-boot-screen {
+        font-size: clamp(5.2px, 1.55vw, 7px) !important;
+    }
+
+    .bios-text {
+        gap: 0 !important;
+    }
+
+    .bios-bibi-logo {
+        width: min(43vw, 150px) !important;
+        max-width: 150px !important;
+        max-height: 42dvh !important;
+    }
+}
+
+/* =========================================================
+   v32: MOBILE BIOS COMPACT FLOW + AUTOMATIC SCROLL TARGET
+========================================================= */
+@media (max-width: 720px) {
+    /* Keep the diagnostics dense instead of stretching sections apart. */
+    .bios-text {
+        display: block !important;
+        justify-content: flex-start !important;
+        align-content: initial !important;
+        gap: 0 !important;
+
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        overscroll-behavior: none !important;
+        scrollbar-width: none !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    .bios-text::-webkit-scrollbar {
+        display: none !important;
+    }
+
+    .bios-section {
+        margin: 0 !important;
+    }
+
+    /* Float the existing translucent logo in the upper-right corner. */
+    .bios-bibi-logo {
+        top: max(6px, env(safe-area-inset-top)) !important;
+        right: clamp(4px, 3vw, 18px) !important;
+        bottom: auto !important;
+        left: auto !important;
+
+        margin: 0 !important;
+        object-position: top right !important;
+        transform: none !important;
+    }
+}
+
+
+/* =========================================================
+   v42 — BIOS FOLLOW-SCROLL + MOBILE ASCII FIT
+   Keep this block at the absolute end of style.css.
+========================================================= */
+
+/* The diagnostics must be a real scroll container on every screen size. */
+#startup-boot-screen .bios-text {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+    scrollbar-width: none !important;
+    scroll-behavior: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+#startup-boot-screen .bios-text::-webkit-scrollbar {
+    display: none !important;
+}
+
+/* Preserve every deliberate space in the boot-screen character. */
+#startup-boot-screen .bios-ascii-section {
+    display: block !important;
+    width: max-content !important;
+    max-width: none !important;
+    margin: 8px 0 3px !important;
+    padding: 0 !important;
+    text-align: left !important;
+    direction: ltr !important;
+}
+
+#startup-boot-screen .bios-text .bios-ascii-line {
+    display: block !important;
+    width: max-content !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    white-space: pre !important;
+    overflow: visible !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    text-overflow: clip !important;
+
+    font-family:
+        "MS Gothic",
+        "Yu Gothic UI",
+        "Yu Gothic",
+        "Noto Sans Mono CJK JP",
+        Menlo,
+        Consolas,
+        monospace !important;
+
+    font-size: 11px !important;
+    font-weight: 400 !important;
+    font-style: normal !important;
+    line-height: 1.08 !important;
+    letter-spacing: 0 !important;
+    font-kerning: none !important;
+    font-variant-ligatures: none !important;
+    font-synthesis: none !important;
+    text-align: left !important;
+    direction: ltr !important;
+    unicode-bidi: isolate !important;
+    transform: none !important;
+}
+
+/* About Me artwork: visible, aligned, and protected from wrapping. */
+#about-window .about-me-text {
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    overflow-x: hidden !important;
+}
+
+#about-window .about-cat-art,
+#about-window .about-whale-art {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    flex: 0 0 auto !important;
+
+    width: max-content !important;
+    max-width: none !important;
+    margin: 0 0 0 auto !important;
+    padding: 0 !important;
+
+    white-space: pre !important;
+    overflow: visible !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    text-overflow: clip !important;
+
+    color: #ffffff !important;
+    background: transparent !important;
+    border: 0 !important;
+
+    font-weight: 400 !important;
+    font-style: normal !important;
+    letter-spacing: 0 !important;
+    font-kerning: none !important;
+    font-variant-ligatures: none !important;
+    font-synthesis: none !important;
+    text-align: left !important;
+    direction: ltr !important;
+
+    text-shadow:
+        0 0 4px rgba(226, 178, 255, 0.48),
+        1px 1px 0 rgba(20, 5, 31, 0.75) !important;
+}
+
+#about-window .about-cat-art {
+    align-self: flex-start !important;
+    margin: 16px auto 4px 0 !important;
+
+    font-family:
+        "MS Gothic",
+        "Yu Gothic UI",
+        "Yu Gothic",
+        "Noto Sans Mono CJK JP",
+        Menlo,
+        Consolas,
+        monospace !important;
+
+    font-size: 13px !important;
+    line-height: 1.1 !important;
+}
+
+#about-window .about-whale-art {
+    align-self: flex-end !important;
+    margin-top: 2px !important;
+
+    font-family:
+        "Segoe UI Symbol",
+        "Apple Symbols",
+        "Noto Sans Symbols 2",
+        "Arial Unicode MS",
+        monospace !important;
+
+    font-size: 8px !important;
+    line-height: 1 !important;
+}
+
+@media (max-width: 720px) {
+    /* Override the generic mobile paragraph wrapping rule only for the art. */
+    #startup-boot-screen .bios-ascii-section {
+        margin-top: 5px !important;
+    }
+
+    #startup-boot-screen .bios-text .bios-ascii-line {
+        max-width: none !important;
+        white-space: pre !important;
+        overflow: visible !important;
+        overflow-wrap: normal !important;
+        word-break: normal !important;
+
+        /* The longest speech row fits a narrow phone without wrapping. */
+        font-size: clamp(4.25px, 1.22vw, 5.8px) !important;
+        line-height: 1.07 !important;
+    }
+
+    #about-window .about-me-text {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        padding: 14px 8px 20px !important;
+        overflow-x: hidden !important;
+    }
+
+    #about-window .about-cat-art {
+        align-self: flex-start !important;
+        margin: 14px auto 4px 0 !important;
+        font-size: clamp(8px, 2.35vw, 10px) !important;
+        line-height: 1.08 !important;
+    }
+
+    #about-window .about-whale-art {
+        align-self: flex-end !important;
+        margin: 2px 0 0 auto !important;
+
+        /* Roughly 50 Braille columns fit inside the mobile text pane. */
+        font-size: clamp(4.1px, 1.28vw, 5.6px) !important;
+        line-height: 1 !important;
+    }
+}
+
+@media (max-width: 380px) {
+    #startup-boot-screen .bios-text .bios-ascii-line {
+        font-size: 4.1px !important;
+    }
+
+    #about-window .about-cat-art {
+        font-size: 8px !important;
+    }
+
+    #about-window .about-whale-art {
+        font-size: 4.05px !important;
+    }
+}
+
+
+/* =========================================================
+   v44: MOBILE TASK CLOSES + ABOUT ASCII + MUSIC ARTWORK
+   Final mobile-only overrides. Keep at the end of style.css.
+========================================================= */
+@media (max-width: 700px) {
+    /* Every open taskbar tab keeps a permanently visible close control. */
+    #taskbar-windows .task-button {
+        position: relative !important;
+        min-width: 56px !important;
+        width: 56px !important;
+        max-width: 56px !important;
+        flex: 0 0 56px !important;
+        justify-content: flex-start !important;
+        gap: 0 !important;
+        padding: 2px 19px 2px 4px !important;
+        overflow: visible !important;
+    }
+
+    #taskbar-windows .task-button-icon {
+        width: 20px !important;
+        height: 20px !important;
+        margin: 0 auto 0 4px !important;
+        flex: 0 0 20px !important;
+    }
+
+    #taskbar-windows .task-button-close {
+        display: flex !important;
+        position: absolute !important;
+        top: 50% !important;
+        right: 3px !important;
+        z-index: 3 !important;
+
+        width: 16px !important;
+        height: 16px !important;
+
+        opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+
+        transform: translateY(-50%) scale(0.92) !important;
+        color: #ffffff !important;
+        background: rgba(103, 50, 137, 0.72) !important;
+        border: 1px solid rgba(235, 209, 251, 0.58) !important;
+        border-radius: 3px !important;
+
+        font-size: 14px !important;
+        line-height: 1 !important;
+    }
+
+    #taskbar-windows .task-button-close:active {
+        transform: translateY(-50%) scale(0.84) !important;
+    }
+
+    /* Restore About Me character art to its normal desktop size on phones. */
+    #about-window .about-me-text {
+        overflow-x: auto !important;
+        scrollbar-width: thin;
+    }
+
+    #about-window .about-cat-art {
+        font-size: 13px !important;
+        line-height: 1.1 !important;
+        transform: none !important;
+    }
+
+    #about-window .about-whale-art {
+        font-size: 8px !important;
+        line-height: 1 !important;
+        transform: none !important;
+    }
+
+    /* SoundCloud visual mode needs enough height to display track artwork. */
+    #music-window #soundcloud-tab iframe {
+        display: block !important;
+        width: 100% !important;
+        height: clamp(245px, 72vw, 300px) !important;
+        min-height: 245px !important;
+        margin-bottom: 12px !important;
+    }
+
+    #music-window .music-content {
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #music-window #bandcamp-tab iframe {
+        min-height: 120px !important;
     }
 }

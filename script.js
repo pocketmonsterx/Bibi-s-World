@@ -1,3 +1,11 @@
+// ============================================================
+// BIBI'S WORLD — MAIN APPLICATION SCRIPT
+// Boot sequence · window manager · galleries · UI effects ·
+// Magical Lake · Memories.exe
+//
+// Keep section order unless dependencies are reviewed.
+// ============================================================
+
 // ====================================
 // WINDOWS 2000 PORTFOLIO
 // Window Manager v1
@@ -120,6 +128,52 @@ window.addEventListener("DOMContentLoaded", () => {
     const biosBottomText =
         bootScreen.querySelector(".bios-bottom-text");
 
+    const biosText =
+        bootScreen.querySelector(".bios-text");
+
+    function scrollBiosToLatestLine(targetLine = null, force = false) {
+        if (!biosText) return;
+
+        const performScroll = () => {
+            const visibleLines = Array.from(
+                biosText.querySelectorAll("p.bios-line-visible")
+            );
+
+            const latestLine =
+                targetLine || visibleLines[visibleLines.length - 1];
+
+            if (!latestLine) return;
+
+            const textRectangle = biosText.getBoundingClientRect();
+            const lineRectangle = latestLine.getBoundingClientRect();
+            const lowerSafeEdge = textRectangle.bottom - 10;
+            const upperSafeEdge = textRectangle.top + 6;
+
+            let nextScrollTop = biosText.scrollTop;
+
+            if (force || lineRectangle.bottom > lowerSafeEdge) {
+                nextScrollTop += lineRectangle.bottom - lowerSafeEdge;
+            } else if (lineRectangle.top < upperSafeEdge) {
+                nextScrollTop -= upperSafeEdge - lineRectangle.top;
+            }
+
+            const maximumScrollTop = Math.max(
+                0,
+                biosText.scrollHeight - biosText.clientHeight
+            );
+
+            biosText.scrollTop = Math.max(
+                0,
+                Math.min(maximumScrollTop, nextScrollTop)
+            );
+        };
+
+        window.requestAnimationFrame(() => {
+            performScroll();
+            window.requestAnimationFrame(performScroll);
+        });
+    }
+
     let bootSequenceFinished = false;
     let automaticBootTimer = null;
     let welcomeTimer = null;
@@ -210,6 +264,10 @@ window.addEventListener("DOMContentLoaded", () => {
     function startBiosTextAnimation() {
         bootScreen.classList.add("bios-animating");
 
+        if (biosText) {
+            biosText.scrollTop = 0;
+        }
+
         let elapsed = 120;
 
         /* Power the logo on shortly after the first BIOS lines. */
@@ -234,6 +292,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
                 scheduleAnimation(() => {
                     line.classList.add("bios-line-visible");
+                    scrollBiosToLatestLine(line);
                 }, elapsed);
             });
 
@@ -248,6 +307,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 biosBottomText.classList.add(
                     "bios-prompt-visible"
                 );
+                scrollBiosToLatestLine(null, true);
             }, promptRevealTime);
         }
 
@@ -460,10 +520,11 @@ function openWindow(windowElement) {
 
         // Large portfolio projects always open centered
 else if (
-    windowElement.id === "universe-window" ||
+    windowElement.id === "memories-window" ||
     windowElement.id === "disney-window" ||
     windowElement.id === "miku-window" ||
     windowElement.id === "san-francisco-window" ||
+    windowElement.id === "in-my-room-window" ||
     windowElement.id === "magical-lake-window" ||
     windowElement.classList.contains("graphic-project-window")
 ) {
@@ -715,11 +776,12 @@ function createTaskButton(windowElement) {
 
     const iconPaths = {
         about: "assets/icons/about me.ico",
-        universe: "assets/icons/computer.ico",
+        memories: "assets/icons/memories.svg",
         photography: "assets/icons/photography.ico",
         "disney 2010": "assets/icons/photography.ico",
         "miku 2010": "assets/icons/photography.ico",
         "san francisco 2012": "assets/icons/photography.ico",
+        "in my room 2017": "assets/icons/photography.ico",
         "graphic-arts": "assets/icons/graphic arts.ico",
         "graphic-project-one": "assets/icons/graphic arts.ico",
         "graphic-project-two": "assets/icons/graphic arts.ico",
@@ -1299,6 +1361,55 @@ tabs.forEach(tab => {
 
 });
 
+// ------------------------------------
+// MOBILE SOUNDCLOUD ARTWORK PLAYERS
+// ------------------------------------
+// The compact SoundCloud player is preserved on desktop. On phones, switch
+// the same embeds to SoundCloud's visual player so each track artwork is shown.
+const soundCloudMobileQuery =
+    window.matchMedia("(max-width: 700px)");
+
+function syncSoundCloudPlayerMode() {
+    const useVisualPlayer = soundCloudMobileQuery.matches;
+
+    document
+        .querySelectorAll("#soundcloud-tab iframe")
+        .forEach(iframe => {
+            if (!iframe.dataset.desktopSrc) {
+                iframe.dataset.desktopSrc =
+                    iframe.getAttribute("src") || "";
+            }
+
+            const desktopSrc = iframe.dataset.desktopSrc;
+            if (!desktopSrc) return;
+
+            const visualSuffix =
+                "&visual=true" +
+                "&show_artwork=true" +
+                "&show_comments=false" +
+                "&hide_related=true";
+
+            const desiredSrc = useVisualPlayer
+                ? desktopSrc + visualSuffix
+                : desktopSrc;
+
+            if (iframe.getAttribute("src") !== desiredSrc) {
+                iframe.setAttribute("src", desiredSrc);
+            }
+        });
+}
+
+syncSoundCloudPlayerMode();
+
+if (typeof soundCloudMobileQuery.addEventListener === "function") {
+    soundCloudMobileQuery.addEventListener(
+        "change",
+        syncSoundCloudPlayerMode
+    );
+} else if (typeof soundCloudMobileQuery.addListener === "function") {
+    soundCloudMobileQuery.addListener(syncSoundCloudPlayerMode);
+}
+
 
 // ====================================
 // PHOTO GALLERY FOLDERS
@@ -1479,7 +1590,7 @@ document
 
 
 // ====================================
-// IMAGE PREVIEW NAVIGATION
+// IMAGE + MEMORY PREVIEW WINDOW
 // ====================================
 
 const previewWindow =
@@ -1487,6 +1598,9 @@ const previewWindow =
 
 const previewImage =
     document.getElementById("preview-image");
+
+const previewVideo =
+    document.getElementById("preview-video");
 
 const previewTitle =
     document.getElementById("preview-title");
@@ -1500,23 +1614,58 @@ const nextPhotoButton =
 const photoCounter =
     document.getElementById("photo-counter");
 
+const photoNavigation =
+    previewWindow?.querySelector(".photo-navigation");
+
 let currentGalleryImages = [];
 let currentPhotoIndex = 0;
+let previewSourceMode = "gallery";
 
+function stopPreviewVideo() {
+    if (!previewVideo) return;
 
-// Displays one photo in the preview window
+    previewVideo.pause();
+    previewVideo.removeAttribute("src");
+    previewVideo.load();
+    previewVideo.classList.add("hidden");
+}
+
+function showPreviewImageElement() {
+    if (!previewImage) return;
+
+    previewImage.classList.remove("hidden");
+}
+
+function setSingleMemoryPreview(enabled) {
+    if (!previewWindow) return;
+
+    previewWindow.classList.toggle(
+        "single-memory-preview",
+        enabled
+    );
+
+    if (photoNavigation) {
+        photoNavigation.setAttribute(
+            "aria-hidden",
+            enabled ? "true" : "false"
+        );
+    }
+}
+
+// Displays one photograph from a normal gallery.
 function showPreviewPhoto(index) {
-
-    if (currentGalleryImages.length === 0) {
+    if (
+        !previewImage ||
+        !previewTitle ||
+        currentGalleryImages.length === 0
+    ) {
         return;
     }
 
-    // Clicking Previous on the first photo opens the last photo
     if (index < 0) {
         index = currentGalleryImages.length - 1;
     }
 
-    // Clicking Next on the last photo opens the first photo
     if (index >= currentGalleryImages.length) {
         index = 0;
     }
@@ -1526,22 +1675,95 @@ function showPreviewPhoto(index) {
     const selectedImage =
         currentGalleryImages[currentPhotoIndex];
 
-    previewImage.src = selectedImage.src;
+    stopPreviewVideo();
+    showPreviewImageElement();
 
-    previewImage.alt =
-        selectedImage.alt || "Gallery photo";
+    previewImage.src = selectedImage.currentSrc || selectedImage.src;
+    previewImage.alt = selectedImage.alt || "Gallery photo";
+    previewTitle.textContent = selectedImage.alt || "Photo";
 
-    previewTitle.textContent =
-        selectedImage.alt || "Photo";
-
-    photoCounter.textContent =
-        `${currentPhotoIndex + 1} / ${currentGalleryImages.length}`;
+    if (photoCounter) {
+        photoCounter.textContent =
+            `${currentPhotoIndex + 1} / ${currentGalleryImages.length}`;
+    }
 }
 
+function previewFileExtension(source = "") {
+    const cleanSource = source.split("?")[0].split("#")[0];
+    const extension = cleanSource.split(".").pop();
+    return extension ? extension.toLowerCase() : "";
+}
+
+function previewItemIsVideo(item, mediaElement) {
+    if (mediaElement?.tagName === "VIDEO" || item?.type === "video") {
+        return true;
+    }
+
+    return new Set([
+        "mp4",
+        "webm",
+        "mov",
+        "m4v",
+        "ogg",
+        "ogv"
+    ]).has(previewFileExtension(item?.src || ""));
+}
+
+/*
+ * Memories use the same viewer shell as the galleries, but they open as a
+ * single item. Only the Previous/Next/counter strip is hidden; the title bar,
+ * menu bar, minimize, maximize, and close controls remain untouched.
+ */
+window.openMemoryInPhotoViewer = (item, mediaElement) => {
+    if (!previewWindow || !previewImage || !previewTitle || !item?.src) {
+        return;
+    }
+
+    previewSourceMode = "memory";
+    currentGalleryImages = [];
+    currentPhotoIndex = 0;
+    setSingleMemoryPreview(true);
+
+    const title =
+        item.title ||
+        mediaElement?.getAttribute("alt") ||
+        "Memory";
+
+    previewTitle.textContent = title;
+
+    if (previewItemIsVideo(item, mediaElement) && previewVideo) {
+        previewImage.classList.add("hidden");
+        stopPreviewVideo();
+
+        previewVideo.src = item.src;
+        previewVideo.poster = item.poster || "";
+        previewVideo.muted = true;
+        previewVideo.defaultMuted = true;
+        previewVideo.playsInline = true;
+        previewVideo.classList.remove("hidden");
+
+        const playAttempt = previewVideo.play();
+        if (playAttempt && typeof playAttempt.catch === "function") {
+            playAttempt.catch(() => {});
+        }
+    } else {
+        stopPreviewVideo();
+        showPreviewImageElement();
+
+        previewImage.src =
+            mediaElement?.currentSrc ||
+            mediaElement?.src ||
+            item.src;
+
+        previewImage.alt = title;
+    }
+
+    openWindow(previewWindow);
+    bringToFront(previewWindow);
+};
 
 // Opens static and dynamically generated gallery photos.
 document.addEventListener("click", event => {
-
     const img = event.target.closest(
         ".project-gallery img, .graphic-project-gallery img"
     );
@@ -1558,6 +1780,9 @@ document.addEventListener("click", event => {
         return;
     }
 
+    previewSourceMode = "gallery";
+    setSingleMemoryPreview(false);
+
     currentGalleryImages =
         Array.from(gallery.querySelectorAll("img"));
 
@@ -1565,25 +1790,19 @@ document.addEventListener("click", event => {
         currentGalleryImages.indexOf(img);
 
     showPreviewPhoto(currentPhotoIndex);
-
     openWindow(previewWindow);
-
 });
 
-
-// Previous button
-previousPhotoButton.addEventListener("click", () => {
-
-    showPreviewPhoto(currentPhotoIndex - 1);
-
+previousPhotoButton?.addEventListener("click", () => {
+    if (previewSourceMode === "gallery") {
+        showPreviewPhoto(currentPhotoIndex - 1);
+    }
 });
 
-
-// Next button
-nextPhotoButton.addEventListener("click", () => {
-
-    showPreviewPhoto(currentPhotoIndex + 1);
-
+nextPhotoButton?.addEventListener("click", () => {
+    if (previewSourceMode === "gallery") {
+        showPreviewPhoto(currentPhotoIndex + 1);
+    }
 });
 
 // ====================================
@@ -1591,33 +1810,40 @@ nextPhotoButton.addEventListener("click", () => {
 // ====================================
 
 document.addEventListener("keydown", event => {
-
-    if (
-        previewWindow.classList.contains("hidden") ||
-        currentGalleryImages.length === 0
-    ) {
+    if (!previewWindow || previewWindow.classList.contains("hidden")) {
         return;
     }
 
-    if (event.key === "ArrowLeft") {
+    if (
+        previewSourceMode === "gallery" &&
+        currentGalleryImages.length > 0
+    ) {
+        if (event.key === "ArrowLeft") {
+            showPreviewPhoto(currentPhotoIndex - 1);
+        }
 
-        showPreviewPhoto(currentPhotoIndex - 1);
-
-    }
-
-    if (event.key === "ArrowRight") {
-
-        showPreviewPhoto(currentPhotoIndex + 1);
-
+        if (event.key === "ArrowRight") {
+            showPreviewPhoto(currentPhotoIndex + 1);
+        }
     }
 
     if (event.key === "Escape") {
-
         closeWindow(previewWindow);
-
     }
-
 });
+
+if (previewWindow) {
+    const previewVisibilityObserver = new MutationObserver(() => {
+        if (previewWindow.classList.contains("hidden")) {
+            previewVideo?.pause();
+        }
+    });
+
+    previewVisibilityObserver.observe(previewWindow, {
+        attributes: true,
+        attributeFilter: ["class"]
+    });
+}
 
 
 // ====================================
@@ -2184,66 +2410,6 @@ document
     animateTilt();
 })();
 
-const letterboxdIcon = document.getElementById("letterboxd-icon");
-
-if (letterboxdIcon) {
-    letterboxdIcon.addEventListener("click", (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        window.open(
-            "https://letterboxd.com/bibihn/",
-            "_blank",
-            "noopener,noreferrer"
-        );
-    });
-}
-
-const lastfmIcon = document.getElementById("lastfm");
-
-if (lastfmIcon) {
-    lastfmIcon.addEventListener("click", (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        window.open(
-            "https://www.last.fm/user/bibihn",
-            "_blank",
-            "noopener,noreferrer"
-        );
-    });
-}
-
-const instagramIcon = document.getElementById("instagram");
-
-if (instagramIcon) {
-    instagramIcon.addEventListener("click", (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        window.open(
-            "https://www.instagram.com/bibiguimaraesz/",
-            "_blank",
-            "noopener,noreferrer"
-        );
-    });
-}
-
-const spotifyIcon = document.getElementById("spotify");
-
-if (spotifyIcon) {
-    spotifyIcon.addEventListener("click", (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        window.open(
-            "http://open.spotify.com/user/beasita?si=cce4b8725f00479a&nd=1&dlsi=e168b904d5aa4e68",
-            "_blank",
-            "noopener,noreferrer"
-        );
-    });
-}
-
 // ====================================
 // CLICK SPARKLE EFFECT
 // ====================================
@@ -2302,6 +2468,15 @@ sparkle.appendChild(horizontal);
 // ====================================
 
 function startWelcomeFireworks() {
+
+    const useMobileWelcomeEffect =
+        window.matchMedia &&
+        window.matchMedia("(max-width: 720px), (pointer: coarse)").matches;
+
+    if (useMobileWelcomeEffect) {
+        startMobileWelcomeTwinkles();
+        return;
+    }
 
     // Respect reduced-motion accessibility settings
     if (
@@ -2363,6 +2538,81 @@ function startWelcomeFireworks() {
         }, firework.delay);
 
     });
+}
+
+
+function startMobileWelcomeTwinkles() {
+
+    if (
+        window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+        return;
+    }
+
+    const existingEffect =
+        document.querySelector(".mobile-welcome-effect");
+
+    if (existingEffect) {
+        existingEffect.remove();
+    }
+
+    const effect = document.createElement("div");
+    effect.className = "mobile-welcome-effect";
+    effect.setAttribute("aria-hidden", "true");
+
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+
+    const colours = [
+        "#ffffff",
+        "#ff78dc",
+        "#c995ff",
+        "#76dfff",
+        "#fff27a"
+    ];
+
+    [0, 180].forEach(delay => {
+        const ring = document.createElement("span");
+        ring.className = "mobile-welcome-ring";
+        ring.style.left = `${centerX}px`;
+        ring.style.top = `${centerY}px`;
+        ring.style.animationDelay = `${delay}ms`;
+        effect.appendChild(ring);
+    });
+
+    const particleCount = 30;
+
+    for (let index = 0; index < particleCount; index++) {
+        const particle = document.createElement("span");
+        particle.className = "mobile-welcome-twinkle";
+        particle.textContent = index % 4 === 0 ? "✧" : "✦";
+
+        const angle = (Math.PI * 2 * index) / particleCount;
+        const radius = 58 + (index % 5) * 15;
+        const horizontalRadius = Math.min(radius, window.innerWidth * 0.38);
+        const verticalRadius = Math.min(radius * 0.72, window.innerHeight * 0.20);
+
+        const x = centerX + Math.cos(angle) * horizontalRadius;
+        const y = centerY + Math.sin(angle) * verticalRadius;
+
+        particle.style.left = `${x}px`;
+        particle.style.top = `${y}px`;
+        particle.style.color = colours[index % colours.length];
+        particle.style.animationDelay = `${(index % 10) * 45}ms`;
+        particle.style.setProperty(
+            "--mobile-twinkle-rotation",
+            `${index * 23}deg`
+        );
+
+        effect.appendChild(particle);
+    }
+
+    document.body.appendChild(effect);
+
+    window.setTimeout(() => {
+        effect.remove();
+    }, 1550);
 }
 
 
@@ -2924,6 +3174,94 @@ function fitWindowToMobileViewport(windowElement) {
     windowElement.style.maxHeight = `${Math.max(220, usableHeight - margin * 2)}px`;
 }
 
+function fitMagicalLakeToMobileViewport(windowElement) {
+    if (
+        !windowElement ||
+        windowElement.id !== "magical-lake-window" ||
+        !isMobileViewport()
+    ) {
+        return;
+    }
+
+    updatePhoneViewportVariables();
+
+    const viewport = window.visualViewport;
+
+    const width = viewport
+        ? viewport.width
+        : window.innerWidth;
+
+    const height = viewport
+        ? viewport.height
+        : window.innerHeight;
+
+    const offsetLeft = viewport
+        ? viewport.offsetLeft
+        : 0;
+
+    const offsetTop = viewport
+        ? viewport.offsetTop
+        : 0;
+
+    const taskbarHeight = 42;
+    const margin = 6;
+
+    const usableHeight = Math.max(
+        240,
+        height - taskbarHeight
+    );
+
+    const windowWidth = Math.max(
+        280,
+        width - margin * 2
+    );
+
+    const windowHeight = Math.max(
+        220,
+        usableHeight - margin * 2
+    );
+
+    windowElement.style.position = "fixed";
+
+    windowElement.style.left =
+        `${offsetLeft + width / 2}px`;
+
+    windowElement.style.top =
+        `${offsetTop + usableHeight / 2}px`;
+
+    windowElement.style.right = "auto";
+    windowElement.style.bottom = "auto";
+
+    windowElement.style.transform =
+        "translate(-50%, -50%)";
+
+    windowElement.style.width =
+        `${windowWidth}px`;
+
+    windowElement.style.maxWidth =
+        `${windowWidth}px`;
+
+    windowElement.style.height =
+        `${windowHeight}px`;
+
+    windowElement.style.maxHeight =
+        `${windowHeight}px`;
+
+    windowElement.style.margin = "0";
+}
+
+function positionMobileWindow(windowElement) {
+    if (windowElement.id === "magical-lake-window") {
+        fitMagicalLakeToMobileViewport(
+            windowElement
+        );
+    } else {
+        fitWindowToMobileViewport(
+            windowElement
+        );
+    }
+}
+
 const originalOpenWindowForMobile = openWindow;
 
 openWindow = function(windowElement) {
@@ -2931,8 +3269,17 @@ openWindow = function(windowElement) {
 
     if (isMobileViewport()) {
         requestAnimationFrame(() => {
-            fitWindowToMobileViewport(windowElement);
+            positionMobileWindow(windowElement);
             bringToFront(windowElement);
+
+            window.setTimeout(() => {
+                if (
+                    !windowElement.classList.contains("hidden")
+                ) {
+                    positionMobileWindow(windowElement);
+                    bringToFront(windowElement);
+                }
+            }, 80);
         });
     }
 };
@@ -2946,7 +3293,7 @@ function refitOpenWindowsForViewport() {
 
     document
         .querySelectorAll(".window:not(.hidden)")
-        .forEach(fitWindowToMobileViewport);
+        .forEach(positionMobileWindow);
 }
 
 window.addEventListener("resize", refitOpenWindowsForViewport);
@@ -2954,7 +3301,7 @@ window.addEventListener("orientationchange", () => {
     window.setTimeout(refitOpenWindowsForViewport, 120);
 });
 
-if (window.visualViewport) {
+    if (window.visualViewport) {
     window.visualViewport.addEventListener(
         "resize",
         refitOpenWindowsForViewport
@@ -2985,12 +3332,13 @@ window.addEventListener("DOMContentLoaded", () => {
 
     context.imageSmoothingEnabled = false;
 
-    const WIDTH = canvas.width;
-    const HEIGHT = canvas.height;
-    const WATER_LINE = 171;
+    const BASE_WIDTH = 480;
+    const BASE_HEIGHT = 300;
 
-    const wishButton = document.getElementById("magical-wish-button");
-    const resetButton = document.getElementById("magical-reset-button");
+    let WIDTH = canvas.width;
+    let HEIGHT = canvas.height;
+    let WATER_LINE = 171;
+
     const status = document.getElementById("magical-lake-status");
 
     const lakeWindow = document.getElementById("magical-lake-window");
@@ -3115,6 +3463,145 @@ window.addEventListener("DOMContentLoaded", () => {
         rangeX: 3 + (index % 5),
         rangeY: 2 + (index % 4)
     }));
+
+    const dancingNymphs = [
+    {
+        dress: "#f5d3ff",
+        hair: "#f6cd8c",
+        flower: "#ffe9ff",
+        phase: 0.2
+    },
+    {
+        dress: "#bff7ff",
+        hair: "#cf8d62",
+        flower: "#fff6ad",
+        phase: 1.45
+    },
+    {
+        dress: "#ffd2eb",
+        hair: "#7f5265",
+        flower: "#fff0ff",
+        phase: 2.7
+    },
+    {
+        dress: "#d6c7ff",
+        hair: "#f0af7c",
+        flower: "#ffe7a7",
+        phase: 3.95
+    },
+    {
+        dress: "#c8ffd9",
+        hair: "#5f4a45",
+        flower: "#fff6d8",
+        phase: 5.2
+    }
+];
+
+    const circleFairies = Array.from(
+    { length: 20 },
+    (_, index) => ({
+        orbit: 33 + (index % 4) * 8,
+        lift: 15 + (index % 3) * 5,
+        phase: index * 0.84,
+        speed: 0.7 + (index % 5) * 0.08,
+        glow: [
+            "#ffe6fb",
+            "#fff6b0",
+            "#bdfcff",
+            "#f0cbff"
+        ][index % 4]
+    })
+);
+
+    function resizeLakeCanvasToScreen() {
+    const mobile = isMobileLakeLayout();
+
+    let targetWidth = BASE_WIDTH;
+    let targetHeight = BASE_HEIGHT;
+
+    if (mobile) {
+        const rectangle = lakeScreen
+            ? lakeScreen.getBoundingClientRect()
+            : null;
+
+        let visibleWidth =
+            rectangle && rectangle.width > 80
+                ? rectangle.width
+                : 0;
+
+        let visibleHeight =
+            rectangle && rectangle.height > 120
+                ? rectangle.height
+                : 0;
+
+        if (!visibleWidth || !visibleHeight) {
+            const viewport = window.visualViewport;
+
+            const viewportWidth = viewport
+                ? viewport.width
+                : window.innerWidth;
+
+            const viewportHeight = viewport
+                ? viewport.height
+                : window.innerHeight;
+
+            visibleWidth = Math.max(
+                280,
+                viewportWidth - 24
+            );
+
+            visibleHeight = Math.max(
+                420,
+                viewportHeight - 132
+            );
+        }
+
+        targetHeight = Math.round(
+            BASE_WIDTH *
+            visibleHeight /
+            visibleWidth
+        );
+
+        targetHeight = Math.max(
+            560,
+            Math.min(980, targetHeight)
+        );
+    }
+
+    if (
+        canvas.width !== targetWidth ||
+        canvas.height !== targetHeight
+    ) {
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+
+        context.imageSmoothingEnabled = false;
+    }
+
+    WIDTH = canvas.width;
+    HEIGHT = canvas.height;
+
+    WATER_LINE = mobile
+        ? Math.round(
+            Math.max(
+                198,
+                Math.min(
+                    252,
+                    HEIGHT * 0.34
+                )
+            )
+        )
+        : 171;
+
+    pointerX = WIDTH * 0.5;
+
+    pointerY =
+        WATER_LINE +
+        (HEIGHT - WATER_LINE) * 0.42;
+
+    waterShadow.splashX =
+        WIDTH * 0.5;
+}
 
     let statusAnimationTimer = null;
 
@@ -3720,17 +4207,6 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function resetMagic() {
-        sparkles.length = 0;
-        ripples.length = 0;
-        bubbles.length = 0;
-        waterfallDrops.length = 0;
-        waterfallBoost = 0;
-        wishCount = 0;
-        waterShadow.active = false;
-        setStatus("The lake is listening...");
-    }
-
     function drawPixelStar(x, y, color, size = 1, alpha = 1) {
         const px = Math.round(x);
         const py = Math.round(y);
@@ -3761,56 +4237,123 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     function drawSky(time) {
-        const skyBands = [
-            "#171733",
-            "#1d2042",
-            "#232a51",
-            "#28375e",
-            "#2b4568",
-            "#31546f",
-            "#37637a",
-            "#3f7184"
-        ];
+    const skyBands = [
+        "#171733",
+        "#1d2042",
+        "#232a51",
+        "#28375e",
+        "#2b4568",
+        "#31546f",
+        "#37637a",
+        "#3f7184"
+    ];
 
-        const bandHeight = Math.ceil(WATER_LINE / skyBands.length);
+    const bandHeight =
+        Math.ceil(
+            WATER_LINE /
+            skyBands.length
+        );
 
-        skyBands.forEach((color, index) => {
-            context.fillStyle = color;
-            context.fillRect(0, index * bandHeight, WIDTH, bandHeight + 1);
-        });
+    skyBands.forEach((color, index) => {
+        context.fillStyle = color;
 
-        const starColors = [
-            "#d5ffff",
-            "#fff4a6",
-            "#f0c1ff",
-            "#ffb8dc",
-            "#bad0ff"
-        ];
+        context.fillRect(
+            0,
+            index * bandHeight,
+            WIDTH,
+            bandHeight + 1
+        );
+    });
 
-        backgroundStars.forEach(star => {
-            const twinkle = 0.28 + 0.72 * Math.abs(
-                Math.sin(time * 0.0018 + star.phase)
+    const starColors = [
+        "#d5ffff",
+        "#fff4a6",
+        "#f0c1ff",
+        "#ffb8dc",
+        "#bad0ff"
+    ];
+
+    backgroundStars.forEach(star => {
+        const twinkle =
+            0.28 +
+            0.72 *
+            Math.abs(
+                Math.sin(
+                    time * 0.0018 +
+                    star.phase
+                )
             );
+
+        drawPixelStar(
+            star.x,
+            star.y,
+            starColors[star.colorIndex],
+            star.size,
+            twinkle
+        );
+    });
+
+    context.globalAlpha = 0.18;
+    context.fillStyle = "#d6e9ff";
+
+    context.fillRect(70, 40, 42, 6);
+    context.fillRect(80, 34, 24, 6);
+    context.fillRect(365, 48, 48, 6);
+    context.fillRect(377, 41, 25, 7);
+    context.fillRect(27, 83, 31, 5);
+
+    context.globalAlpha = 1;
+
+    /*
+     * Extra stars continue through the
+     * taller mobile sky.
+     */
+    if (isMobileLakeLayout()) {
+        for (
+            let index = 0;
+            index < 44;
+            index += 1
+        ) {
+            const x =
+                8 +
+                (
+                    (index * 97) %
+                    (WIDTH - 16)
+                );
+
+            const y =
+                18 +
+                (
+                    (index * 53) %
+                    Math.max(
+                        30,
+                        WATER_LINE - 36
+                    )
+                );
+
+            const alpha =
+                0.18 +
+                Math.abs(
+                    Math.sin(
+                        time * 0.003 +
+                        index * 0.61
+                    )
+                ) * 0.62;
 
             drawPixelStar(
-                star.x,
-                star.y,
-                starColors[star.colorIndex],
-                star.size,
-                twinkle
+                x,
+                y,
+                index % 4 === 0
+                    ? "#ffd8ef"
+                    : "#d8ffff",
+                index % 17 === 0
+                    ? 2
+                    : 1,
+                alpha
             );
-        });
-
-        /* Soft little pixel clouds around the divine opening. */
-        context.globalAlpha = 0.18;
-        context.fillStyle = "#d6e9ff";
-        context.fillRect(70, 40, 42, 6);
-        context.fillRect(80, 34, 24, 6);
-        context.fillRect(365, 48, 48, 6);
-        context.fillRect(377, 41, 25, 7);
-        context.fillRect(27, 83, 31, 5);
-        context.globalAlpha = 1;
+        }
     }
+}
 
     function drawDivineLight(time) {
         const pulse = 0.86 + Math.sin(time * 0.0015) * 0.09;
@@ -3898,7 +4441,20 @@ window.addEventListener("DOMContentLoaded", () => {
         if (mirror) context.scale(-1, 1);
 
         context.fillStyle = "#0a1722";
-        context.fillRect(0, 43, 27, 139);
+
+const mainTrunkHeight = isMobileLakeLayout()
+    ? Math.max(
+        139,
+        WATER_LINE - 35
+    )
+    : 139;
+
+context.fillRect(
+    0,
+    43,
+    27,
+    mainTrunkHeight
+);
         context.fillRect(14, 27, 12, 38);
         context.fillRect(22, 14, 9, 34);
         context.fillRect(28, 12, 57, 8);
@@ -4013,7 +4569,9 @@ window.addEventListener("DOMContentLoaded", () => {
         }
 
         context.globalAlpha = 1;
-        drawLilyPads(time);
+
+drawExtendedLakeDetails(time);
+drawLilyPads(time);
     }
 
     function drawLilyPad(x, y, scale, flowerColor, time, phase) {
@@ -4044,24 +4602,146 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     function drawLilyPads(time) {
-        drawLilyPad(78, 215, 1.1, "#ffb3dd", time, 0.2);
-        drawLilyPad(137, 245, 0.72, null, time, 1.7);
-        drawLilyPad(305, 225, 0.9, "#e8bcff", time, 2.8);
-        drawLilyPad(402, 253, 0.75, "#fff0a8", time, 4.1);
-        drawLilyPad(250, 268, 0.62, null, time, 5.3);
+    drawLilyPad(
+        78,
+        WATER_LINE + 44,
+        1.1,
+        "#ffb3dd",
+        time,
+        0.2
+    );
 
-        /* Tiny frog on the left lily pad. */
-        const frogY = 207 + Math.round(Math.sin(time * 0.0025 + 0.2));
-        context.fillStyle = "#8dd85f";
-        context.fillRect(72, frogY, 12, 7);
-        context.fillRect(74, frogY - 4, 3, 4);
-        context.fillRect(80, frogY - 4, 3, 4);
-        context.fillStyle = "#f8ffd6";
-        context.fillRect(75, frogY - 3, 1, 1);
-        context.fillRect(81, frogY - 3, 1, 1);
-        context.fillStyle = "#18332a";
-        context.fillRect(76, frogY + 2, 4, 1);
+    drawLilyPad(
+        137,
+        WATER_LINE + 76,
+        0.72,
+        null,
+        time,
+        1.7
+    );
+
+    drawLilyPad(
+        305,
+        WATER_LINE + 54,
+        0.9,
+        "#e8bcff",
+        time,
+        2.8
+    );
+
+    drawLilyPad(
+        402,
+        WATER_LINE + 88,
+        0.75,
+        "#fff0a8",
+        time,
+        4.1
+    );
+
+    drawLilyPad(
+        250,
+        WATER_LINE + 105,
+        0.62,
+        null,
+        time,
+        5.3
+    );
+
+    if (isMobileLakeLayout()) {
+        const lakeDepth =
+            HEIGHT - WATER_LINE;
+
+        const lowerPads = [
+            [92, 0.34, 0.82, "#ffd0ea", 0.8],
+            [378, 0.39, 0.72, "#d7c4ff", 1.5],
+            [152, 0.50, 0.66, null, 2.1],
+            [329, 0.57, 0.94, "#fff1a8", 2.9],
+            [73, 0.66, 0.72, "#bff9ff", 3.8],
+            [408, 0.72, 0.68, "#ffd5f0", 4.4],
+            [205, 0.76, 0.58, null, 5.1],
+            [278, 0.84, 0.70, "#e9c8ff", 5.8]
+        ];
+
+        lowerPads.forEach(
+            ([
+                x,
+                progress,
+                scale,
+                flower,
+                phase
+            ]) => {
+                drawLilyPad(
+                    x,
+                    WATER_LINE +
+                    lakeDepth * progress,
+                    scale,
+                    flower,
+                    time,
+                    phase
+                );
+            }
+        );
     }
+
+    /* Tiny frog on first lily pad. */
+    const frogY =
+        WATER_LINE +
+        36 +
+        Math.round(
+            Math.sin(
+                time * 0.0025 +
+                0.2
+            )
+        );
+
+    context.fillStyle = "#8dd85f";
+
+    context.fillRect(
+        72,
+        frogY,
+        12,
+        7
+    );
+
+    context.fillRect(
+        74,
+        frogY - 4,
+        3,
+        4
+    );
+
+    context.fillRect(
+        80,
+        frogY - 4,
+        3,
+        4
+    );
+
+    context.fillStyle = "#f8ffd6";
+
+    context.fillRect(
+        75,
+        frogY - 3,
+        1,
+        1
+    );
+
+    context.fillRect(
+        81,
+        frogY - 3,
+        1,
+        1
+    );
+
+    context.fillStyle = "#18332a";
+
+    context.fillRect(
+        76,
+        frogY + 2,
+        4,
+        1
+    );
+}
 
     function drawMushroom(x, groundY, scale, capColor, glowColor = "#fff2a8") {
         const stemWidth = Math.max(3, Math.round(4 * scale));
@@ -4157,7 +4837,674 @@ window.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    function isMobileLakeLayout() {
+    return (
+        window.innerWidth <= 700 ||
+        (
+            lakeScreen &&
+            lakeScreen.clientWidth > 0 &&
+            lakeScreen.clientWidth < 560
+        )
+    );
+}
+
+    function drawMoonlitPath(time) {
+    if (!isMobileLakeLayout()) return;
+
+    const centerX =
+        WIDTH * 0.5;
+
+    const nymphY =
+        HEIGHT - 146;
+
+    /*
+     * Winding ribbon of moonlight
+     * traveling down to the dancers.
+     */
+    for (
+        let step = 0;
+        step < 28;
+        step += 1
+    ) {
+        const progress =
+            step / 27;
+
+        const y =
+            18 +
+            progress *
+            (nymphY - 24);
+
+        const sway =
+            Math.sin(
+                time * 0.0011 +
+                progress * 7.2
+            ) *
+            (
+                4 +
+                progress * 18
+            );
+
+        const width =
+            12 +
+            progress * 70;
+
+        const x =
+            centerX + sway;
+
+        context.globalAlpha =
+            0.035 +
+            progress * 0.055;
+
+        context.fillStyle =
+            progress < 0.38
+                ? "#fff9e4"
+                : "#d9f5e9";
+
+        context.fillRect(
+            Math.round(
+                x -
+                width * 0.5
+            ),
+            Math.round(y),
+            Math.round(width),
+            5 +
+            Math.round(
+                progress * 5
+            )
+        );
+
+        context.globalAlpha = 0.07;
+        context.fillStyle = "#ffffff";
+
+        context.fillRect(
+            Math.round(
+                x -
+                width * 0.18
+            ),
+            Math.round(y + 1),
+            Math.max(
+                3,
+                Math.round(
+                    width * 0.36
+                )
+            ),
+            1
+        );
+    }
+
+    const pathSparkles = 22;
+
+    for (
+        let index = 0;
+        index < pathSparkles;
+        index += 1
+    ) {
+        const progress =
+            index /
+            (pathSparkles - 1);
+
+        const y =
+            28 +
+            progress *
+            (nymphY - 38);
+
+        const x =
+            centerX +
+            Math.sin(
+                time * 0.0011 +
+                progress * 7.2
+            ) *
+            (
+                5 +
+                progress * 18
+            );
+
+        const twinkle =
+            0.28 +
+            Math.abs(
+                Math.sin(
+                    time * 0.004 +
+                    index * 0.8
+                )
+            ) * 0.58;
+
+        drawPixelStar(
+            x +
+            (
+                index % 2
+                    ? 11
+                    : -12
+            ),
+            y,
+            index % 3 === 0
+                ? "#ffe3f5"
+                : "#fff4ad",
+            1,
+            twinkle
+        );
+    }
+
+    context.globalAlpha = 1;
+}
+
+    function drawTinyCircleFairy(
+    x,
+    y,
+    color,
+    alpha,
+    wingFrame
+) {
+    const px = Math.round(x);
+    const py = Math.round(y);
+
+    context.save();
+
+    context.globalAlpha =
+        alpha * 0.16;
+
+    context.fillStyle = color;
+
+    context.fillRect(
+        px - 4,
+        py - 4,
+        9,
+        9
+    );
+
+    context.globalAlpha =
+        alpha * 0.82;
+
+    context.fillStyle = color;
+
+    if (wingFrame === 0) {
+        context.fillRect(
+            px - 5,
+            py - 2,
+            2,
+            3
+        );
+
+        context.fillRect(
+            px + 3,
+            py - 2,
+            2,
+            3
+        );
+    } else {
+        context.fillRect(
+            px - 5,
+            py - 1,
+            2,
+            2
+        );
+
+        context.fillRect(
+            px + 3,
+            py - 1,
+            2,
+            2
+        );
+    }
+
+    context.fillStyle = "#fff4de";
+
+    context.fillRect(
+        px - 1,
+        py - 2,
+        3,
+        3
+    );
+
+    context.fillStyle = "#f7a8cf";
+
+    context.fillRect(
+        px - 1,
+        py + 1,
+        3,
+        3
+    );
+
+    drawPixelStar(
+        px,
+        py - 5,
+        color,
+        1,
+        alpha * 0.75
+    );
+
+    context.restore();
+}
+
+    function drawNymphSprite(
+    x,
+    y,
+    nymph,
+    time,
+    index,
+    facingRight
+) {
+    const px =
+        Math.round(x);
+
+    const py =
+        Math.round(
+            y +
+            Math.sin(
+                time * 0.0032 +
+                nymph.phase
+            ) * 1.4
+        );
+
+    const direction =
+        facingRight
+            ? 1
+            : -1;
+
+    context.save();
+
+    context.globalAlpha = 0.14;
+    context.fillStyle = nymph.dress;
+
+    context.fillRect(
+        px - 10,
+        py - 12,
+        21,
+        24
+    );
+
+    context.globalAlpha = 1;
+
+    context.fillStyle =
+        nymph.hair;
+
+    context.fillRect(
+        px - 4,
+        py - 10,
+        8,
+        5
+    );
+
+    context.fillRect(
+        px - 5,
+        py - 7,
+        2,
+        5
+    );
+
+    context.fillRect(
+        px + 3,
+        py - 7,
+        2,
+        5
+    );
+
+    context.fillStyle =
+        "#f6c6a0";
+
+    context.fillRect(
+        px - 3,
+        py - 6,
+        7,
+        6
+    );
+
+    context.fillStyle =
+        nymph.flower;
+
+    context.fillRect(
+        px - 1,
+        py - 11,
+        2,
+        2
+    );
+
+    context.fillRect(
+        px - 4,
+        py - 10,
+        2,
+        2
+    );
+
+    context.fillRect(
+        px + 2,
+        py - 10,
+        2,
+        2
+    );
+
+    context.fillStyle =
+        nymph.dress;
+
+    context.fillRect(
+        px - 3,
+        py,
+        7,
+        8
+    );
+
+    context.fillRect(
+        px - 6,
+        py + 5,
+        13,
+        4
+    );
+
+    context.fillRect(
+        px - 8,
+        py + 9,
+        17,
+        3
+    );
+
+    context.fillRect(
+        px - 5,
+        py + 12,
+        11,
+        2
+    );
+
+    context.fillStyle =
+        "#fff1fa";
+
+    context.fillRect(
+        px - 2,
+        py + 1,
+        5,
+        2
+    );
+
+    context.fillRect(
+        px - 1,
+        py + 5,
+        3,
+        2
+    );
+
+    context.fillStyle =
+        "#f6c6a0";
+
+    context.fillRect(
+        px - 7 * direction,
+        py + 1,
+        3 * direction,
+        2
+    );
+
+    context.fillRect(
+        px + 4 * direction,
+        py + 1,
+        4 * direction,
+        2
+    );
+
+    context.fillRect(
+        px - 2,
+        py + 14,
+        2,
+        4
+    );
+
+    context.fillRect(
+        px + 1,
+        py + 14,
+        2,
+        4
+    );
+
+    drawPixelStar(
+        px +
+        direction * 10,
+        py - 2,
+        nymph.flower,
+        1,
+        0.75
+    );
+
+    drawPixelStar(
+        px -
+        direction * 9,
+        py + 4,
+        "#ffffff",
+        1,
+        0.6
+    );
+
+    context.restore();
+}
+
+    function drawNymphCircle(time) {
+    if (!isMobileLakeLayout()) return;
+
+    const centerX =
+        WIDTH * 0.5;
+
+    const centerY =
+        HEIGHT - 146;
+
+    const ringRadiusX = 57;
+    const ringRadiusY = 23;
+
+    context.save();
+
+    context.globalAlpha =
+        0.10 +
+        Math.sin(
+            time * 0.0026
+        ) * 0.025;
+
+    context.fillStyle =
+        "#fff0b8";
+
+    context.beginPath();
+
+    context.ellipse(
+        centerX,
+        centerY + 17,
+        79,
+        28,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+    context.fill();
+
+    context.globalAlpha =
+        0.28 +
+        Math.sin(
+            time * 0.0026
+        ) * 0.05;
+
+    context.strokeStyle =
+        "#fff4cf";
+
+    context.lineWidth = 1;
+
+    context.beginPath();
+
+    context.ellipse(
+        centerX,
+        centerY + 17,
+        67,
+        18,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+    context.stroke();
+
+    context.globalAlpha = 0.18;
+
+    context.strokeStyle =
+        "#e9c8ff";
+
+    context.beginPath();
+
+    context.ellipse(
+        centerX,
+        centerY + 17,
+        86,
+        31,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+    context.stroke();
+
+    context.restore();
+
+    dancingNymphs.forEach(
+        (nymph, index) => {
+            const angle =
+                time * 0.00072 +
+                index *
+                (
+                    Math.PI * 2 /
+                    dancingNymphs.length
+                );
+
+            const x =
+                centerX +
+                Math.cos(angle) *
+                ringRadiusX;
+
+            const y =
+                centerY +
+                Math.sin(angle) *
+                ringRadiusY;
+
+            drawNymphSprite(
+                x,
+                y,
+                nymph,
+                time,
+                index,
+                Math.cos(angle) >= 0
+            );
+        }
+    );
+
+    const petalColors = [
+        "#ffe5f4",
+        "#fff2ba",
+        "#cdf7ff",
+        "#f1d7ff"
+    ];
+
+    for (
+        let index = 0;
+        index < 20;
+        index += 1
+    ) {
+        const angle =
+            index *
+            (
+                Math.PI * 2 /
+                20
+            ) +
+            time * 0.00055;
+
+        const x =
+            centerX +
+            Math.cos(angle) *
+            (
+                25 +
+                index % 3 * 7
+            );
+
+        const y =
+            centerY +
+            18 +
+            Math.sin(angle) *
+            (
+                7 +
+                index % 2 * 4
+            );
+
+        drawPixelStar(
+            x,
+            y,
+            petalColors[
+                index %
+                petalColors.length
+            ],
+            1,
+            0.72
+        );
+    }
+}
+
+    function drawCircleFairies(time) {
+    if (!isMobileLakeLayout()) return;
+
+    const centerX =
+        WIDTH * 0.5;
+
+    const centerY =
+        HEIGHT - 151;
+
+    circleFairies.forEach(
+        (fairy, index) => {
+            const angle =
+                time *
+                0.00165 *
+                fairy.speed +
+                fairy.phase;
+
+            const orbitX =
+                76 +
+                (index % 5) * 9;
+
+            const orbitY =
+                33 +
+                (index % 4) * 6;
+
+            const x =
+                centerX +
+                Math.cos(angle) *
+                orbitX;
+
+            const y =
+                centerY +
+                Math.sin(
+                    angle * 1.08
+                ) *
+                orbitY;
+
+            const alpha =
+                0.48 +
+                Math.abs(
+                    Math.sin(
+                        time * 0.005 +
+                        fairy.phase
+                    )
+                ) * 0.5;
+
+            const wingFrame =
+                Math.floor(
+                    time * 0.018 +
+                    index
+                ) % 2;
+
+            drawTinyCircleFairy(
+                x,
+                y,
+                fairy.glow,
+                alpha,
+                wingFrame
+            );
+        }
+    );
+}
+
     function drawForeground(time) {
+        const groundOffset =
+    Math.max(
+        0,
+        HEIGHT - BASE_HEIGHT
+    );
         context.fillStyle = "#071b20";
         context.fillRect(0, HEIGHT - 29, WIDTH, 29);
 
@@ -4198,12 +5545,50 @@ window.addEventListener("DOMContentLoaded", () => {
         context.fillRect(210, HEIGHT - 36, 57, 3);
         context.globalAlpha = 1;
 
-        drawMushroom(54, 287, 1.35, "#ff6f49");
-        drawMushroom(101, 294, 0.8, "#ff4e72", "#ffb7d2");
-        drawMushroom(394, 290, 1.16, "#ff8561");
-        drawMushroom(442, 296, 0.73, "#e95c8c", "#efc6ff");
-        drawMushroom(244, 296, 0.9, "#ff5d72", "#fff2ad");
-        drawMushroom(342, 296, 0.62, "#f6a04b");
+        drawMushroom(
+    54,
+    287 + groundOffset,
+    1.35,
+    "#ff6f49"
+);
+
+drawMushroom(
+    101,
+    294 + groundOffset,
+    0.8,
+    "#ff4e72",
+    "#ffb7d2"
+);
+
+drawMushroom(
+    394,
+    290 + groundOffset,
+    1.16,
+    "#ff8561"
+);
+
+drawMushroom(
+    442,
+    296 + groundOffset,
+    0.73,
+    "#e95c8c",
+    "#efc6ff"
+);
+
+drawMushroom(
+    244,
+    296 + groundOffset,
+    0.9,
+    "#ff5d72",
+    "#fff2ad"
+);
+
+drawMushroom(
+    342,
+    296 + groundOffset,
+    0.62,
+    "#f6a04b"
+);
 
         const flowers = [
             [22, 275, "#ff5fc3", 1],
@@ -4216,9 +5601,17 @@ window.addEventListener("DOMContentLoaded", () => {
             [287, 288, "#8ee0ff", 1]
         ];
 
-        flowers.forEach(([x, y, color, scale]) => {
-            drawPixelFlower(x, y, color, "#fff5a0", scale);
-        });
+        flowers.forEach(
+    ([x, y, color, scale]) => {
+        drawPixelFlower(
+            x,
+            y + groundOffset,
+            color,
+            "#fff5a0",
+            scale
+        );
+    }
+);
 
         /* Tiny stones and berries make the ground feel busier and cuter. */
         const stones = [
@@ -4228,10 +5621,25 @@ window.addEventListener("DOMContentLoaded", () => {
         ];
 
         stones.forEach(([x, y, color]) => {
-            context.fillStyle = color;
-            context.fillRect(x, y, 6, 3);
-            context.fillRect(x + 1, y - 2, 4, 2);
-        });
+    const stoneY =
+        y + groundOffset;
+
+    context.fillStyle = color;
+
+    context.fillRect(
+        x,
+        stoneY,
+        6,
+        3
+    );
+
+    context.fillRect(
+        x + 1,
+        stoneY - 2,
+        4,
+        2
+    );
+});
 
         for (let index = 0; index < 20; index++) {
             const x = 185 + ((index * 23) % 113);
@@ -4261,7 +5669,228 @@ window.addEventListener("DOMContentLoaded", () => {
 
         context.globalAlpha = 1;
     }
+    function drawExtendedLakeDetails(time) {
+    if (!isMobileLakeLayout()) return;
 
+    const lakeHeight =
+        HEIGHT - WATER_LINE;
+
+    const centerX =
+        WIDTH * 0.5;
+
+    /*
+     * Long moon reflection connecting
+     * the original lake to the lower scene.
+     */
+    for (
+        let row = 0;
+        row < 34;
+        row += 1
+    ) {
+        const progress =
+            row / 33;
+
+        const y =
+            WATER_LINE +
+            18 +
+            progress *
+            (lakeHeight - 86);
+
+        const width =
+            18 +
+            progress * 84;
+
+        const drift =
+            Math.sin(
+                time * 0.0017 +
+                row * 0.72
+            ) *
+            (3 + progress * 9);
+
+        context.globalAlpha =
+            0.08 +
+            (1 - progress) * 0.08;
+
+        context.fillStyle =
+            row % 5 === 0
+                ? "#fff4bd"
+                : "#c8ffff";
+
+        context.fillRect(
+            Math.round(
+                centerX -
+                width * 0.5 +
+                drift
+            ),
+            Math.round(y),
+            Math.max(
+                4,
+                Math.round(width)
+            ),
+            row % 6 === 0
+                ? 2
+                : 1
+        );
+    }
+
+    /*
+     * Extra small water lines throughout
+     * the extended lake.
+     */
+    for (
+        let index = 0;
+        index < 58;
+        index += 1
+    ) {
+        const y =
+            WATER_LINE +
+            30 +
+            (
+                (index * 61) %
+                Math.max(
+                    80,
+                    lakeHeight - 92
+                )
+            );
+
+        const x =
+            12 +
+            (
+                (
+                    index * 89 +
+                    Math.floor(
+                        time * 0.012
+                    )
+                ) %
+                (WIDTH - 24)
+            );
+
+        const length =
+            4 +
+            (index % 9) * 2;
+
+        context.globalAlpha =
+            0.08 +
+            (index % 6) * 0.025;
+
+        context.fillStyle =
+            index % 4 === 0
+                ? "#fff1a5"
+                : index % 3 === 0
+                    ? "#f1caff"
+                    : "#9ff8f2";
+
+        context.fillRect(
+            x,
+            y,
+            length,
+            index % 13 === 0
+                ? 2
+                : 1
+        );
+    }
+
+    const floatingLights = [
+        [95, 0.26, "#fff4a0"],
+        [382, 0.31, "#ffd1ef"],
+        [65, 0.48, "#c7ffff"],
+        [419, 0.52, "#efc8ff"],
+        [128, 0.70, "#ffd8eb"],
+        [355, 0.77, "#fff3a8"],
+        [230, 0.89, "#c6ffff"]
+    ];
+
+    floatingLights.forEach(
+        ([x, progress, color], index) => {
+            const y =
+                WATER_LINE +
+                lakeHeight * progress;
+
+            const pulse =
+                0.42 +
+                Math.abs(
+                    Math.sin(
+                        time * 0.004 +
+                        index * 0.9
+                    )
+                ) * 0.55;
+
+            drawPixelStar(
+                x,
+                y,
+                color,
+                index % 3 === 0
+                    ? 2
+                    : 1,
+                pulse
+            );
+
+            context.globalAlpha =
+                pulse * 0.18;
+
+            context.fillStyle = color;
+
+            context.fillRect(
+                x - 5,
+                y + 4,
+                11,
+                1
+            );
+        }
+    );
+
+    const fish = [
+        [105, 0.41, 1],
+        [365, 0.61, -1],
+        [170, 0.82, 1]
+    ];
+
+    fish.forEach(
+        ([baseX, progress, direction], index) => {
+            const swim =
+                Math.sin(
+                    time * 0.0012 +
+                    index * 2.1
+                ) * 18;
+
+            const x =
+                baseX + swim;
+
+            const y =
+                WATER_LINE +
+                lakeHeight * progress;
+
+            context.globalAlpha = 0.22;
+            context.fillStyle = "#082f43";
+
+            context.fillRect(
+                x - 6,
+                y,
+                12,
+                3
+            );
+
+            context.fillRect(
+                x + 5 * direction,
+                y - 2,
+                4 * direction,
+                7
+            );
+
+            context.globalAlpha = 0.12;
+            context.fillStyle = "#b8ffff";
+
+            context.fillRect(
+                x - 4,
+                y,
+                6,
+                1
+            );
+        }
+    );
+
+    context.globalAlpha = 1;
+}
     function drawFairySprite(x, y, fairy, facingRight, alpha, wingFrame) {
         const direction = facingRight ? 1 : -1;
         const px = Math.round(x);
@@ -4511,18 +6140,28 @@ window.addEventListener("DOMContentLoaded", () => {
 
     function drawFrame(time) {
         context.clearRect(0, 0, WIDTH, HEIGHT);
+
         drawSky(time);
         drawDivineLight(time);
         drawDistantForest();
+
         drawLake(time);
         drawWaterShadow(time);
+
         drawTree(-3, false, time);
         drawTree(WIDTH + 3, true, time);
+
+        drawMoonlitPath(time);
         drawFireflies(time);
         drawForeground(time);
+
         updateAndDrawRipples();
         updateAndDrawBubbles();
+
+        drawNymphCircle(time);
+        drawCircleFairies(time);
         drawPermanentFairies(time);
+
         updateAndDrawSparkles();
         drawGlitteringWaterfall(time);
 
@@ -4534,7 +6173,6 @@ window.addEventListener("DOMContentLoaded", () => {
         pointerX = point.x;
         pointerY = point.y;
     });
-
 
     canvas.addEventListener("pointerdown", event => {
         event.preventDefault();
@@ -4552,242 +6190,641 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    if (wishButton) {
-        wishButton.addEventListener("click", () => {
-            makeWish(
-                WIDTH * 0.5 + (Math.random() - 0.5) * 90,
-                WATER_LINE + 30 + Math.random() * 48,
-                true
-            );
-        });
+    function resizeAllLakeCanvases() {
+        resizeLakeCanvasToScreen();
+        resizeWaterfallCanvas();
     }
 
-    if (resetButton) {
-        resetButton.addEventListener("click", resetMagic);
-    }
+    window.addEventListener("resize", resizeAllLakeCanvases);
 
-    window.addEventListener("resize", resizeWaterfallCanvas);
+    window.addEventListener("orientationchange", () => {
+        window.setTimeout(resizeAllLakeCanvases, 140);
+    });
 
     if (window.visualViewport) {
         window.visualViewport.addEventListener(
             "resize",
-            resizeWaterfallCanvas
+            resizeAllLakeCanvases
         );
     }
 
-    resizeWaterfallCanvas();
+    if (lakeScreen && "ResizeObserver" in window) {
+        const lakeResizeObserver = new ResizeObserver(() => {
+            resizeLakeCanvasToScreen();
+        });
+
+        lakeResizeObserver.observe(lakeScreen);
+    }
+
+    resizeAllLakeCanvases();
+
+    window.requestAnimationFrame(() => {
+        resizeLakeCanvasToScreen();
+        window.requestAnimationFrame(resizeLakeCanvasToScreen);
+    });
+
     setStatus("The lake is listening...");
     window.requestAnimationFrame(drawFrame);
 })();
 
 
 // ====================================
-// SOCIALS WINDOW FRONT-LAYER OVERRIDE
+// MEMORIES.EXE — INFINITE 3D ARCHIVE
 // ====================================
 
 (() => {
-    const socialsIcon = document.querySelector(
-        '.icon[data-window="socials"]'
-    );
-    const socialsWindow = document.getElementById(
-        "socials-window"
-    );
-
-    if (!socialsIcon || !socialsWindow) {
-        return;
-    }
-
-    const forceSocialsWindowToFront = () => {
-        if (socialsWindow.classList.contains("hidden")) {
-            openWindow(socialsWindow);
-        }
-
-        bringToFront(socialsWindow);
-        markWindowAsActive(socialsWindow);
-    };
-
-    socialsIcon.addEventListener("click", () => {
-        forceSocialsWindowToFront();
-
-        /*
-         * Run again after the other desktop/window handlers finish so the
-         * Socials window always wins the stacking order for this click.
-         */
-        requestAnimationFrame(() => {
-            forceSocialsWindowToFront();
-            requestAnimationFrame(forceSocialsWindowToFront);
-        });
-
-        window.setTimeout(forceSocialsWindowToFront, 60);
-    });
-})();
-
-// ====================================
-// INTERACTIVE PORTFOLIO UNIVERSE
-// ====================================
-
-(() => {
-    const universeWindow =
-        document.getElementById("universe-window");
+    const memoriesWindow =
+        document.getElementById("memories-window");
 
     const stage =
-        document.getElementById("universe-stage");
+        document.getElementById("memories-stage");
 
     const world =
-        document.getElementById("universe-world");
+        document.getElementById("memories-world");
 
-    if (!universeWindow || !stage || !world) {
+    if (!memoriesWindow || !stage || !world) {
         return;
     }
 
-    const projects = Array.from(
-        world.querySelectorAll(".universe-project")
-    );
+    /*
+     * Add future files to assets/photos/memories/ and list them here.
+     * Images and videos are detected automatically from their extensions.
+     * Video previews autoplay silently and repeat only their first 3 seconds.
+     */
+    const memoriesMedia = [
+        { src: "assets/photos/memories/1.webp", title: "Memory 01" },
+        { src: "assets/photos/memories/2.webp", title: "Memory 02" },
+        { src: "assets/photos/memories/3.webp", title: "Memory 03" },
+        { src: "assets/photos/memories/4.webp", title: "Memory 04" },
+        { src: "assets/photos/memories/5.webp", title: "Memory 05" },
+        { src: "assets/photos/memories/6.webp", title: "Memory 06" },
+        { src: "assets/photos/memories/7.webp", title: "Memory 07" },
+        { src: "assets/photos/memories/8.webp", title: "Memory 08" }
+    ];
 
-    const layoutButtons = Array.from(
-        universeWindow.querySelectorAll("[data-universe-layout]")
-    );
+    /*
+     * A denser staggered arrangement: compact enough to read as one archive,
+     * while retaining separate rows, columns, and depth layers.
+     */
+    const spatialPositions = [
+        { x: -620, y: -360, z: 620, width: 300, rotation: -5, opacity: 0.50 },
+        { x: -210, y: -500, z: -720, width: 230, rotation: 4, opacity: 0.32 },
+        { x: 260, y: -340, z: 180, width: 320, rotation: -3, opacity: 0.46 },
+        { x: 640, y: -50, z: -980, width: 225, rotation: 5, opacity: 0.27 },
+        { x: -650, y: 80, z: -240, width: 265, rotation: 3, opacity: 0.39 },
+        { x: -300, y: 400, z: 760, width: 310, rotation: -4, opacity: 0.54 },
+        { x: 160, y: 320, z: -790, width: 215, rotation: 2, opacity: 0.29 },
+        { x: 590, y: 440, z: 340, width: 285, rotation: -5, opacity: 0.47 }
+    ];
 
-    const zoomInButton =
-        document.getElementById("universe-zoom-in");
+    const videoExtensions = new Set([
+        "mp4",
+        "webm",
+        "mov",
+        "m4v",
+        "ogg",
+        "ogv"
+    ]);
 
-    const zoomOutButton =
-        document.getElementById("universe-zoom-out");
+    /* Reset and every new opening use the preferred far distance. */
+    const FAR_OPENING_DEPTH = -1360;
 
-    const resetButton =
-        document.getElementById("universe-reset");
+    /*
+     * Each card wraps from the front of the camera to the far background.
+     * This produces a seamless, endlessly repeating archive in both travel
+     * directions without changing any card's X/Y arrangement.
+     */
+    const LOOP_MIN_RELATIVE_Z = -2600;
+    const LOOP_MAX_RELATIVE_Z = 790;
+    const LOOP_DEPTH =
+        LOOP_MAX_RELATIVE_Z - LOOP_MIN_RELATIVE_Z;
+
+    const PAN_SENSITIVITY = 2;
+    const POINTER_PAN_X = 150;
+    const POINTER_PAN_Y = 115;
+    const POINTER_TRAVEL_SENSITIVITY = 2.8;
+    const MOBILE_WHEEL_TRAVEL_SENSITIVITY = 1.35;
+    const DESKTOP_WHEEL_TRAVEL_SENSITIVITY = 2.35;
+    const TRACKPAD_PAN_SENSITIVITY = 1.15;
+    const RIGHT_DRAG_TRAVEL_SENSITIVITY = 4.2;
+
+    const DRAG_FOLLOW = 20;
+    const RELEASE_FOLLOW = 9;
+    const DEPTH_FOLLOW = 8.5;
+    const LOOK_FOLLOW = 7.5;
+    const POINTER_FOLLOW = 10;
+    const RELEASE_GLIDE = 105;
+
+    const MAX_LOOK_PITCH = 10;
+    const MAX_LOOK_YAW = 14;
 
     const view = {
         x: 0,
         y: 0,
-        scale: 0.78
+        z: FAR_OPENING_DEPTH,
+        pitch: 0,
+        yaw: 0,
+        pointerX: 0,
+        pointerY: 0
     };
+
+    const targetView = { ...view };
 
     const drag = {
         active: false,
+        mode: "pan",
         pointerId: null,
         startPointerX: 0,
         startPointerY: 0,
         startViewX: 0,
-        startViewY: 0
+        startViewY: 0,
+        startViewZ: 0,
+        lastPointerX: 0,
+        lastPointerY: 0,
+        lastMoveTime: 0,
+        velocityX: 0,
+        velocityY: 0
     };
 
-    let currentLayout = "spatial";
+    const memoryVideos = [];
+    const memoryNodes = [];
 
-    function defaultScale() {
-        return window.matchMedia("(max-width: 700px)").matches
-            ? 0.54
-            : 0.78;
+    let viewAnimationFrame = null;
+    let previousFrameTime = performance.now();
+    let lastFreePointerY = null;
+
+    function clamp(value, minimum, maximum) {
+        return Math.min(maximum, Math.max(minimum, value));
     }
 
-    function clampScale(value) {
-        return Math.min(2.1, Math.max(0.32, value));
+    function positiveModulo(value, divisor) {
+        return ((value % divisor) + divisor) % divisor;
     }
 
-    function renderUniverse() {
-        world.style.transform =
-            `translate3d(${view.x}px, ${view.y}px, 0) scale(${view.scale})`;
+    function damp(current, target, followSpeed, elapsedSeconds) {
+        const amount = 1 - Math.exp(-followSpeed * elapsedSeconds);
+        return current + (target - current) * amount;
     }
 
-    function applySpatialLayout() {
-        currentLayout = "spatial";
-        stage.classList.remove("universe-grid-layout");
-
-        projects.forEach(project => {
-            const x = Number(project.dataset.x || 0);
-            const y = Number(project.dataset.y || 0);
-            const rotation = Number(project.dataset.rotation || 0);
-            const width = Number(project.dataset.width || 210);
-
-            project.style.left = `${x}px`;
-            project.style.top = `${y}px`;
-            project.style.width = `${width}px`;
-            project.style.transform =
-                `translate(-50%, -50%) rotate(${rotation}deg)`;
-        });
-    }
-
-    function applyGridLayout() {
-        currentLayout = "grid";
-        stage.classList.add("universe-grid-layout");
-
-        const mobile =
-            window.matchMedia("(max-width: 700px)").matches;
-
-        const columns = mobile ? 2 : 4;
-        const horizontalGap = mobile ? 150 : 245;
-        const verticalGap = mobile ? 190 : 245;
-        const cardWidth = mobile ? 132 : 190;
-        const rowCount = Math.ceil(projects.length / columns);
-
-        projects.forEach((project, index) => {
-            const column = index % columns;
-            const row = Math.floor(index / columns);
-
-            const x =
-                (column - (columns - 1) / 2) * horizontalGap;
-
-            const y =
-                (row - (rowCount - 1) / 2) * verticalGap;
-
-            project.style.left = `${x}px`;
-            project.style.top = `${y}px`;
-            project.style.width = `${cardWidth}px`;
-            project.style.transform =
-                "translate(-50%, -50%) rotate(0deg)";
-        });
-    }
-
-    function setActiveLayoutButton(layoutName) {
-        layoutButtons.forEach(button => {
-            button.classList.toggle(
-                "is-active",
-                button.dataset.universeLayout === layoutName
-            );
-        });
-    }
-
-    function resetUniverseView() {
-        view.x = 0;
-        view.y = 0;
-        view.scale = defaultScale();
-        renderUniverse();
-    }
-
-    function zoomAroundPoint(nextScale, clientX, clientY) {
-        const rectangle = stage.getBoundingClientRect();
-
-        const pointerX =
-            clientX - rectangle.left - rectangle.width / 2;
-
-        const pointerY =
-            clientY - rectangle.top - rectangle.height / 2;
-
-        const worldX =
-            (pointerX - view.x) / view.scale;
-
-        const worldY =
-            (pointerY - view.y) / view.scale;
-
-        view.scale = clampScale(nextScale);
-
-        view.x =
-            pointerX - worldX * view.scale;
-
-        view.y =
-            pointerY - worldY * view.scale;
-
-        renderUniverse();
-    }
-
-    function zoomFromCenter(multiplier) {
-        const rectangle = stage.getBoundingClientRect();
-
-        zoomAroundPoint(
-            view.scale * multiplier,
-            rectangle.left + rectangle.width / 2,
-            rectangle.top + rectangle.height / 2
+    function smoothstep(minimum, maximum, value) {
+        const normalized = clamp(
+            (value - minimum) / (maximum - minimum),
+            0,
+            1
         );
+
+        return normalized * normalized * (3 - 2 * normalized);
+    }
+
+    function wrappedRelativeDepth(baseZ, cameraZ) {
+        return positiveModulo(
+            baseZ + cameraZ - LOOP_MIN_RELATIVE_Z,
+            LOOP_DEPTH
+        ) + LOOP_MIN_RELATIVE_Z;
+    }
+
+    function normalizeLongTravel() {
+        const limit = LOOP_DEPTH * 1000;
+
+        if (Math.abs(targetView.z) < limit) {
+            return;
+        }
+
+        const cycles = Math.trunc(targetView.z / LOOP_DEPTH);
+        const shift = cycles * LOOP_DEPTH;
+
+        targetView.z -= shift;
+        view.z -= shift;
+    }
+
+    function updateWrappedCards() {
+        memoryNodes.forEach(node => {
+            const relativeZ = wrappedRelativeDepth(
+                node.memoryBaseZ,
+                view.z
+            );
+
+            const actualZ = relativeZ - view.z;
+            const closeness = clamp(
+                1 - Math.abs(relativeZ) / 2500,
+                0,
+                1
+            );
+
+            const backBoundaryFade = smoothstep(
+                LOOP_MIN_RELATIVE_Z,
+                LOOP_MIN_RELATIVE_Z + 520,
+                relativeZ
+            );
+
+            const frontBoundaryFade = 1 - smoothstep(
+                LOOP_MAX_RELATIVE_Z - 250,
+                LOOP_MAX_RELATIVE_Z,
+                relativeZ
+            );
+
+            const boundaryFade = Math.min(
+                backBoundaryFade,
+                frontBoundaryFade
+            );
+
+            const opacity = clamp(
+                node.memoryOpacity *
+                (0.50 + closeness * 1.18) *
+                boundaryFade,
+                0,
+                0.92
+            );
+
+            const blur = clamp(
+                (Math.abs(relativeZ) - 920) / 720,
+                0,
+                2.25
+            );
+
+            node.style.setProperty(
+                "--memory-z",
+                `${actualZ.toFixed(2)}px`
+            );
+
+            node.style.setProperty(
+                "--memory-base-opacity",
+                opacity.toFixed(3)
+            );
+
+            node.style.setProperty(
+                "--memory-depth-blur",
+                `${blur.toFixed(2)}px`
+            );
+
+            node.style.zIndex = String(
+                Math.round(clamp(relativeZ + 3000, 1, 5000))
+            );
+
+            node.style.pointerEvents =
+                boundaryFade > 0.08 ? "auto" : "none";
+        });
+    }
+
+    function renderView() {
+        updateWrappedCards();
+
+        const renderedX = view.x + view.pointerX;
+        const renderedY = view.y + view.pointerY;
+
+        world.style.transform =
+            `translate3d(${renderedX}px, ${renderedY}px, ${view.z}px) ` +
+            `rotateX(${view.pitch}deg) rotateY(${view.yaw}deg)`;
+
+        stage.style.setProperty(
+            "--memories-pointer-x",
+            `${renderedX * 0.018 + view.yaw * 1.35}px`
+        );
+
+        stage.style.setProperty(
+            "--memories-pointer-y",
+            `${renderedY * 0.018 - view.pitch * 1.35}px`
+        );
+
+        stage.style.setProperty(
+            "--memories-depth-shift",
+            `${positiveModulo(view.z, LOOP_DEPTH) * 0.025}px`
+        );
+    }
+
+    function animateView(currentTime) {
+        viewAnimationFrame = null;
+
+        const elapsedSeconds = clamp(
+            (currentTime - previousFrameTime) / 1000,
+            0.001,
+            0.05
+        );
+
+        previousFrameTime = currentTime;
+
+        const panFollow = drag.active
+            ? DRAG_FOLLOW
+            : RELEASE_FOLLOW;
+
+        view.x = damp(view.x, targetView.x, panFollow, elapsedSeconds);
+        view.y = damp(view.y, targetView.y, panFollow, elapsedSeconds);
+        view.z = damp(view.z, targetView.z, DEPTH_FOLLOW, elapsedSeconds);
+        view.pitch = damp(
+            view.pitch,
+            targetView.pitch,
+            LOOK_FOLLOW,
+            elapsedSeconds
+        );
+        view.yaw = damp(
+            view.yaw,
+            targetView.yaw,
+            LOOK_FOLLOW,
+            elapsedSeconds
+        );
+        view.pointerX = damp(
+            view.pointerX,
+            targetView.pointerX,
+            POINTER_FOLLOW,
+            elapsedSeconds
+        );
+        view.pointerY = damp(
+            view.pointerY,
+            targetView.pointerY,
+            POINTER_FOLLOW,
+            elapsedSeconds
+        );
+
+        const settled =
+            Math.abs(targetView.x - view.x) < 0.05 &&
+            Math.abs(targetView.y - view.y) < 0.05 &&
+            Math.abs(targetView.z - view.z) < 0.05 &&
+            Math.abs(targetView.pitch - view.pitch) < 0.01 &&
+            Math.abs(targetView.yaw - view.yaw) < 0.01 &&
+            Math.abs(targetView.pointerX - view.pointerX) < 0.05 &&
+            Math.abs(targetView.pointerY - view.pointerY) < 0.05;
+
+        if (settled) {
+            Object.assign(view, targetView);
+            normalizeLongTravel();
+        }
+
+        renderView();
+
+        if (!settled) {
+            viewAnimationFrame =
+                window.requestAnimationFrame(animateView);
+        }
+    }
+
+    function requestViewAnimation() {
+        if (viewAnimationFrame !== null) return;
+
+        previousFrameTime = performance.now();
+        viewAnimationFrame =
+            window.requestAnimationFrame(animateView);
+    }
+
+    function setViewImmediately(nextView) {
+        Object.assign(targetView, nextView);
+        Object.assign(view, targetView);
+
+        if (viewAnimationFrame !== null) {
+            window.cancelAnimationFrame(viewAnimationFrame);
+            viewAnimationFrame = null;
+        }
+
+        renderView();
+    }
+
+    function resetView(immediate = false) {
+        const resetState = {
+            x: 0,
+            y: 0,
+            z: FAR_OPENING_DEPTH,
+            pitch: 0,
+            yaw: 0,
+            pointerX: 0,
+            pointerY: 0
+        };
+
+        if (immediate) {
+            setViewImmediately(resetState);
+            return;
+        }
+
+        Object.assign(targetView, resetState);
+        requestViewAnimation();
+    }
+
+    function travelBy(distance) {
+        targetView.z += distance;
+        normalizeLongTravel();
+        requestViewAnimation();
+    }
+
+    function fileExtension(source = "") {
+        const cleanSource = source.split("?")[0].split("#")[0];
+        const finalPart = cleanSource.split(".").pop();
+        return finalPart ? finalPart.toLowerCase() : "";
+    }
+
+    function isVideoMemory(item) {
+        return item.type === "video" ||
+            videoExtensions.has(fileExtension(item.src));
+    }
+
+    function positionForIndex(index) {
+        if (spatialPositions[index]) {
+            return spatialPositions[index];
+        }
+
+        const extraIndex = index - spatialPositions.length;
+        const angle = extraIndex * 2.399963229728653;
+        const radius = 1250 + Math.sqrt(extraIndex + 1) * 260;
+        const zLayer = (extraIndex % 7) - 3;
+
+        return {
+            x: Math.cos(angle) * radius,
+            y: Math.sin(angle) * radius * 0.74,
+            z: zLayer * 310,
+            width: 220 + (index % 4) * 28,
+            rotation: ((index * 7) % 15) - 7,
+            opacity: 0.30 + (index % 4) * 0.055
+        };
+    }
+
+    function setFrameAspect(frame, width, height) {
+        if (width > 0 && height > 0) {
+            frame.style.aspectRatio = `${width} / ${height}`;
+        }
+    }
+
+    function markMediaMissing(frame) {
+        frame.classList.add("is-missing");
+        frame.replaceChildren();
+    }
+
+    function restartThreeSecondLoop(video) {
+        const loopEnd = Number.isFinite(video.duration)
+            ? Math.min(3, video.duration)
+            : 3;
+
+        if (
+            loopEnd > 0 &&
+            video.currentTime >= loopEnd - 0.035
+        ) {
+            video.currentTime = 0;
+
+            const playAttempt = video.play();
+            if (playAttempt && typeof playAttempt.catch === "function") {
+                playAttempt.catch(() => {});
+            }
+        }
+    }
+
+    function safelyPlayMemoryVideo(video) {
+        if (
+            memoriesWindow.classList.contains("hidden") ||
+            document.hidden
+        ) {
+            return;
+        }
+
+        video.muted = true;
+        video.defaultMuted = true;
+
+        const playAttempt = video.play();
+        if (playAttempt && typeof playAttempt.catch === "function") {
+            playAttempt.catch(() => {});
+        }
+    }
+
+    function createVideo(frame, item) {
+        const video = document.createElement("video");
+
+        video.className = "memory-media memory-video";
+        video.src = item.src;
+        video.muted = true;
+        video.defaultMuted = true;
+        video.autoplay = true;
+        video.playsInline = true;
+        video.preload = "metadata";
+        video.setAttribute("muted", "");
+        video.setAttribute("autoplay", "");
+        video.setAttribute("playsinline", "");
+        video.setAttribute("aria-label", item.title || "Memory video preview");
+
+        if (item.poster) {
+            video.poster = item.poster;
+        }
+
+        video.addEventListener("loadedmetadata", () => {
+            setFrameAspect(frame, video.videoWidth, video.videoHeight);
+        });
+
+        video.addEventListener("loadeddata", () => {
+            video.currentTime = 0;
+            safelyPlayMemoryVideo(video);
+        });
+
+        video.addEventListener("timeupdate", () => {
+            restartThreeSecondLoop(video);
+        });
+
+        video.addEventListener("ended", () => {
+            video.currentTime = 0;
+            safelyPlayMemoryVideo(video);
+        });
+
+        video.addEventListener("error", () => {
+            markMediaMissing(frame);
+        });
+
+        frame.appendChild(video);
+        memoryVideos.push(video);
+        return video;
+    }
+
+    function createImage(frame, item) {
+        const image = document.createElement("img");
+
+        image.className = "memory-media memory-image";
+        image.src = item.src;
+        image.alt = item.alt || item.title || "Memory image";
+        image.loading = "lazy";
+        image.decoding = "async";
+        image.draggable = false;
+
+        image.addEventListener("load", () => {
+            setFrameAspect(frame, image.naturalWidth, image.naturalHeight);
+        });
+
+        image.addEventListener("error", () => {
+            markMediaMissing(frame);
+        });
+
+        frame.appendChild(image);
+        return image;
+    }
+
+    function createMemoryCard(item, index) {
+        const position = positionForIndex(index);
+        const node = document.createElement("article");
+        const fixedShell = document.createElement("div");
+        const card = document.createElement("button");
+        const frame = document.createElement("span");
+
+        const memoryX = item.x ?? position.x;
+        const memoryY = item.y ?? position.y;
+        const memoryZ = item.z ?? position.z;
+        const memoryOpacity = item.opacity ?? position.opacity;
+
+        node.className = "memory-node";
+        node.style.width = `${item.width || position.width}px`;
+        node.style.setProperty("--memory-x", `${memoryX}px`);
+        node.style.setProperty("--memory-y", `${memoryY}px`);
+        node.style.setProperty("--memory-z", `${memoryZ}px`);
+        node.style.setProperty(
+            "--memory-rotation",
+            `${item.rotation ?? position.rotation}deg`
+        );
+
+        node.memoryBaseZ = memoryZ;
+        node.memoryOpacity = memoryOpacity;
+
+        fixedShell.className = "memory-float-shell";
+
+        card.className = "memory-tooltip";
+        card.type = "button";
+        card.setAttribute(
+            "aria-label",
+            `Open ${item.title || `Memory ${index + 1}`}`
+        );
+
+        frame.className = "memory-preview";
+
+        let mediaElement = null;
+
+        if (!item.src) {
+            frame.classList.add("is-placeholder");
+        } else if (isVideoMemory(item)) {
+            node.classList.add("contains-video");
+            mediaElement = createVideo(frame, item);
+        } else {
+            mediaElement = createImage(frame, item);
+        }
+
+        card.appendChild(frame);
+        fixedShell.appendChild(card);
+        node.appendChild(fixedShell);
+
+        card.addEventListener("click", event => {
+            event.stopPropagation();
+
+            if (!item.src || frame.classList.contains("is-missing")) {
+                return;
+            }
+
+            window.openMemoryInPhotoViewer?.(item, mediaElement);
+        });
+
+        world.appendChild(node);
+        memoryNodes.push(node);
+    }
+
+    memoriesMedia.forEach(createMemoryCard);
+
+    function normalizedWheelDelta(event, value) {
+        if (event.deltaMode === WheelEvent.DOM_DELTA_LINE) {
+            return value * 16;
+        }
+
+        if (event.deltaMode === WheelEvent.DOM_DELTA_PAGE) {
+            return value * stage.clientHeight;
+        }
+
+        return value;
     }
 
     stage.addEventListener(
@@ -4795,20 +6832,73 @@ window.addEventListener("DOMContentLoaded", () => {
         event => {
             event.preventDefault();
 
-            zoomAroundPoint(
-                view.scale * (event.deltaY < 0 ? 1.1 : 0.9),
-                event.clientX,
-                event.clientY
+            const verticalDelta = clamp(
+                normalizedWheelDelta(event, event.deltaY),
+                -190,
+                190
             );
+
+            const horizontalDelta = clamp(
+                normalizedWheelDelta(event, event.deltaX),
+                -150,
+                150
+            );
+
+            /*
+             * Wheel forward/up has a negative delta and moves forward/nearer.
+             * Wheel backward/down moves backward/farther. Horizontal trackpad
+             * movement pans through the field at the same time.
+             */
+            const wheelTravelSensitivity =
+                window.matchMedia("(max-width: 700px)").matches
+                    ? MOBILE_WHEEL_TRAVEL_SENSITIVITY
+                    : DESKTOP_WHEEL_TRAVEL_SENSITIVITY;
+
+            travelBy(
+                -verticalDelta * wheelTravelSensitivity
+            );
+
+            targetView.x -=
+                horizontalDelta * TRACKPAD_PAN_SENSITIVITY;
+
+            requestViewAnimation();
         },
         { passive: false }
     );
 
+    function updatePointerLook(event) {
+        const rectangle = stage.getBoundingClientRect();
+
+        if (!rectangle.width || !rectangle.height) {
+            return;
+        }
+
+        const normalizedX = clamp(
+            (event.clientX - rectangle.left) / rectangle.width - 0.5,
+            -0.5,
+            0.5
+        );
+
+        const normalizedY = clamp(
+            (event.clientY - rectangle.top) / rectangle.height - 0.5,
+            -0.5,
+            0.5
+        );
+
+        /* Cursor movement pans and looks in the same direction. */
+        targetView.pointerX = normalizedX * POINTER_PAN_X * 2;
+        targetView.pointerY = normalizedY * POINTER_PAN_Y * 2;
+        targetView.yaw = normalizedX * MAX_LOOK_YAW * 2;
+        targetView.pitch = -normalizedY * MAX_LOOK_PITCH * 2;
+
+        requestViewAnimation();
+    }
+
     stage.addEventListener("pointerdown", event => {
         if (
-            event.button !== 0 ||
-            event.target.closest(".universe-project") ||
-            event.target.closest(".universe-controls")
+            (event.button !== 0 && event.button !== 2) ||
+            event.target.closest(".memory-tooltip") ||
+            event.target.closest(".memories-control")
         ) {
             return;
         }
@@ -4816,151 +6906,234 @@ window.addEventListener("DOMContentLoaded", () => {
         event.preventDefault();
 
         drag.active = true;
+        drag.mode = event.button === 2 ? "travel" : "pan";
         drag.pointerId = event.pointerId;
         drag.startPointerX = event.clientX;
         drag.startPointerY = event.clientY;
-        drag.startViewX = view.x;
-        drag.startViewY = view.y;
+        drag.startViewX = targetView.x;
+        drag.startViewY = targetView.y;
+        drag.startViewZ = targetView.z;
+        drag.lastPointerX = event.clientX;
+        drag.lastPointerY = event.clientY;
+        drag.lastMoveTime = performance.now();
+        drag.velocityX = 0;
+        drag.velocityY = 0;
 
         stage.classList.add("is-panning");
+        stage.classList.toggle("is-travelling", drag.mode === "travel");
         stage.setPointerCapture(event.pointerId);
     });
 
     stage.addEventListener("pointermove", event => {
-        if (
-            !drag.active ||
-            event.pointerId !== drag.pointerId
-        ) {
+        updatePointerLook(event);
+
+        /*
+         * Free cursor movement now controls depth as well as pan/look.
+         * Moving the cursor upward travels forward/nearer through the
+         * archive; moving it downward travels backward/farther. This is
+         * deliberately disabled while dragging so the existing left/right
+         * drag controls keep their original behavior.
+         */
+        if (!drag.active) {
+            if (lastFreePointerY !== null) {
+                const freeMoveY = clamp(
+                    event.clientY - lastFreePointerY,
+                    -42,
+                    42
+                );
+
+                if (Math.abs(freeMoveY) > 0.1) {
+                    travelBy(
+                        -freeMoveY * POINTER_TRAVEL_SENSITIVITY
+                    );
+                }
+            }
+
+            lastFreePointerY = event.clientY;
             return;
         }
 
-        view.x =
-            drag.startViewX + event.clientX - drag.startPointerX;
+        lastFreePointerY = event.clientY;
 
-        view.y =
-            drag.startViewY + event.clientY - drag.startPointerY;
+        if (event.pointerId !== drag.pointerId) {
+            return;
+        }
 
-        renderUniverse();
+        const now = performance.now();
+        const elapsed = Math.max(8, now - drag.lastMoveTime);
+        const moveX = event.clientX - drag.lastPointerX;
+        const moveY = event.clientY - drag.lastPointerY;
+
+        drag.velocityX =
+            drag.velocityX * 0.78 + (moveX / elapsed) * 0.22;
+        drag.velocityY =
+            drag.velocityY * 0.78 + (moveY / elapsed) * 0.22;
+
+        drag.lastPointerX = event.clientX;
+        drag.lastPointerY = event.clientY;
+        drag.lastMoveTime = now;
+
+        const totalX = event.clientX - drag.startPointerX;
+        const totalY = event.clientY - drag.startPointerY;
+
+        if (drag.mode === "travel") {
+            /* Right-drag sideways pans; right-drag vertically zooms/travels. */
+            targetView.x =
+                drag.startViewX + totalX * PAN_SENSITIVITY;
+
+            targetView.z =
+                drag.startViewZ -
+                totalY * RIGHT_DRAG_TRAVEL_SENSITIVITY;
+        } else {
+            /* Left-drag gives unrestricted pan in every screen direction. */
+            targetView.x =
+                drag.startViewX + totalX * PAN_SENSITIVITY;
+
+            targetView.y =
+                drag.startViewY + totalY * PAN_SENSITIVITY;
+        }
+
+        requestViewAnimation();
     });
 
-    function finishUniversePan(event) {
+    function finishPan(event) {
         if (
             !drag.active ||
             event.pointerId !== drag.pointerId
         ) {
             return;
         }
+
+        const finishedMode = drag.mode;
 
         drag.active = false;
         drag.pointerId = null;
-        stage.classList.remove("is-panning");
+        stage.classList.remove("is-panning", "is-travelling");
+
+        if (finishedMode === "pan") {
+            targetView.x +=
+                drag.velocityX * RELEASE_GLIDE * PAN_SENSITIVITY;
+
+            targetView.y +=
+                drag.velocityY * RELEASE_GLIDE * PAN_SENSITIVITY;
+        } else {
+            targetView.x +=
+                drag.velocityX * RELEASE_GLIDE * PAN_SENSITIVITY;
+
+            targetView.z -=
+                drag.velocityY * RELEASE_GLIDE *
+                RIGHT_DRAG_TRAVEL_SENSITIVITY;
+        }
+
+        normalizeLongTravel();
+        requestViewAnimation();
 
         if (stage.hasPointerCapture(event.pointerId)) {
             stage.releasePointerCapture(event.pointerId);
         }
     }
 
-    stage.addEventListener("pointerup", finishUniversePan);
-    stage.addEventListener("pointercancel", finishUniversePan);
+    stage.addEventListener("pointerup", finishPan);
+    stage.addEventListener("pointercancel", finishPan);
 
-    layoutButtons.forEach(button => {
-        button.addEventListener("click", () => {
-            const layout = button.dataset.universeLayout;
-
-            if (layout === "grid") {
-                applyGridLayout();
-            } else {
-                applySpatialLayout();
-            }
-
-            setActiveLayoutButton(layout);
-            resetUniverseView();
-        });
+    stage.addEventListener("contextmenu", event => {
+        event.preventDefault();
     });
 
-    zoomInButton.addEventListener("click", () => {
-        zoomFromCenter(1.2);
-    });
+    stage.addEventListener("pointerleave", () => {
+        if (drag.active) return;
 
-    zoomOutButton.addEventListener("click", () => {
-        zoomFromCenter(0.82);
-    });
-
-    resetButton.addEventListener("click", () => {
-        if (currentLayout === "grid") {
-            applyGridLayout();
-        } else {
-            applySpatialLayout();
-        }
-
-        resetUniverseView();
-    });
-
-    projects.forEach(project => {
-        project.addEventListener("click", event => {
-            event.stopPropagation();
-
-            const targetId =
-                project.dataset.targetWindow;
-
-            const targetWindow =
-                document.getElementById(targetId);
-
-            if (!targetWindow) {
-                console.warn(
-                    "Universe target window was not found:",
-                    targetId
-                );
-                return;
-            }
-
-            openWindow(targetWindow);
-            bringToFront(targetWindow);
-            markWindowAsActive(targetWindow);
-        });
+        lastFreePointerY = null;
+        targetView.pointerX = 0;
+        targetView.pointerY = 0;
+        targetView.pitch = 0;
+        targetView.yaw = 0;
+        requestViewAnimation();
     });
 
     stage.addEventListener("keydown", event => {
-        const step = event.shiftKey ? 80 : 35;
+        const movement = event.shiftKey ? 180 : 80;
+        const travel = event.shiftKey ? 310 : 150;
 
         if (event.key === "+" || event.key === "=") {
             event.preventDefault();
-            zoomFromCenter(1.15);
+            travelBy(travel);
         } else if (event.key === "-" || event.key === "_") {
             event.preventDefault();
-            zoomFromCenter(0.87);
+            travelBy(-travel);
         } else if (event.key === "0") {
             event.preventDefault();
-            resetUniverseView();
+            resetView();
         } else if (event.key === "ArrowLeft") {
             event.preventDefault();
-            view.x += step;
-            renderUniverse();
+            targetView.x -= movement * PAN_SENSITIVITY;
+            requestViewAnimation();
         } else if (event.key === "ArrowRight") {
             event.preventDefault();
-            view.x -= step;
-            renderUniverse();
+            targetView.x += movement * PAN_SENSITIVITY;
+            requestViewAnimation();
         } else if (event.key === "ArrowUp") {
             event.preventDefault();
-            view.y += step;
-            renderUniverse();
+            targetView.y -= movement * PAN_SENSITIVITY;
+            requestViewAnimation();
         } else if (event.key === "ArrowDown") {
             event.preventDefault();
-            view.y -= step;
-            renderUniverse();
+            targetView.y += movement * PAN_SENSITIVITY;
+            requestViewAnimation();
         }
+    });
+
+    document
+        .getElementById("memories-reset")
+        ?.addEventListener("click", () => {
+            resetView();
+        });
+
+    function refreshMemoryPlayback() {
+        memoryVideos.forEach(video => {
+            if (
+                memoriesWindow.classList.contains("hidden") ||
+                document.hidden
+            ) {
+                video.pause();
+            } else {
+                safelyPlayMemoryVideo(video);
+            }
+        });
+    }
+
+    let wasWindowHidden =
+        memoriesWindow.classList.contains("hidden");
+
+    const windowVisibilityObserver = new MutationObserver(() => {
+        const isWindowHidden =
+            memoriesWindow.classList.contains("hidden");
+
+        if (wasWindowHidden && !isWindowHidden) {
+            resetView(true);
+        }
+
+        wasWindowHidden = isWindowHidden;
+        refreshMemoryPlayback();
+    });
+
+    windowVisibilityObserver.observe(memoriesWindow, {
+        attributes: true,
+        attributeFilter: ["class"]
+    });
+
+    document.addEventListener("visibilitychange", refreshMemoryPlayback);
+
+    ["pointerdown", "touchstart", "click"].forEach(eventName => {
+        document.addEventListener(eventName, refreshMemoryPlayback, {
+            once: true,
+            passive: true
+        });
     });
 
     window.addEventListener("resize", () => {
-        if (currentLayout === "grid") {
-            applyGridLayout();
-        }
-
-        view.scale = defaultScale();
-        renderUniverse();
+        renderView();
     });
 
-    applySpatialLayout();
-    resetUniverseView();
+    resetView(true);
 })();
-
