@@ -12,7 +12,7 @@
 
 <title>𝕭𝖎𝖇𝖎</title>
 
-<link rel="stylesheet" href="style.css?v=20260801-18">
+<link rel="stylesheet" href="style.css?v=20260807-clean4">
 
 </head>
 
@@ -52,7 +52,7 @@
             </section>
 
             <section class="bios-section">
-                <p>BIBI686MS V2.6 07312026</p>
+                <p>BIBI686MS V8.26 08062026</p>
                 <p>Build ID: MAGICAL-PORTAL-2026</p>
             </section>
 
@@ -71,6 +71,8 @@
                 <p class="bios-detection">Detecting IDE Secondary Master ... GRAPHIC ARTS</p>
                 <p class="bios-detection">Detecting IDE Secondary Slave&nbsp;&nbsp;... MUSIC</p>
                 <p class="bios-detection">Detecting Network Adapter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;... SOCIALS ONLINE</p>
+                <p class="bios-detection">Detecting Archive Controller&nbsp;&nbsp;&nbsp;&nbsp;... MEMORIES.EXE</p>
+                <p class="bios-detection">Detecting Simulation Device&nbsp;&nbsp;&nbsp;&nbsp;... MAGICAL LAKE</p>
             </section>
 
             <section class="bios-section bios-mobile-hide">
@@ -86,10 +88,20 @@
                 <p>Starting animated wallpaper .................... OK</p>
             </section>
 
+            <section class="bios-section bios-module-section bios-program-section">
+                <p>B:\BIBI\PROGRAMS&gt; registering desktop applications</p>
+                <p class="bios-status">Home / About Me.txt .......................... READY</p>
+                <p class="bios-status">Memories.exe / Photography ................... READY</p>
+                <p class="bios-status">Graphic Arts / Music ......................... READY</p>
+                <p class="bios-status">Socials / Contact ............................ ONLINE</p>
+                <p class="bios-status">Magical Lake / Recycle Bin ................... READY</p>
+            </section>
+
             <section class="bios-section bios-module-section">
                 <p>B:\BIBI\PHOTOGRAPHY&gt; scanning gallery archive</p>
                 <p class="bios-status">Disney 2010 .................................. READY</p>
                 <p class="bios-status">Miku 2010 .................................... READY</p>
+                <p class="bios-status">San Francisco 2012 ........................... READY</p>
                 <p class="bios-status bios-mobile-hide">Image preview system ......................... READY</p>
             </section>
 
@@ -119,6 +131,21 @@
                 <p>A MAGICAL PORTAL ............................... READY</p>
                 <p>Welcome, visitor.</p>
             </section>
+
+            <section
+    class="bios-section bios-ascii-section"
+    aria-label="Bibi computer ASCII art"
+>
+<p class="bios-ascii-line">            /＾&gt;》, -―‐‐＜＾}</p>
+<p class="bios-ascii-line">           ./:::::::/,≠´:::::;::::::::ヽ.</p>
+<p class="bios-ascii-line">          /:::::::〃::::::::::／}::::丿ハ</p>
+<p class="bios-ascii-line">         ./:::::::::i{l|:::::／ ﾉ／ }::::::}   .ᐟ.ᐟ</p>
+<p class="bios-ascii-line">        /:::::::::::瓜イ⸝⸝o  ´  O, ':::::ﾉ  &lt; woah im getting attention!!111!! )</p>
+<p class="bios-ascii-line">       ./:::::::::::::|ﾉﾍ.{､  ヮ_.ノﾉイ</p>
+<p class="bios-ascii-line">       |:::::::::::::::| ／,}｀ｽ/￣￣￣￣/</p>
+<p class="bios-ascii-line">       |::::::::::::::::|(_::::つ/             /</p>
+<p class="bios-ascii-line">                      ￣￣￣￣￣＼/＿＿＿＿/</p>
+</section>
 
         </div>
 
@@ -243,6 +270,11 @@
 <span>Magical Lake</span>
 </div>
 
+<div class="icon memories-desktop-icon" data-window="memories">
+<img src="assets/icons/memories.svg" alt="">
+<span>Memories.exe</span>
+</div>
+
 <div class="icon" data-window="trash">
 <img src="assets/icons/trash 2.ico">
 <span>Recycle Bin</span>
@@ -330,6 +362,10 @@
         📄 About Me
     </button>
 
+    <button class="start-item" data-window="memories">
+        ✦ Memories.exe
+    </button>
+
     <button class="start-item" data-window="contact">
         ✉ Contact
     </button>
@@ -390,15 +426,7 @@
 
     </div>
 
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">Edit</button>
-        <button type="button">View</button>
-        <button type="button">Tools</button>
-        <button type="button">Help</button>
-    </div>
-
-    <div class="window-body socials-body">
+<div class="window-body socials-body">
 
         <a class="social-icon"
            href="https://letterboxd.com/bibihn/"
@@ -462,15 +490,7 @@
 
         </div>
 
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">Edit</button>
-        <button type="button">View</button>
-        <button type="button">Tools</button>
-        <button type="button">Help</button>
-    </div>
-
-        <div class="window-body">
+<div class="window-body">
 
             <div class="photo-gallery">
 
@@ -491,6 +511,33 @@
          alt="Miku 2010 project">
         <span>
             Miku 2010
+        </span>
+
+    </div>
+
+    <div class="photo-folder" data-gallery="san francisco 2012">
+
+        <img
+            data-numbered-thumbnail
+            data-photo-folder="assets/photos/San Francisco 2012"
+            data-photo-number="1"
+            alt="San Francisco 2012 project"
+        >
+        <span>
+            San Francisco 2012
+        </span>
+
+    </div>
+
+    <div class="photo-folder" data-gallery="in my room 2017">
+
+        <img
+            src="assets/photos/In My Room 2017/1.webp"
+            alt="In My Room 2017 project"
+            loading="lazy"
+        >
+        <span>
+            In My Room 2017
         </span>
 
     </div>
@@ -519,15 +566,7 @@
 
     </div>
 
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">Edit</button>
-        <button type="button">View</button>
-        <button type="button">Tools</button>
-        <button type="button">Help</button>
-    </div>
-
-    <div class="window-body">
+<div class="window-body">
 
         <div class="project-gallery">
 
@@ -614,15 +653,7 @@
 
     </div>
 
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">Edit</button>
-        <button type="button">View</button>
-        <button type="button">Tools</button>
-        <button type="button">Help</button>
-    </div>
-
-    <div class="window-body">
+<div class="window-body">
 
         <div class="project-gallery">
 
@@ -674,9 +705,187 @@
 
 </div>
 
+<!-- ================= SAN FRANCISCO 2012 GALLERY ================= -->
+
+<div
+    class="window hidden photo-project-window"
+    id="san-francisco-window"
+    data-window-id="san francisco 2012"
+>
+
+    <div class="title-bar">
+
+        <span>San Francisco 2012</span>
+
+        <div class="window-controls">
+            <button class="minimize"></button>
+            <button class="maximize"></button>
+            <button class="close"></button>
         </div>
 
     </div>
+
+<div class="window-body">
+
+        <!--
+            The script checks numbered files from 1 through 30.
+            Missing numbers are skipped automatically. Change 30 if needed.
+        -->
+        <div class="project-gallery san-francisco-gallery">
+
+    <!-- Row 1: one photograph -->
+    <div class="gallery-row one">
+        <img
+            src="assets/photos/San Francisco 2012/1.jpg"
+            alt="San Francisco 2012 01"
+            loading="lazy"
+        >
+    </div>
+
+    <!-- Row 2: two photographs -->
+    <div class="gallery-row two">
+        <img
+            src="assets/photos/San Francisco 2012/2.jpg"
+            alt="San Francisco 2012 02"
+            loading="lazy"
+        >
+
+        <img
+            src="assets/photos/San Francisco 2012/3.jpg"
+            alt="San Francisco 2012 03"
+            loading="lazy"
+        >
+    </div>
+
+    <!-- Row 3: one photograph -->
+    <div class="gallery-row one">
+        <img
+            src="assets/photos/San Francisco 2012/4.jpg"
+            alt="San Francisco 2012 04"
+            loading="lazy"
+        >
+    </div>
+
+    <!-- Row 4: one photograph -->
+    <div class="gallery-row one">
+        <img
+            src="assets/photos/San Francisco 2012/5.jpg"
+            alt="San Francisco 2012 05"
+            loading="lazy"
+        >
+    </div>
+
+    <!-- Row 5: two photographs -->
+    <div class="gallery-row two">
+        <img
+            src="assets/photos/San Francisco 2012/6.jpg"
+            alt="San Francisco 2012 06"
+            loading="lazy"
+        >
+
+        <img
+            src="assets/photos/San Francisco 2012/7.jpg"
+            alt="San Francisco 2012 07"
+            loading="lazy"
+        >
+    </div>
+
+    <!-- Row 6: one photograph -->
+    <div class="gallery-row one">
+        <img
+            src="assets/photos/San Francisco 2012/8.jpg"
+            alt="San Francisco 2012 08"
+            loading="lazy"
+        >
+    </div>
+
+</div>
+
+    </div>
+
+</div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ================= IN MY ROOM 2017 GALLERY ================= -->
+
+<div
+    class="window hidden photo-project-window"
+    id="in-my-room-window"
+    data-window-id="in my room 2017"
+>
+
+    <div class="title-bar">
+
+        <span>In My Room 2017</span>
+
+        <div class="window-controls">
+            <button class="minimize" aria-label="Minimize"></button>
+            <button class="maximize" aria-label="Maximize"></button>
+            <button class="close" aria-label="Close"></button>
+        </div>
+
+    </div>
+
+<div class="window-body">
+
+        <div class="project-gallery in-my-room-gallery">
+
+            <!-- Row 1: one photograph -->
+            <div class="gallery-row one">
+                <img
+                    src="assets/photos/In My Room 2017/1.webp"
+                    alt="2017 In My Room 01"
+                    loading="lazy"
+                    decoding="async"
+                >
+            </div>
+
+            <!-- Row 2: two photographs -->
+            <div class="gallery-row two">
+                <img
+                    src="assets/photos/In My Room 2017/2.webp"
+                    alt="2017 In My Room 02"
+                    loading="lazy"
+                    decoding="async"
+                >
+
+                <img
+                    src="assets/photos/In My Room 2017/3.webp"
+                    alt="2017 In My Room 03"
+                    loading="lazy"
+                    decoding="async"
+                >
+            </div>
+
+            <!-- Row 3: one photograph -->
+            <div class="gallery-row one">
+                <img
+                    src="assets/photos/In My Room 2017/4.webp"
+                    alt="2017 In My Room 04"
+                    loading="lazy"
+                    decoding="async"
+                >
+            </div>
+
+            <!-- Row 4: one photograph -->
+            <div class="gallery-row one">
+                <img
+                    src="assets/photos/In My Room 2017/5.webp"
+                    alt="2017 In My Room 05"
+                    loading="lazy"
+                    decoding="async"
+                >
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
 
 <!-- ================= IMAGE PREVIEW ================= -->
@@ -699,21 +908,23 @@
 
     </div>
 
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">Edit</button>
-        <button type="button">View</button>
-        <button type="button">Image</button>
-        <button type="button">Help</button>
-    </div>
-
-    <div class="window-body image-preview-body">
+<div class="window-body image-preview-body">
 
     <div class="preview-image-area">
         <img
             id="preview-image"
             alt="Selected gallery photo"
         >
+
+        <video
+            id="preview-video"
+            class="hidden"
+            controls
+            muted
+            playsinline
+            preload="metadata"
+            aria-label="Selected memory video"
+        ></video>
     </div>
 
     <div class="photo-navigation">
@@ -767,23 +978,69 @@
 
     </div>
 
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">Edit</button>
-        <button type="button">Search</button>
-        <button type="button">Help</button>
+<div class="window-body notepad-body">
+
+    <div class="notepad-content">
+
+        <img
+            class="about-me-picture"
+            src="assets/images/about-me.png"
+            alt="Portrait of Beatriz"
+            draggable="false"
+        >
+
+        <div class="about-me-text about-me-art-only">
+
+            <p>
+                Hi, I’m Beatriz, a multidisciplinary creative based in São Paulo.
+            </p>
+
+            <p>
+                I work across photography, art direction, music, design, and
+                visual storytelling. With a background in graphic design and
+                studies in cinematography and art direction, I create work
+                guided by atmosphere, emotion, and strong visual concepts.
+            </p>
+
+            <p>
+                I’m interested in transforming ideas into images, sounds, and
+                stories that feel expressive, intentional, and memorable.
+            </p>
+
+<pre
+    class="about-cat-art"
+    aria-label="Cat casting a magical spell"
+>　 　∧＿∧
+　　(｡･ω･｡)つ━☆・*。
+　 ⊂| ~ |　　　・゜
+　　しーＪ　　　°。+ * 。
+　　　　　　　　　　　　.・゜</pre>
+
+<pre
+    class="about-whale-art"
+    aria-label="Decorative Braille artwork"
+>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⣤⣤⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⠋⠀⠀⠙⢿⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⡇⠀⠀⠀⠀⠀⠙⢿⣦⡀⠀⠀⢀⣀⣀⣠⣤⣀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⠇⠀⠀⠀⠀⠀⠀⠀⠙⠿⠿⠟⠛⠛⠋⠉⠉⠛⣷⡄
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡇
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣶⠿⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⡿⠃
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣶⠿⠛⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⡿⠃⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⡿⠁⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣧⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣷⡀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠿⣶⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣷⡄⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠿⣶⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⡄
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡇
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⡆⠀⠀⠀⠀⠀⠀⠀⠀⣠⣶⣶⣦⣤⣤⣄⣀⣀⣤⡿⠃
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⡇⠀⠀⠀⠀⠀⣠⣾⠏⠀⠀⠀⠈⠉⠉⠙⠛⠉⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⣄⠀⠀⣠⣾⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠛⠛⠛⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</pre>
+
+</div>
+
     </div>
 
-    <div class="window-body notepad-body">
-
-        <textarea class="notepad-text" spellcheck="false" readonly>Hi, I’m Beatriz, a multidisciplinary creative based in São Paulo.
-
-I work across photography, art direction, music, design, and visual storytelling. With a background in graphic design and studies in cinematography and art direction, I create work guided by atmosphere, emotion, and strong visual concepts.
-
-I’m interested in transforming ideas into images, sounds, and stories that feel expressive, intentional, and memorable.
-</textarea>
-
-    </div>
+</div>
 
 </div>
 
@@ -805,15 +1062,7 @@ I’m interested in transforming ideas into images, sounds, and stories that fee
 
     </div>
 
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">Edit</button>
-        <button type="button">View</button>
-        <button type="button">Tools</button>
-        <button type="button">Help</button>
-    </div>
-
-    <div class="window-body contact-body">
+<div class="window-body contact-body">
 
         <form
     class="contact-form"
@@ -897,15 +1146,7 @@ I’m interested in transforming ideas into images, sounds, and stories that fee
 
     </div>
 
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">Edit</button>
-        <button type="button">View</button>
-        <button type="button">Tools</button>
-        <button type="button">Help</button>
-    </div>
-
-    <div class="window-body graphic-arts-body">
+<div class="window-body graphic-arts-body">
 
         <div class="graphic-projects">
 
@@ -960,16 +1201,7 @@ I’m interested in transforming ideas into images, sounds, and stories that fee
 
     </div>
 
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">Edit</button>
-        <button type="button">View</button>
-        <button type="button">Image</button>
-        <button type="button">Tools</button>
-        <button type="button">Help</button>
-    </div>
-
-    <div class="window-body graphic-project-body">
+<div class="window-body graphic-project-body">
 
         <div class="graphic-project-content">
 
@@ -1013,16 +1245,7 @@ I’m interested in transforming ideas into images, sounds, and stories that fee
 
     </div>
 
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">Edit</button>
-        <button type="button">View</button>
-        <button type="button">Image</button>
-        <button type="button">Tools</button>
-        <button type="button">Help</button>
-    </div>
-
-    <div class="window-body graphic-project-body">
+<div class="window-body graphic-project-body">
 
         <div class="graphic-project-content">
 
@@ -1063,15 +1286,7 @@ I’m interested in transforming ideas into images, sounds, and stories that fee
 
         </div>
 
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">Edit</button>
-        <button type="button">View</button>
-        <button type="button">Playback</button>
-        <button type="button">Help</button>
-    </div>
-
-        <div class="window-body music-window">
+<div class="window-body music-window">
 
     <div class="music-tabs">
 
@@ -1136,6 +1351,54 @@ I’m interested in transforming ideas into images, sounds, and stories that fee
 </div>
 
 
+
+<!-- ================= MEMORIES.EXE ================= -->
+
+<div
+    class="window hidden"
+    id="memories-window"
+    data-window-id="memories"
+>
+    <div class="title-bar">
+        <span>Memories.exe</span>
+
+        <div class="window-controls">
+            <button type="button" class="minimize" aria-label="Minimize"></button>
+            <button type="button" class="maximize" aria-label="Maximize"></button>
+            <button type="button" class="close" aria-label="Close"></button>
+        </div>
+    </div>
+
+<div class="window-body memories-body">
+        <section class="memories-app" aria-label="Interactive archive of Bibi's memories">
+            <header class="memories-toolbar">
+                <div class="memories-heading">
+                    <span class="memories-kicker">BIBI'S ARCHIVE</span>
+                    <strong>Memories.exe</strong>
+                </div>
+
+                <div class="memories-controls" aria-label="Memories view controls">
+                    <button type="button" id="memories-reset" class="memories-control">Reset view</button>
+                </div>
+            </header>
+
+            <div
+                id="memories-stage"
+                class="memories-stage"
+                tabindex="0"
+                aria-label="Draggable three-dimensional field of memory previews"
+            >
+                <div class="memories-field" aria-hidden="true"></div>
+                <div id="memories-world" class="memories-world"></div>
+
+                <div class="memories-stage-help" aria-hidden="true">
+                    <span>move cursor to look · left-drag to pan · right-drag or scroll to travel</span>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
 <!-- ================= MAGICAL LAKE ================= -->
 
 <div
@@ -1167,14 +1430,7 @@ I’m interested in transforming ideas into images, sounds, and stories that fee
         </div>
     </div>
 
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">View</button>
-        <button type="button">Magic</button>
-        <button type="button">Help</button>
-    </div>
-
-    <div class="window-body magical-lake-body">
+<div class="window-body magical-lake-body">
         <div class="magical-lake-screen">
             <span
                 id="magical-lake-status"
@@ -1226,19 +1482,6 @@ I’m interested in transforming ideas into images, sounds, and stories that fee
         </div>
 
     </div>
-
-    <!-- Explorer menu -->
-
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">Edit</button>
-        <button type="button">View</button>
-        <button type="button">Tools</button>
-        <button type="button">Help</button>
-    </div>
-
-
-    <!-- Main Explorer content -->
 
     <div class="window-body trash-body">
 
@@ -1299,17 +1542,7 @@ I’m interested in transforming ideas into images, sounds, and stories that fee
 
     </div>
 
-    <!-- Same menu structure as the other website windows -->
-
-    <div class="window-menu">
-        <button type="button">File</button>
-        <button type="button">Edit</button>
-        <button type="button">View</button>
-        <button type="button">Tools</button>
-        <button type="button">Help</button>
-    </div>
-
-    <div class="window-body trojan-body">
+<div class="window-body trojan-body">
 
         <!-- Hacking text -->
 
@@ -1423,7 +1656,7 @@ I’m interested in transforming ideas into images, sounds, and stories that fee
  
 </div>
 
-<script src="script.js?v=20260801-18"></script>
+<script src="script.js?v=20260807-clean5"></script>
 
 </body>
 </html>
