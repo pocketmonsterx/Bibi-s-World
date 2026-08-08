@@ -12,7 +12,7 @@
 
 <title>𝕭𝖎𝖇𝖎</title>
 
-<link rel="stylesheet" href="style.css?v=20260808-ascii-painted1">
+<link rel="stylesheet" href="style.css?v=20260808-v55-payload-exact-window-style">
 
 </head>
 
@@ -23,6 +23,7 @@
     <video
         id="startup-power-video"
         muted
+        autoplay
         playsinline
         preload="auto"
         disablepictureinpicture
@@ -1738,10 +1739,15 @@
                     </span>
 
                     <div
-                        class="trojan-loader-close"
+                        class="window-controls trojan-loader-window-controls"
                         aria-hidden="true"
                     >
-                        ×
+                        <button
+                            type="button"
+                            class="close trojan-loader-close"
+                            tabindex="-1"
+                            aria-label="Close"
+                        ></button>
                     </div>
 
                 </div>
@@ -1826,7 +1832,7 @@
  
 </div>
 
-<script src="script.js?v=20260808-video-playback-fix2"></script>
+<script src="script.js?v=20260808-v55-payload-exact-window-style"></script>
 
 </body>
 </html>

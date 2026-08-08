@@ -354,11 +354,38 @@ window.addEventListener("DOMContentLoaded", () => {
 
         let fallbackTimer = null;
         let hasFinished = false;
-        let playbackStarted = false;
+        let playAttemptInProgress = false;
+        let interactionRetryBound = false;
+
+        /* Recover the power-on layer even after bfcache/history restoration. */
+        document.body.classList.add("powering-on");
+        powerVideoScreen.classList.remove(
+            "power-video-finished",
+            "power-video-playing"
+        );
+        powerVideoScreen.classList.add("power-video-ready");
+        powerVideoScreen.setAttribute("aria-hidden", "false");
+
+        powerVideo.muted = true;
+        powerVideo.defaultMuted = true;
+        powerVideo.autoplay = true;
+        powerVideo.playsInline = true;
+
+        const removeInteractionRetry = () => {
+            if (!interactionRetryBound) return;
+
+            ["pointerdown", "touchstart", "keydown"].forEach(eventName => {
+                document.removeEventListener(eventName, retryFromInteraction);
+            });
+
+            interactionRetryBound = false;
+        };
 
         const finishPowerOnVideo = () => {
             if (hasFinished) return;
             hasFinished = true;
+
+            removeInteractionRetry();
 
             if (fallbackTimer !== null) {
                 window.clearTimeout(fallbackTimer);
@@ -368,46 +395,77 @@ window.addEventListener("DOMContentLoaded", () => {
             beginBiosSequence();
         };
 
-        const startVisiblePlayback = () => {
-            if (playbackStarted || hasFinished) return;
-            playbackStarted = true;
+        const markPlaying = () => {
+            powerVideoScreen.classList.add("power-video-playing");
+        };
 
-            powerVideo.muted = true;
-            powerVideo.defaultMuted = true;
-            powerVideo.playsInline = true;
+        const attemptPlayback = () => {
+            if (hasFinished || playAttemptInProgress) return;
+
+            playAttemptInProgress = true;
+
+            const playAttempt = powerVideo.play();
+
+            if (playAttempt && typeof playAttempt.then === "function") {
+                playAttempt
+                    .then(() => {
+                        playAttemptInProgress = false;
+                        markPlaying();
+                        removeInteractionRetry();
+                    })
+                    .catch(() => {
+                        /*
+                         * Do NOT skip straight to BIOS when autoplay is refused.
+                         * Keep the decoded first frame visible and retry on the
+                         * visitor's first interaction instead.
+                         */
+                        playAttemptInProgress = false;
+
+                        if (!interactionRetryBound) {
+                            interactionRetryBound = true;
+
+                            ["pointerdown", "touchstart", "keydown"].forEach(eventName => {
+                                document.addEventListener(
+                                    eventName,
+                                    retryFromInteraction,
+                                    { once: true, passive: eventName !== "keydown" }
+                                );
+                            });
+                        }
+                    });
+            } else {
+                playAttemptInProgress = false;
+            }
+        };
+
+        function retryFromInteraction() {
+            removeInteractionRetry();
+            attemptPlayback();
+        }
+
+        const startVisiblePlayback = () => {
+            if (hasFinished) return;
+
+            powerVideoScreen.classList.add("power-video-ready");
 
             try {
-                powerVideo.currentTime = 0;
+                /* Only rewind if the clip has already advanced. */
+                if (powerVideo.currentTime > 0.02) {
+                    powerVideo.currentTime = 0;
+                }
             } catch (error) {
                 /* Seeking can fail until metadata is ready. */
             }
 
-            /* Make sure the browser paints the video layer BEFORE it starts. */
-            powerVideoScreen.classList.add("power-video-ready");
-
             window.requestAnimationFrame(() => {
-                window.requestAnimationFrame(() => {
-                    const playAttempt = powerVideo.play();
-
-                    if (playAttempt && typeof playAttempt.then === "function") {
-                        playAttempt
-                            .then(() => {
-                                powerVideoScreen.classList.add("power-video-playing");
-                            })
-                            .catch(() => {
-                                /* If autoplay is blocked, don't freeze the site. */
-                                finishPowerOnVideo();
-                            });
-                    }
-                });
+                window.requestAnimationFrame(attemptPlayback);
             });
         };
 
+        powerVideo.addEventListener("playing", markPlaying);
         powerVideo.addEventListener("ended", finishPowerOnVideo, { once: true });
         powerVideo.addEventListener("error", finishPowerOnVideo, { once: true });
-        powerVideo.addEventListener("abort", finishPowerOnVideo, { once: true });
 
-        /* loadeddata means the browser has decoded the first visible frame. */
         if (powerVideo.readyState >= 2) {
             startVisiblePlayback();
         } else {
@@ -416,8 +474,14 @@ window.addEventListener("DOMContentLoaded", () => {
             powerVideo.load();
         }
 
-        /* Safety net only: the supplied clip is under one second. */
-        fallbackTimer = window.setTimeout(finishPowerOnVideo, 4000);
+        /*
+         * Also attempt immediately. Because the video is muted, modern browsers
+         * normally allow this; loadeddata/canplay provide a second attempt.
+         */
+        attemptPlayback();
+
+        /* Safety net: move on if the media file genuinely cannot play. */
+        fallbackTimer = window.setTimeout(finishPowerOnVideo, 5000);
     }
 
     runPowerOnVideo();

@@ -12054,3 +12054,624 @@ body.powering-on #startup-boot-screen {
     color: #dd3e90 !important;
 }
 
+
+
+/* =========================================================
+   v50 — VIDEO VISIBILITY RESTORE + TROJAN CRT EFFECT
+   Final-authority rules: never hide either real MP4 behind
+   an opacity gate. Trojan stays at 50% with glow/grain/scanlines.
+========================================================= */
+
+/* POWER-ON VIDEO: always paint the MP4 while its screen exists. */
+#startup-power-video-screen #startup-power-video {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    position: relative;
+    z-index: 0;
+}
+
+/* Once JS finishes the clip, hide only the containing screen. */
+#startup-power-video-screen.power-video-finished {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+/* TROJAN VIDEO: visible even before/without the active class. */
+#trojan-window .trojan-binary-video,
+#trojan-window .trojan-binary-video.trojan-video-active {
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 0 !important;
+
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+
+    object-fit: cover !important;
+    object-position: center !important;
+
+    opacity: 0.50 !important;
+    visibility: visible !important;
+
+    filter:
+        brightness(0.96)
+        contrast(1.08)
+        saturate(0.95)
+        drop-shadow(0 0 5px rgba(100, 255, 145, 0.20)) !important;
+
+    transform: scale(1.015);
+    transform-origin: center;
+    pointer-events: none;
+
+    animation: trojanBinaryGlow 3.2s ease-in-out infinite;
+}
+
+/* CRT scanlines + soft vignette over Trojan video. */
+#trojan-window > .trojan-body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            rgba(120, 255, 150, 0.08) 0%,
+            rgba(0, 0, 0, 0.04) 56%,
+            rgba(0, 0, 0, 0.28) 100%
+        ),
+        repeating-linear-gradient(
+            to bottom,
+            rgba(255,255,255,0.025) 0px,
+            rgba(255,255,255,0.025) 1px,
+            rgba(0,0,0,0.16) 1px,
+            rgba(0,0,0,0.16) 3px
+        ) !important;
+
+    box-shadow:
+        inset 0 0 34px rgba(80, 255, 125, 0.08),
+        inset 0 0 80px rgba(0, 0, 0, 0.30);
+
+    animation: trojanScreenGlow 3.2s ease-in-out infinite;
+}
+
+/* Moving analog grain. */
+#trojan-window > .trojan-body::after {
+    content: "";
+    position: absolute;
+    inset: -12%;
+    z-index: 1;
+    pointer-events: none;
+
+    background-image:
+        radial-gradient(circle, rgba(255,255,255,0.16) 0 0.55px, transparent 0.8px),
+        radial-gradient(circle, rgba(0,0,0,0.24) 0 0.65px, transparent 0.9px),
+        radial-gradient(circle, rgba(120,255,150,0.10) 0 0.5px, transparent 0.8px);
+
+    background-size:
+        5px 5px,
+        7px 7px,
+        11px 11px;
+
+    opacity: 0.18;
+    mix-blend-mode: screen;
+
+    animation: trojanAnalogGrain 140ms steps(2, end) infinite;
+}
+
+/* Keep terminal above the video + CRT layers, but transparent enough to see them. */
+#trojan-window .trojan-terminal {
+    z-index: 2 !important;
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(1, 7, 3, 0.10),
+            rgba(1, 6, 3, 0.20)
+        ) !important;
+}
+
+@keyframes trojanBinaryGlow {
+    0%, 100% {
+        filter:
+            brightness(0.92)
+            contrast(1.08)
+            saturate(0.92)
+            drop-shadow(0 0 4px rgba(100, 255, 145, 0.16));
+        transform: scale(1.015);
+    }
+
+    50% {
+        filter:
+            brightness(1.08)
+            contrast(1.12)
+            saturate(1.02)
+            drop-shadow(0 0 14px rgba(100, 255, 145, 0.38));
+        transform: scale(1.025);
+    }
+}
+
+@keyframes trojanScreenGlow {
+    0%, 100% { opacity: 0.90; }
+    50%      { opacity: 1; }
+}
+
+@keyframes trojanAnalogGrain {
+    0%   { transform: translate3d(-1.2%, -0.8%, 0); }
+    20%  { transform: translate3d(0.8%, 0.4%, 0); }
+    40%  { transform: translate3d(-0.4%, 1.1%, 0); }
+    60%  { transform: translate3d(1.1%, -0.4%, 0); }
+    80%  { transform: translate3d(0.4%, 0.8%, 0); }
+    100% { transform: translate3d(-0.8%, -1.1%, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #trojan-window .trojan-binary-video,
+    #trojan-window .trojan-binary-video.trojan-video-active,
+    #trojan-window > .trojan-body::before,
+    #trojan-window > .trojan-body::after {
+        animation: none !important;
+    }
+}
+
+
+/* =========================================================
+   v53 — PAYLOAD DIALOG MATCHES BIBI WINDOW SKIN
+   + FINAL POWER-ON VIDEO PAINT AUTHORITY
+========================================================= */
+
+/* Keep the real startup MP4 painted from the first frame onward. */
+#startup-power-video-screen {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    background: #000 !important;
+}
+
+#startup-power-video-screen #startup-power-video {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    object-fit: cover !important;
+    object-position: center center !important;
+}
+
+#startup-power-video-screen.power-video-finished {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+/* Darken the terminal behind the modal without changing the video itself. */
+#trojan-window .trojan-loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    background: rgba(10, 5, 14, 0.28);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+}
+
+/* Same shell used by the website's normal .window elements. */
+#trojan-window .trojan-loader-window {
+    width: min(430px, 100%);
+    overflow: hidden;
+
+    color: #111;
+    background: var(--glass-window, rgba(224, 220, 232, 0.50)) !important;
+
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.58)) !important;
+    border-radius: 9px 9px 6px 6px !important;
+
+    box-shadow:
+        0 14px 34px var(--glass-shadow, rgba(0, 0, 0, 0.38)),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.10) !important;
+
+    -webkit-backdrop-filter: blur(var(--glass-blur, 14px)) saturate(135%) !important;
+    backdrop-filter: blur(var(--glass-blur, 14px)) saturate(135%) !important;
+}
+
+/* Exact same pink glass title treatment as the rest of Bibi's World. */
+#trojan-window .trojan-loader-titlebar {
+    height: 30px !important;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 7px 0 10px !important;
+
+    color: #fff !important;
+    font-family: Tahoma, sans-serif !important;
+    font-size: 13px !important;
+    font-weight: bold !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.72) !important;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.30),
+            rgba(255, 255, 255, 0.05) 48%,
+            rgba(80, 12, 70, 0.14) 49%,
+            rgba(80, 12, 70, 0.24)
+        ),
+        linear-gradient(
+            to right,
+            rgba(219, 152, 214, 0.68),
+            rgba(197, 41, 158, 0.58)
+        ) !important;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.34) !important;
+    box-shadow: none !important;
+}
+
+/* Same glossy red close control used by normal Bibi windows. */
+#trojan-window .trojan-loader-close {
+    position: relative;
+
+    width: 22px !important;
+    height: 19px !important;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    color: transparent !important;
+    font-size: 0 !important;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 150, 160, 0.86),
+            rgba(184, 31, 58, 0.78)
+        ) !important;
+
+    border: 1px solid rgba(255, 220, 225, 0.72) !important;
+    border-radius: 3px !important;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.42),
+        0 1px 2px rgba(0, 0, 0, 0.30) !important;
+
+    opacity: 1 !important;
+}
+
+#trojan-window .trojan-loader-close::before,
+#trojan-window .trojan-loader-close::after {
+    content: "";
+    position: absolute;
+    left: 9px;
+    top: 4px;
+    width: 2px;
+    height: 10px;
+    background: #fff;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.45);
+}
+
+#trojan-window .trojan-loader-close::before {
+    transform: rotate(45deg);
+}
+
+#trojan-window .trojan-loader-close::after {
+    transform: rotate(-45deg);
+}
+
+/* Interior follows the same pale Vista/glass body used by other windows. */
+#trojan-window .trojan-loader-content {
+    display: grid;
+    grid-template-columns: 88px minmax(0, 1fr);
+    align-items: center;
+    gap: 13px;
+
+    min-height: 128px;
+    padding: 16px 18px 17px;
+
+    color: #111;
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(236, 245, 253, 0.82) 0%,
+            rgba(215, 230, 242, 0.78) 100%
+        ) !important;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.75);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.70),
+        inset 0 0 16px rgba(109, 151, 184, 0.12);
+
+    font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+#trojan-window .trojan-loader-heading {
+    min-height: 32px;
+    margin-bottom: 6px;
+    color: #111 !important;
+    font-family: "Segoe UI", Tahoma, sans-serif !important;
+    font-size: 13px !important;
+    line-height: 1.3;
+    font-weight: 600;
+}
+
+#trojan-window .trojan-loader-status,
+#trojan-window .trojan-loader-percentage {
+    color: #333 !important;
+    font-family: "Segoe UI", Tahoma, sans-serif !important;
+}
+
+/* Progress control uses the same pink family as the website title bars. */
+#trojan-window .trojan-loader-track {
+    height: 18px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.58) !important;
+    border: 1px solid rgba(92, 75, 104, 0.46) !important;
+    border-radius: 3px !important;
+    box-shadow:
+        inset 0 1px 3px rgba(34, 23, 43, 0.22),
+        0 1px 0 rgba(255, 255, 255, 0.62) !important;
+}
+
+#trojan-window .trojan-loader-fill {
+    height: 100%;
+    background:
+        repeating-linear-gradient(
+            to right,
+            rgba(232, 130, 207, 0.98) 0 12px,
+            rgba(197, 41, 158, 0.98) 12px 15px,
+            rgba(255, 255, 255, 0.20) 15px 16px
+        ) !important;
+    border-right: 1px solid rgba(112, 19, 92, 0.55) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.45),
+        1px 0 5px rgba(197, 41, 158, 0.28) !important;
+}
+
+@media (max-width: 500px) {
+    #trojan-window .trojan-loader-window {
+        width: min(390px, 100%);
+    }
+
+    #trojan-window .trojan-loader-content {
+        grid-template-columns: 68px minmax(0, 1fr);
+        gap: 10px;
+        padding: 13px;
+    }
+}
+
+/* =========================================================
+   v55 — BIOS ASCII ART 3PT SMALLER
+   Keep the boot-screen ASCII art exactly two typographic points
+   smaller than the surrounding BIOS text.
+========================================================= */
+#startup-boot-screen .bios-text .bios-ascii-line {
+    font-size: calc(1em - 4pt) !important;
+}
+
+/* =========================================================
+   v55 — TROJAN PAYLOAD WINDOW = EXACT BIBI WINDOW CHROME
+   These are the same current dark-purple glass shell, title bar,
+   content background and window-control rules used by .window.
+========================================================= */
+
+/* Modal veil only; the installer itself now uses normal site chrome. */
+#trojan-window .trojan-loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    background: rgba(10, 5, 14, 0.28) !important;
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+}
+
+/* EXACT equivalent of the current .window shell. */
+#trojan-window .trojan-loader-window {
+    width: min(430px, 100%);
+    overflow: hidden;
+
+    color: var(--bibi-dark-text) !important;
+    background: var(--bibi-dark-window) !important;
+
+    border: 1px solid var(--bibi-dark-border) !important;
+    border-radius: 8px 8px 6px 6px !important;
+
+    box-shadow:
+        0 16px 38px var(--bibi-dark-shadow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.20),
+        inset 0 0 0 1px rgba(222, 190, 244, 0.08) !important;
+
+    -webkit-backdrop-filter: blur(20px) saturate(145%) !important;
+    backdrop-filter: blur(20px) saturate(145%) !important;
+}
+
+/* EXACT equivalent of the current .window > .title-bar. */
+#trojan-window .trojan-loader-titlebar {
+    height: 30px !important;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 7px 0 10px !important;
+
+    color: #ffffff !important;
+    font-family: Tahoma, sans-serif !important;
+    font-size: 13px !important;
+    font-weight: bold !important;
+    line-height: normal !important;
+    text-shadow: 0 1px 2px rgba(20, 7, 32, 0.72) !important;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.16) 0%,
+            rgba(117, 71, 153, 0.20) 46%,
+            rgba(50, 21, 78, 0.34) 48%,
+            rgba(75, 35, 108, 0.30) 100%
+        ),
+        var(--bibi-dark-bar) !important;
+
+    border: 0 !important;
+    border-bottom: 1px solid var(--bibi-dark-border) !important;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.18),
+        0 1px 3px rgba(20, 8, 34, 0.30) !important;
+
+    -webkit-backdrop-filter: blur(16px) saturate(145%) !important;
+    backdrop-filter: blur(16px) saturate(145%) !important;
+}
+
+/* Use the normal window-controls layout in the payload header. */
+#trojan-window .trojan-loader-window-controls {
+    display: flex !important;
+    align-items: center;
+    gap: 4px !important;
+    flex: 0 0 auto;
+}
+
+/* Remove every old custom payload-close treatment so .close draws it. */
+#trojan-window .trojan-loader-close {
+    position: relative !important;
+    inset: auto !important;
+
+    width: 18px !important;
+    height: 18px !important;
+    min-width: 18px !important;
+
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+
+    color: transparent !important;
+    font-size: 0 !important;
+
+    background: #c0c0c0 !important;
+
+    border: 2px solid !important;
+    border-color: white #404040 #404040 white !important;
+    border-radius: 0 !important;
+
+    box-shadow: none !important;
+    opacity: 1 !important;
+    cursor: default !important;
+}
+
+#trojan-window .trojan-loader-close::before,
+#trojan-window .trojan-loader-close::after {
+    content: "" !important;
+    position: absolute !important;
+    left: 7px !important;
+    top: 3px !important;
+    width: 2px !important;
+    height: 10px !important;
+    background: black !important;
+    box-shadow: none !important;
+}
+
+#trojan-window .trojan-loader-close::before {
+    transform: rotate(45deg) !important;
+}
+
+#trojan-window .trojan-loader-close::after {
+    transform: rotate(-45deg) !important;
+}
+
+/* EXACT equivalent of the current .window > .window-body background. */
+#trojan-window .trojan-loader-content {
+    display: grid;
+    grid-template-columns: 88px minmax(0, 1fr);
+    align-items: center;
+    gap: 13px;
+
+    min-height: 128px;
+    padding: 16px 18px 17px;
+
+    color: var(--bibi-dark-text) !important;
+    background: var(--bibi-dark-body) !important;
+
+    border: 0 !important;
+    border-top: 1px solid rgba(213, 177, 239, 0.18) !important;
+
+    box-shadow: none !important;
+
+    -webkit-backdrop-filter: blur(15px) saturate(140%) !important;
+    backdrop-filter: blur(15px) saturate(140%) !important;
+
+    font-family: Tahoma, sans-serif !important;
+}
+
+#trojan-window .trojan-loader-heading {
+    min-height: 32px;
+    margin-bottom: 6px;
+
+    color: var(--bibi-dark-text) !important;
+    font-family: Tahoma, sans-serif !important;
+    font-size: 13px !important;
+    line-height: 1.3;
+    font-weight: bold !important;
+    text-shadow: 0 1px 2px rgba(18, 5, 30, 0.50);
+}
+
+#trojan-window .trojan-loader-status,
+#trojan-window .trojan-loader-percentage {
+    color: var(--bibi-dark-muted) !important;
+    font-family: Tahoma, sans-serif !important;
+    text-shadow: 0 1px 2px rgba(18, 5, 30, 0.50);
+}
+
+/* Progress bar stays readable but uses the site's dark-purple control skin. */
+#trojan-window .trojan-loader-track {
+    height: 18px;
+    overflow: hidden;
+
+    background: rgba(38, 15, 63, 0.42) !important;
+    border: 1px solid var(--bibi-dark-border) !important;
+    border-radius: 3px !important;
+
+    box-shadow:
+        inset 0 2px 5px rgba(22, 7, 37, 0.46),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+#trojan-window .trojan-loader-fill {
+    height: 100%;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.18),
+            rgba(152, 96, 190, 0.24)
+        ),
+        var(--bibi-dark-control-active) !important;
+
+    border: 0 !important;
+    border-right: 1px solid var(--bibi-dark-border-strong) !important;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.22),
+        0 0 8px rgba(174, 111, 216, 0.22) !important;
+}
+
+@media (max-width: 500px) {
+    #trojan-window .trojan-loader-window {
+        width: min(390px, 100%);
+    }
+
+    #trojan-window .trojan-loader-content {
+        grid-template-columns: 68px minmax(0, 1fr);
+        gap: 10px;
+        padding: 13px;
+    }
+}
+
