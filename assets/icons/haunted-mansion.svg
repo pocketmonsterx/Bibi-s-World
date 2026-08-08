@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" shape-rendering="crispEdges">
+  <rect width="64" height="64" fill="none"/>
+
+  <!-- moon glow -->
+  <rect x="3" y="8" width="24" height="14" fill="#342857" opacity="0.85"/>
+  <rect x="6" y="5" width="18" height="2" fill="#8178a9"/>
+  <rect x="3" y="7" width="24" height="12" fill="#cbd1f3"/>
+  <rect x="5" y="5" width="19" height="16" fill="#eff1ff"/>
+  <rect x="8" y="7" width="5" height="3" fill="#c9cae6"/>
+  <rect x="17" y="10" width="4" height="4" fill="#aaa8d2"/>
+  <rect x="10" y="15" width="7" height="3" fill="#d0d3ed"/>
+
+  <!-- bats -->
+  <path d="M9 11h3v-2h2v2h2v-2h3v2h-2v2h-2v2h-2v-2h-2z" fill="#05030d"/>
+  <path d="M21 18h2v-1h1v1h1v-1h2v2h-2v1h-1v1h-1v-1h-2z" fill="#07050f"/>
+
+  <!-- storm clouds -->
+  <rect x="0" y="22" width="27" height="4" fill="#171326"/>
+  <rect x="7" y="19" width="16" height="4" fill="#2f2449"/>
+  <rect x="35" y="8" width="22" height="4" fill="#21183a"/>
+  <rect x="42" y="6" width="13" height="3" fill="#493966"/>
+  <rect x="31" y="16" width="31" height="4" fill="#151023"/>
+  <rect x="39" y="13" width="18" height="3" fill="#332750"/>
+
+  <!-- lightning -->
+  <path d="M38 3h5l-4 9h4l-8 13 3-10h-4z" fill="#c8d3ff"/>
+  <path d="M39 4h2l-4 9h3l-5 8 2-8h-2z" fill="#ffffff"/>
+
+  <!-- rear trees -->
+  <path d="M2 43l7-13 6 13zm5-6 6-13 6 13zm45 5 5-11 5 11z" fill="#151027"/>
+
+  <!-- mansion body -->
+  <rect x="14" y="33" width="39" height="22" fill="#100c1d"/>
+  <rect x="18" y="30" width="29" height="25" fill="#191229"/>
+  <rect x="20" y="31" width="2" height="23" fill="#34234e"/>
+  <rect x="44" y="32" width="3" height="23" fill="#090711"/>
+
+  <!-- side wings -->
+  <rect x="10" y="36" width="13" height="19" fill="#100c1d"/>
+  <rect x="48" y="35" width="10" height="20" fill="#0d0918"/>
+
+  <!-- roofs -->
+  <path d="M9 36l7-11 8 11z" fill="#080610"/>
+  <path d="M13 35l3-8 2 8z" fill="#2a193c"/>
+  <path d="M45 35l8-11 7 11z" fill="#07050e"/>
+  <path d="M49 34l4-8 2 8z" fill="#251636"/>
+  <path d="M16 31l17-13 17 13z" fill="#07050e"/>
+  <path d="M20 30l13-10 7 10z" fill="#2b1a40"/>
+
+  <!-- central tower -->
+  <rect x="27" y="20" width="13" height="27" fill="#110c20"/>
+  <rect x="29" y="21" width="2" height="25" fill="#3b2855"/>
+  <rect x="38" y="22" width="2" height="24" fill="#07050e"/>
+  <rect x="25" y="27" width="17" height="3" fill="#2f2047"/>
+  <path d="M25 20l8-15 9 15z" fill="#06050c"/>
+  <path d="M29 19l4-12 3 12z" fill="#2d1b43"/>
+  <rect x="33" y="1" width="1" height="5" fill="#6b4a83"/>
+  <rect x="30" y="2" width="7" height="1" fill="#6b4a83"/>
+
+  <!-- turrets -->
+  <rect x="20" y="27" width="7" height="19" fill="#120d23"/>
+  <path d="M19 27l5-9 5 9z" fill="#07050e"/>
+  <rect x="41" y="27" width="7" height="19" fill="#100b20"/>
+  <path d="M40 27l5-9 5 9z" fill="#07050e"/>
+
+  <!-- masonry highlights -->
+  <rect x="17" y="39" width="8" height="1" fill="#2d1f45"/>
+  <rect x="36" y="35" width="8" height="1" fill="#34234e"/>
+  <rect x="22" y="49" width="8" height="1" fill="#2d1f45"/>
+  <rect x="43" y="46" width="7" height="1" fill="#24193a"/>
+  <rect x="29" y="24" width="9" height="1" fill="#493366"/>
+
+  <!-- glowing windows -->
+  <rect x="13" y="40" width="4" height="7" fill="#e15e36"/>
+  <rect x="14" y="41" width="1" height="5" fill="#ffb65f"/>
+  <rect x="21" y="35" width="4" height="7" fill="#ff8b49"/>
+  <rect x="22" y="36" width="1" height="5" fill="#ffe29a"/>
+  <rect x="30" y="24" width="3" height="7" fill="#ff8b49"/>
+  <rect x="35" y="24" width="3" height="7" fill="#e15e36"/>
+  <rect x="43" y="35" width="3" height="7" fill="#ff8b49"/>
+  <rect x="50" y="39" width="3" height="7" fill="#e15e36"/>
+
+  <!-- entrance -->
+  <path d="M28 55V45l5-5 5 5v10z" fill="#080610"/>
+  <path d="M30 55v-9l3-3 3 3v9z" fill="#a83b28"/>
+  <rect x="31" y="47" width="4" height="7" fill="#ff8b49"/>
+  <rect x="33" y="46" width="1" height="9" fill="#6d231e"/>
+
+  <!-- gate and path -->
+  <rect x="6" y="55" width="52" height="1" fill="#4b3568"/>
+  <rect x="8" y="51" width="1" height="7" fill="#4b3568"/>
+  <rect x="13" y="51" width="1" height="7" fill="#4b3568"/>
+  <rect x="51" y="51" width="1" height="7" fill="#4b3568"/>
+  <rect x="56" y="51" width="1" height="7" fill="#4b3568"/>
+  <path d="M24 64l6-9h7l7 9z" fill="#1c1430"/>
+  <rect x="29" y="58" width="10" height="1" fill="#493366"/>
+  <rect x="27" y="61" width="14" height="1" fill="#34234e"/>
+
+  <!-- right gnarled tree -->
+  <path d="M58 64l-4-17 2-13-4-8 4 2 3 8 1-14 3-4-1 20 2 10-1 16z" fill="#07050f"/>
+  <path d="M58 38l-8-6-7-1 1-3 8 1 7 5z" fill="#0c0817"/>
+  <path d="M60 26l-7-8-7-2 1-3 8 2 7 7z" fill="#0c0817"/>
+  <rect x="57" y="36" width="1" height="18" fill="#382056"/>
+  <rect x="50" y="18" width="1" height="8" fill="#2d1848"/>
+  <rect x="55" y="22" width="1" height="10" fill="#2d1848"/>
+</svg>

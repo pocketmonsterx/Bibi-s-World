@@ -116,6 +116,12 @@ window.addEventListener("DOMContentLoaded", () => {
     const settingsScreen =
         document.getElementById("startup-settings-screen");
 
+    const powerVideoScreen =
+        document.getElementById("startup-power-video-screen");
+
+    const powerVideo =
+        document.getElementById("startup-power-video");
+
     if (!bootScreen || !brandScreen || !settingsScreen) return;
 
     const biosSections = Array.from(
@@ -318,39 +324,167 @@ window.addEventListener("DOMContentLoaded", () => {
         );
     }
 
-    document.addEventListener("keydown", handleBiosKey);
-    bootScreen.addEventListener("click", finishBiosBoot);
+    let biosStarted = false;
 
-    startBiosTextAnimation();
-    bootScreen.focus({ preventScroll: true });
+    function beginBiosSequence() {
+        if (biosStarted) return;
+        biosStarted = true;
+
+        document.body.classList.remove("powering-on");
+
+        if (powerVideoScreen) {
+            powerVideoScreen.classList.add("power-video-finished");
+            powerVideoScreen.setAttribute("aria-hidden", "true");
+        }
+
+        /* BIOS skip controls become active only after the power-on video. */
+        document.addEventListener("keydown", handleBiosKey);
+        bootScreen.addEventListener("click", finishBiosBoot);
+
+        startBiosTextAnimation();
+        bootScreen.focus({ preventScroll: true });
+    }
+
+    function runPowerOnVideo() {
+        /* Missing/unsupported asset must never trap the visitor on black. */
+        if (!powerVideoScreen || !powerVideo) {
+            beginBiosSequence();
+            return;
+        }
+
+        let fallbackTimer = null;
+        let hasFinished = false;
+        let playbackStarted = false;
+
+        const finishPowerOnVideo = () => {
+            if (hasFinished) return;
+            hasFinished = true;
+
+            if (fallbackTimer !== null) {
+                window.clearTimeout(fallbackTimer);
+                fallbackTimer = null;
+            }
+
+            beginBiosSequence();
+        };
+
+        const startVisiblePlayback = () => {
+            if (playbackStarted || hasFinished) return;
+            playbackStarted = true;
+
+            powerVideo.muted = true;
+            powerVideo.defaultMuted = true;
+            powerVideo.playsInline = true;
+
+            try {
+                powerVideo.currentTime = 0;
+            } catch (error) {
+                /* Seeking can fail until metadata is ready. */
+            }
+
+            /* Make sure the browser paints the video layer BEFORE it starts. */
+            powerVideoScreen.classList.add("power-video-ready");
+
+            window.requestAnimationFrame(() => {
+                window.requestAnimationFrame(() => {
+                    const playAttempt = powerVideo.play();
+
+                    if (playAttempt && typeof playAttempt.then === "function") {
+                        playAttempt
+                            .then(() => {
+                                powerVideoScreen.classList.add("power-video-playing");
+                            })
+                            .catch(() => {
+                                /* If autoplay is blocked, don't freeze the site. */
+                                finishPowerOnVideo();
+                            });
+                    }
+                });
+            });
+        };
+
+        powerVideo.addEventListener("ended", finishPowerOnVideo, { once: true });
+        powerVideo.addEventListener("error", finishPowerOnVideo, { once: true });
+        powerVideo.addEventListener("abort", finishPowerOnVideo, { once: true });
+
+        /* loadeddata means the browser has decoded the first visible frame. */
+        if (powerVideo.readyState >= 2) {
+            startVisiblePlayback();
+        } else {
+            powerVideo.addEventListener("loadeddata", startVisiblePlayback, { once: true });
+            powerVideo.addEventListener("canplay", startVisiblePlayback, { once: true });
+            powerVideo.load();
+        }
+
+        /* Safety net only: the supplied clip is under one second. */
+        fallbackTimer = window.setTimeout(finishPowerOnVideo, 4000);
+    }
+
+    runPowerOnVideo();
 });
 
 
 const desktopIcons = document.querySelectorAll(".icon");
 const windows = document.querySelectorAll(".window");
+const taskbarWindows = document.getElementById("taskbar-windows");
+
+const DISABLED_WINDOW_IDS = new Set([
+    "haunted-mansion",
+    "hermit-tower"
+]);
 
 let highestZ = 10000;
 let galleryOffset = 0;
 
-const taskbarWindows = document.getElementById("taskbar-windows");
-
 
 // ====================================
-// DESKTOP ICONS
-// Open, restore, and always bring the requested window to front
+// WINDOW STATE HELPERS
 // ====================================
 
-function markWindowAsActive(windowElement) {
-    document
-        .querySelectorAll(".task-button")
-        .forEach(button => button.classList.remove("active"));
+function getWindowById(windowId) {
+    if (!windowId) return null;
 
+    return Array
+        .from(windows)
+        .find(windowElement => windowElement.dataset.windowId === windowId) || null;
+}
+
+function isWindowVisible(windowElement) {
+    return Boolean(
+        windowElement &&
+        !windowElement.classList.contains("hidden")
+    );
+}
+
+function getWindowZIndex(windowElement) {
+    const parsedZIndex = Number.parseInt(
+        window.getComputedStyle(windowElement).zIndex,
+        10
+    );
+
+    return Number.isNaN(parsedZIndex)
+        ? 0
+        : parsedZIndex;
+}
+
+function clearActiveWindowState() {
     document
         .querySelectorAll(".window.active-window")
-        .forEach(openWindowElement => {
-            openWindowElement.classList.remove("active-window");
+        .forEach(windowElement => {
+            windowElement.classList.remove("active-window");
         });
 
+    document
+        .querySelectorAll(".task-button.active")
+        .forEach(button => {
+            button.classList.remove("active");
+        });
+}
+
+function markWindowAsActive(windowElement) {
+    if (!isWindowVisible(windowElement)) return;
+
+    clearActiveWindowState();
     windowElement.classList.add("active-window");
 
     if (windowElement.taskButton) {
@@ -358,24 +492,372 @@ function markWindowAsActive(windowElement) {
     }
 }
 
-function activateWindowFromDesktopIcon(icon) {
-    const id = icon.dataset.window;
-
-    if (!id || id === "home") {
-        return;
-    }
-
-    /*
-     * Compare data values directly instead of building a CSS selector.
-     * This also works safely for IDs containing spaces.
-     */
-    const windowElement = Array
+function activateTopVisibleWindow() {
+    const visibleWindows = Array
         .from(windows)
-        .find(candidate => candidate.dataset.windowId === id);
+        .filter(isWindowVisible)
+        .sort((firstWindow, secondWindow) => (
+            getWindowZIndex(secondWindow) -
+            getWindowZIndex(firstWindow)
+        ));
 
-    if (!windowElement) {
+    if (!visibleWindows.length) {
+        clearActiveWindowState();
         return;
     }
+
+    markWindowAsActive(visibleWindows[0]);
+}
+
+
+// ====================================
+// WINDOW MEDIA LIFECYCLE
+// ====================================
+
+function resetWindowMedia(windowElement) {
+    if (!windowElement || windowElement.id !== "music-window") {
+        return;
+    }
+
+    windowElement
+        .querySelectorAll("iframe")
+        .forEach(iframe => {
+            const currentSource = iframe.src;
+
+            if (!currentSource) return;
+
+            iframe.src = "";
+
+            requestAnimationFrame(() => {
+                iframe.src = currentSource;
+            });
+        });
+}
+
+
+// ====================================
+// WINDOW POSITIONING
+// ====================================
+
+function centerWindow(windowElement) {
+    if (!windowElement) return;
+
+    const taskbarHeight = 38;
+    const availableWidth = window.innerWidth;
+    const availableHeight = window.innerHeight - taskbarHeight;
+
+    const left = Math.max(
+        10,
+        (availableWidth - windowElement.offsetWidth) / 2
+    );
+
+    const top = Math.max(
+        10,
+        (availableHeight - windowElement.offsetHeight) / 2
+    );
+
+    windowElement.style.left = `${Math.round(left)}px`;
+    windowElement.style.top = `${Math.round(top)}px`;
+}
+
+function positionSocialsWindow(windowElement) {
+    if (!windowElement || window.innerWidth <= 700) return;
+
+    const taskbarHeight = 38;
+    const availableHeight = window.innerHeight - taskbarHeight;
+
+    const preferredLeft = window.innerWidth * 0.104;
+    const preferredTop = availableHeight * 0.60;
+
+    const maximumLeft = Math.max(
+        14,
+        window.innerWidth - windowElement.offsetWidth - 14
+    );
+
+    const maximumTop = Math.max(
+        14,
+        availableHeight - windowElement.offsetHeight - 14
+    );
+
+    windowElement.style.left = `${Math.round(
+        Math.max(14, Math.min(preferredLeft, maximumLeft))
+    )}px`;
+
+    windowElement.style.top = `${Math.round(
+        Math.max(14, Math.min(preferredTop, maximumTop))
+    )}px`;
+}
+
+function positionAboutWindow(windowElement) {
+    if (!windowElement) return;
+
+    if (window.innerWidth <= 700) {
+        centerWindow(windowElement);
+        return;
+    }
+
+    const taskbarHeight = 38;
+    const availableHeight = window.innerHeight - taskbarHeight;
+
+    const preferredLeft = window.innerWidth * 0.10;
+    const preferredTop = availableHeight * 0.075;
+
+    const maximumLeft = Math.max(
+        12,
+        window.innerWidth - windowElement.offsetWidth - 12
+    );
+
+    const maximumTop = Math.max(
+        12,
+        availableHeight - windowElement.offsetHeight - 12
+    );
+
+    windowElement.style.left = `${Math.round(
+        Math.max(12, Math.min(preferredLeft, maximumLeft))
+    )}px`;
+
+    windowElement.style.top = `${Math.round(
+        Math.max(12, Math.min(preferredTop, maximumTop))
+    )}px`;
+}
+
+function positionGalleryWindow(windowElement) {
+    const startLeft = 180;
+    const startTop = 80;
+
+    windowElement.style.left = `${startLeft + galleryOffset}px`;
+    windowElement.style.top = `${startTop + galleryOffset}px`;
+
+    galleryOffset += 35;
+
+    if (galleryOffset > 175) {
+        galleryOffset = 0;
+    }
+}
+
+function positionWindowForFirstOpen(windowElement) {
+    if (!windowElement) return;
+
+    if (windowElement.id === "about-window") {
+        positionAboutWindow(windowElement);
+        return;
+    }
+
+    if (windowElement.id === "socials-window") {
+        positionSocialsWindow(windowElement);
+        return;
+    }
+
+    if (windowElement.id === "contact-window") {
+        windowElement.style.left = "650px";
+        windowElement.style.top = "120px";
+        return;
+    }
+
+    if (
+        windowElement.id === "music-window" ||
+        windowElement.id === "image-preview-window" ||
+        windowElement.id === "trojan-window" ||
+        windowElement.id === "memories-window" ||
+        windowElement.id === "disney-window" ||
+        windowElement.id === "miku-window" ||
+        windowElement.id === "san-francisco-window" ||
+        windowElement.id === "in-my-room-window" ||
+        windowElement.id === "hanekawa-window" ||
+        windowElement.id === "magical-lake-window" ||
+        windowElement.classList.contains("graphic-project-window")
+    ) {
+        centerWindow(windowElement);
+        return;
+    }
+
+    if (isGalleryWindow(windowElement)) {
+        positionGalleryWindow(windowElement);
+        return;
+    }
+
+    windowElement.style.left = "180px";
+    windowElement.style.top = "120px";
+}
+
+
+// ====================================
+// GALLERY STATE
+// ====================================
+
+function isGalleryWindow(windowElement) {
+    if (!windowElement) return false;
+
+    return windowElement.querySelector(
+        ".project-gallery, .graphic-project-gallery"
+    ) !== null;
+}
+
+function closeOtherGalleryWindows(windowToKeep) {
+    document
+        .querySelectorAll(".window:not(.hidden)")
+        .forEach(openWindowElement => {
+            if (
+                openWindowElement !== windowToKeep &&
+                isGalleryWindow(openWindowElement)
+            ) {
+                closeWindow(openWindowElement);
+            }
+        });
+}
+
+
+// ====================================
+// CORE WINDOW ACTIONS
+// ====================================
+
+function bringToFront(windowElement) {
+    if (!isWindowVisible(windowElement)) return;
+
+    const visibleWindows = Array.from(
+        document.querySelectorAll(".window:not(.hidden)")
+    );
+
+    const currentHighestZ = visibleWindows.reduce(
+        (highestValue, currentWindow) => (
+            Math.max(highestValue, getWindowZIndex(currentWindow))
+        ),
+        highestZ
+    );
+
+    highestZ = currentHighestZ + 1;
+    windowElement.style.zIndex = String(highestZ);
+}
+
+function minimizeWindow(windowElement) {
+    if (!isWindowVisible(windowElement)) return;
+
+    windowElement.classList.add("hidden");
+    windowElement.classList.remove("active-window");
+
+    if (windowElement.taskButton) {
+        windowElement.taskButton.classList.remove("active");
+    }
+
+    resetWindowMedia(windowElement);
+    activateTopVisibleWindow();
+}
+
+function minimizeAllWindows() {
+    Array
+        .from(windows)
+        .filter(isWindowVisible)
+        .forEach(windowElement => {
+            windowElement.classList.add("hidden");
+            windowElement.classList.remove("active-window");
+
+            if (windowElement.taskButton) {
+                windowElement.taskButton.classList.remove("active");
+            }
+
+            resetWindowMedia(windowElement);
+        });
+
+    clearActiveWindowState();
+}
+
+function restoreWindow(windowElement) {
+    if (!windowElement) return;
+
+    const windowId = windowElement.dataset.windowId;
+
+    if (DISABLED_WINDOW_IDS.has(windowId)) {
+        return;
+    }
+
+    if (isGalleryWindow(windowElement)) {
+        closeOtherGalleryWindows(windowElement);
+    }
+
+    windowElement.classList.remove("hidden");
+
+    if (windowElement.id === "trojan-window") {
+        startTrojanBinaryVideo();
+    }
+
+    bringToFront(windowElement);
+    markWindowAsActive(windowElement);
+}
+
+function openWindow(windowElement) {
+    if (!windowElement) return;
+
+    const windowId = windowElement.dataset.windowId;
+
+    if (DISABLED_WINDOW_IDS.has(windowId)) {
+        return;
+    }
+
+    /* A hidden window with a task button is minimized, not closed. */
+    if (
+        windowElement.classList.contains("hidden") &&
+        windowElement.taskButton
+    ) {
+        restoreWindow(windowElement);
+        return;
+    }
+
+    if (isGalleryWindow(windowElement)) {
+        closeOtherGalleryWindows(windowElement);
+    }
+
+    const wasHidden = windowElement.classList.contains("hidden");
+    windowElement.classList.remove("hidden");
+
+    if (wasHidden) {
+        positionWindowForFirstOpen(windowElement);
+    }
+
+    if (windowElement.id === "shutdown-dialog") {
+        windowElement.style.left = "50%";
+        windowElement.style.top = "50%";
+        windowElement.style.transform = "translate(-50%, -50%)";
+    }
+
+    if (windowElement.id === "trojan-window") {
+        startTrojanBinaryVideo();
+    }
+
+    createTaskButton(windowElement);
+    bringToFront(windowElement);
+    markWindowAsActive(windowElement);
+}
+
+function closeWindow(windowElement) {
+    if (!windowElement) return;
+
+    const wasActive = windowElement.classList.contains("active-window");
+
+    windowElement.classList.add("hidden");
+    windowElement.classList.remove("active-window");
+
+    resetWindowMedia(windowElement);
+
+    if (windowElement.taskButton) {
+        windowElement.taskButton.remove();
+        windowElement.taskButton = null;
+    }
+
+    if (wasActive) {
+        activateTopVisibleWindow();
+    }
+}
+
+
+// ====================================
+// DESKTOP ICONS
+// Click visible app again -> minimize to taskbar
+// ====================================
+
+function activateWindowFromDesktopIcon(icon) {
+    const windowId = icon?.dataset.window;
+
+    if (!windowId) return;
 
     const menu = document.getElementById("start-menu");
 
@@ -383,25 +865,31 @@ function activateWindowFromDesktopIcon(icon) {
         menu.classList.add("hidden");
     }
 
+    if (windowId === "home") {
+        minimizeAllWindows();
+        return;
+    }
+
+    if (DISABLED_WINDOW_IDS.has(windowId)) {
+        return;
+    }
+
+    const windowElement = getWindowById(windowId);
+
+    if (!windowElement) return;
+
+    /* Desktop icons work as a true toggle. */
+    if (isWindowVisible(windowElement)) {
+        minimizeWindow(windowElement);
+        return;
+    }
+
+    if (windowElement.taskButton) {
+        restoreWindow(windowElement);
+        return;
+    }
+
     openWindow(windowElement);
-    bringToFront(windowElement);
-    markWindowAsActive(windowElement);
-
-    /*
-     * Re-apply after layout and after the current click finishes. This
-     * prevents another window handler from reclaiming the top layer.
-     */
-    requestAnimationFrame(() => {
-        bringToFront(windowElement);
-        markWindowAsActive(windowElement);
-
-        window.setTimeout(() => {
-            if (!windowElement.classList.contains("hidden")) {
-                bringToFront(windowElement);
-                markWindowAsActive(windowElement);
-            }
-        }, 0);
-    });
 }
 
 desktopIcons.forEach(icon => {
@@ -410,369 +898,86 @@ desktopIcons.forEach(icon => {
     });
 });
 
-// --------------------
-// Center a window
-// --------------------
 
-function centerWindow(windowElement) {
+// ====================================
+// WINDOW CONTROLS
+// ====================================
 
-    const taskbarHeight = 38;
+windows.forEach(windowElement => {
+    windowElement.addEventListener("mousedown", () => {
+        if (!isWindowVisible(windowElement)) return;
 
-    const availableWidth = window.innerWidth;
-    const availableHeight =
-        window.innerHeight - taskbarHeight;
-
-    const windowWidth =
-        windowElement.offsetWidth;
-
-    const windowHeight =
-        windowElement.offsetHeight;
-
-    const left = Math.max(
-        10,
-        (availableWidth - windowWidth) / 2
-    );
-
-    const top = Math.max(
-        10,
-        (availableHeight - windowHeight) / 2
-    );
-
-    windowElement.style.left = `${left}px`;
-    windowElement.style.top = `${top}px`;
-}
-
-
-// --------------------
-// Check whether a window is a gallery
-// --------------------
-
-function isGalleryWindow(windowElement) {
-
-    return windowElement.querySelector(
-        ".project-gallery"
-    ) !== null;
-
-}
-
-
-// --------------------
-// Position gallery windows
-// --------------------
-
-function positionGalleryWindow(windowElement) {
-
-    const startLeft = 180;
-    const startTop = 80;
-
-    windowElement.style.left =
-        `${startLeft + galleryOffset}px`;
-
-    windowElement.style.top =
-        `${startTop + galleryOffset}px`;
-
-    galleryOffset += 35;
-
-    if (galleryOffset > 175) {
-        galleryOffset = 0;
-    }
-
-}
-
-
-function openWindow(windowElement) {
-
-    const wasHidden =
-        windowElement.classList.contains("hidden");
-
-    windowElement.classList.remove("hidden");
-
-    if (wasHidden) {
-
-        // The wider About Me window opens centered so it stays on-screen.
-        if (windowElement.id === "about-window") {
-
-            centerWindow(windowElement);
-
-        }
-
-        // Contact always opens in the same place
-        else if (windowElement.id === "contact-window") {
-
-            windowElement.style.left = "650px";
-            windowElement.style.top = "120px";
-
-        }
-
-        // Music always opens centered
-        else if (windowElement.id === "music-window") {
-
-            centerWindow(windowElement);
-
-        }
-
-        // Photo preview always opens centered
-        else if (windowElement.id === "image-preview-window") {
-
-            centerWindow(windowElement);
-
-        }
-
-        // Large portfolio projects always open centered
-else if (
-    windowElement.id === "memories-window" ||
-    windowElement.id === "disney-window" ||
-    windowElement.id === "miku-window" ||
-    windowElement.id === "san-francisco-window" ||
-    windowElement.id === "in-my-room-window" ||
-    windowElement.id === "magical-lake-window" ||
-    windowElement.classList.contains("graphic-project-window")
-) {
-    centerWindow(windowElement);
-}
-
-// Other galleries cascade
-else if (isGalleryWindow(windowElement)) {
-
-    positionGalleryWindow(windowElement);
-
-}
-
-        // Other windows use a normal default position
-        else {
-
-            windowElement.style.left = "180px";
-            windowElement.style.top = "120px";
-
-        }
-    }
-
-    if (windowElement.id === "shutdown-dialog") {
-
-    windowElement.style.left = "50%";
-    windowElement.style.top = "50%";
-    windowElement.style.transform = "translate(-50%, -50%)";
-
-}
-
-   bringToFront(windowElement);
-
-
-requestAnimationFrame(() => {
-    bringToFront(windowElement);
-});
-
-createTaskButton(windowElement);
-
-    if (windowElement.taskButton) {
-        windowElement.taskButton.classList.add("active");
-    }
-}
-
-// --------------------
-
-function closeWindow(windowElement){
-
-    windowElement.classList.add("hidden");
-
-    // Stop SoundCloud and Bandcamp playback
-    // when the Music window is closed
-    if (windowElement.id === "music-window") {
-
-        const musicIframes =
-            windowElement.querySelectorAll("iframe");
-
-        musicIframes.forEach(iframe => {
-
-            const currentSource = iframe.src;
-
-            iframe.src = "";
-
-            requestAnimationFrame(() => {
-                iframe.src = currentSource;
-            });
-
-        });
-
-    }
-
-    if(windowElement.taskButton){
-
-        windowElement.taskButton.remove();
-
-        windowElement.taskButton = null;
-
-    }
-
-}
-
-// --------------------
-
-function bringToFront(windowElement) {
-    if (!windowElement) {
-        return;
-    }
-
-    /*
-     * Only visible application windows participate in stacking. Hidden
-     * dialogs can otherwise retain an old high z-index and interfere with
-     * the window the visitor has just selected from the desktop.
-     */
-    const visibleWindows = Array.from(
-        document.querySelectorAll(".window:not(.hidden)")
-    );
-
-    const currentHighestZ = visibleWindows.reduce(
-        (highestValue, currentWindow) => {
-            const currentZIndex = Number.parseInt(
-                window.getComputedStyle(currentWindow).zIndex,
-                10
-            );
-
-            return Number.isNaN(currentZIndex)
-                ? highestValue
-                : Math.max(highestValue, currentZIndex);
-        },
-        highestZ
-    );
-
-    highestZ = currentHighestZ + 1;
-    windowElement.style.zIndex = String(highestZ);
-
-    visibleWindows.forEach(currentWindow => {
-        currentWindow.classList.toggle(
-            "active-window",
-            currentWindow === windowElement
-        );
-    });
-}
-
-// --------------------
-// Configura cada janela
-// --------------------
-
-windows.forEach(windowElement=>{
-    
-        windowElement.addEventListener("mousedown", () => {
         bringToFront(windowElement);
+        markWindowAsActive(windowElement);
     });
 
-    const close =
-        windowElement.querySelector(".close");
-        
-    const minimize =
-        windowElement.querySelector(".minimize");
+    const closeButton = windowElement.querySelector(".close");
+    const minimizeButton = windowElement.querySelector(".minimize");
+    const maximizeButton = windowElement.querySelector(".maximize");
 
-    const maximize =
-        windowElement.querySelector(".maximize");
+    let maximized = false;
 
-    let maximized=false;
-
-    if(close){
-
-        close.addEventListener("click",()=>{
-
+    if (closeButton) {
+        closeButton.addEventListener("click", event => {
+            event.stopPropagation();
             closeWindow(windowElement);
-
         });
-
     }
 
-    if(minimize){
+    if (minimizeButton) {
+        minimizeButton.addEventListener("click", event => {
+            event.stopPropagation();
+            minimizeWindow(windowElement);
+        });
+    }
 
-    minimize.addEventListener("click",()=>{
+    if (maximizeButton) {
+        maximizeButton.addEventListener("click", event => {
+            event.stopPropagation();
 
-        windowElement.classList.add("hidden");
-
-        if (windowElement.id === "music-window") {
-
-            const musicIframes =
-                windowElement.querySelectorAll("iframe");
-
-            musicIframes.forEach(iframe => {
-
-                const currentSource = iframe.src;
-
-                iframe.src = "";
-
-                requestAnimationFrame(() => {
-                    iframe.src = currentSource;
-                });
-
-            });
-
-        }
-
-    });
-
-}
-
-    if(maximize){
-
-        maximize.addEventListener("click",()=>{
-
-            if(!maximized){
-
-                windowElement.dataset.left=
-                windowElement.style.left;
-
-                windowElement.dataset.top=
-                windowElement.style.top;
-
-                windowElement.dataset.width =
+            if (!maximized) {
+                windowElement.dataset.left = windowElement.style.left;
+                windowElement.dataset.top = windowElement.style.top;
+                windowElement.dataset.width = (
                     windowElement.style.width ||
-                    `${windowElement.offsetWidth}px`;
-
-                windowElement.dataset.height =
+                    `${windowElement.offsetWidth}px`
+                );
+                windowElement.dataset.height = (
                     windowElement.style.height ||
-                    `${windowElement.offsetHeight}px`;
+                    `${windowElement.offsetHeight}px`
+                );
 
-                windowElement.style.left="0";
-
-                windowElement.style.top="0";
-
-                windowElement.style.width="100vw";
-
-                windowElement.style.height="calc(100vh - 38px)";
-
+                windowElement.style.left = "0";
+                windowElement.style.top = "0";
+                windowElement.style.width = "100vw";
+                windowElement.style.height = "calc(100vh - 38px)";
                 windowElement.classList.add("is-maximized");
-                maximized=true;
-
+                maximized = true;
+                return;
             }
 
-            else{
-
-                windowElement.style.left=
-                windowElement.dataset.left || "180px";
-
-                windowElement.style.top=
-                windowElement.dataset.top || "120px";
-
-                windowElement.style.width=
-                windowElement.dataset.width || "620px";
-
-                windowElement.style.height=
-                windowElement.dataset.height || "auto";
-
-                windowElement.classList.remove("is-maximized");
-                maximized=false;
-
-            }
-
+            windowElement.style.left = windowElement.dataset.left || "180px";
+            windowElement.style.top = windowElement.dataset.top || "120px";
+            windowElement.style.width = windowElement.dataset.width || "620px";
+            windowElement.style.height = windowElement.dataset.height || "auto";
+            windowElement.classList.remove("is-maximized");
+            maximized = false;
         });
-
     }
-
 });
+
+
+// ====================================
+// TASKBAR BUTTONS
+// ====================================
 
 function createTaskButton(windowElement) {
-
-    if (windowElement.taskButton) return;
-
-    const button = document.createElement("button");
-    button.className = "task-button";
+    if (!windowElement || windowElement.taskButton) return;
 
     const windowId = windowElement.dataset.windowId;
+
+    /* Dialogs without an application ID do not belong in the taskbar. */
+    if (!windowId) return;
 
     const iconPaths = {
         about: "assets/icons/about me.ico",
@@ -782,6 +987,7 @@ function createTaskButton(windowElement) {
         "miku 2010": "assets/icons/photography.ico",
         "san francisco 2012": "assets/icons/photography.ico",
         "in my room 2017": "assets/icons/photography.ico",
+        hanekawa: "assets/icons/photography.ico",
         "graphic-arts": "assets/icons/graphic arts.ico",
         "graphic-project-one": "assets/icons/graphic arts.ico",
         "graphic-project-two": "assets/icons/graphic arts.ico",
@@ -794,24 +1000,20 @@ function createTaskButton(windowElement) {
         "image-preview": "assets/icons/photography.ico"
     };
 
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "task-button";
+
     const icon = document.createElement("img");
     icon.className = "task-button-icon";
-
-    icon.src =
-        iconPaths[windowId] ||
-        "assets/icons/computer.ico";
-
+    icon.src = iconPaths[windowId] || "assets/icons/computer.ico";
     icon.alt = "";
 
     const text = document.createElement("span");
     text.className = "task-button-text";
 
-    const title =
-        windowElement.querySelector(".title-bar span");
-
-    text.textContent = title
-        ? title.textContent
-        : windowId;
+    const title = windowElement.querySelector(".title-bar span");
+    text.textContent = title ? title.textContent : windowId;
 
     const closeTab = document.createElement("span");
     closeTab.className = "task-button-close";
@@ -819,38 +1021,36 @@ function createTaskButton(windowElement) {
     closeTab.title = `Close ${text.textContent}`;
     closeTab.setAttribute("aria-hidden", "true");
 
-    button.appendChild(icon);
-    button.appendChild(text);
-    button.appendChild(closeTab);
+    button.append(icon, text, closeTab);
 
-    closeTab.addEventListener("click", event => {
+    const closeFromTaskbar = event => {
         event.preventDefault();
         event.stopPropagation();
         closeWindow(windowElement);
-    });
+    };
+
+    closeTab.addEventListener("click", closeFromTaskbar);
 
     button.addEventListener("click", () => {
-
-        if (windowElement.classList.contains("hidden")) {
-
-            windowElement.classList.remove("hidden");
-
-            bringToFront(windowElement);
-
-            button.classList.add("active");
-
-        } else {
-
-            windowElement.classList.add("hidden");
-
-            button.classList.remove("active");
+        if (!isWindowVisible(windowElement)) {
+            restoreWindow(windowElement);
+            return;
         }
+
+        /* Windows-style behavior: active task button minimizes. */
+        if (windowElement.classList.contains("active-window")) {
+            minimizeWindow(windowElement);
+            return;
+        }
+
+        bringToFront(windowElement);
+        markWindowAsActive(windowElement);
     });
 
     taskbarWindows.appendChild(button);
-
     windowElement.taskButton = button;
 }
+
 
 // ====================================
 // CLOCK + AERO MONTH CALENDAR
@@ -858,9 +1058,6 @@ function createTaskButton(windowElement) {
 
 const clock =
     document.getElementById("clock");
-
-const clockArea =
-    document.getElementById("clock-area");
 
 const clockCalendar =
     document.getElementById("clock-calendar");
@@ -1066,17 +1263,6 @@ updateClock();
 buildCalendar();
 
 setInterval(updateClock, 1000);
-
-const homeIcon = document.querySelector('.icon[data-window="home"]');
-
-homeIcon.addEventListener("click", () => {
-
-    document.querySelectorAll(".window").forEach(window => {
-        window.classList.add("hidden");
-    });
-
-});
-
 
 windows.forEach(window => {
 
@@ -1927,32 +2113,19 @@ startMenu.addEventListener("click",(e)=>{
 
 });
 
-document.querySelectorAll(".start-item[data-window]").forEach(item=>{
-
+document.querySelectorAll(".start-item[data-window]").forEach(item => {
     item.addEventListener("click", event => {
-
         event.preventDefault();
         event.stopPropagation();
 
         startMenu.classList.add("hidden");
 
-        const windowElement =
-        document.querySelector(
-            `[data-window-id="${item.dataset.window}"]`
-        );
+        const windowElement = getWindowById(item.dataset.window);
 
         if (windowElement) {
-
             openWindow(windowElement);
-
-            requestAnimationFrame(() => {
-                bringToFront(windowElement);
-            });
-
         }
-
     });
-
 });
 
 // ====================================
@@ -2787,6 +2960,9 @@ const trojanProgram =
 const trojanWindow =
     document.getElementById("trojan-window");
 
+const trojanBinaryVideo =
+    trojanWindow?.querySelector(".trojan-binary-video") || null;
+
 const trojanTerminal =
     document.getElementById("trojan-terminal");
 
@@ -2855,6 +3031,46 @@ const trojanLines = [
     "",
      "[PROCESS] Opening payload installer..."
 ];
+
+function startTrojanBinaryVideo() {
+    if (!trojanBinaryVideo) return;
+
+    trojanBinaryVideo.muted = true;
+    trojanBinaryVideo.defaultMuted = true;
+    trojanBinaryVideo.loop = true;
+    trojanBinaryVideo.playsInline = true;
+
+    const actuallyPlay = () => {
+        try {
+            trojanBinaryVideo.currentTime = 0;
+        } catch (error) {
+            /* Metadata may still be loading. */
+        }
+
+        trojanBinaryVideo.classList.add("trojan-video-active");
+
+        window.requestAnimationFrame(() => {
+            const playAttempt = trojanBinaryVideo.play();
+
+            if (
+                playAttempt &&
+                typeof playAttempt.catch === "function"
+            ) {
+                playAttempt.catch(() => {
+                    trojanBinaryVideo.classList.remove("trojan-video-active");
+                });
+            }
+        });
+    };
+
+    if (trojanBinaryVideo.readyState >= 2) {
+        actuallyPlay();
+    } else {
+        trojanBinaryVideo.addEventListener("loadeddata", actuallyPlay, { once: true });
+        trojanBinaryVideo.addEventListener("canplay", actuallyPlay, { once: true });
+        trojanBinaryVideo.load();
+    }
+}
 
 function wait(milliseconds) {
     return new Promise(resolve => {
@@ -3016,11 +3232,9 @@ async function runTrojanLoader(sequenceId) {
 }
 
 async function runTrojanSequence() {
-
     trojanSequenceId++;
 
-    const currentSequenceId =
-        trojanSequenceId;
+    const currentSequenceId = trojanSequenceId;
 
     trojanTerminal.innerHTML = "";
 
@@ -3033,28 +3247,25 @@ async function runTrojanSequence() {
     );
 
     trojanLoader.classList.remove(
-    "trojan-loader-visible"
-);
+        "trojan-loader-visible"
+    );
 
-trojanLoader.setAttribute(
-    "aria-hidden",
-    "true"
-);
+    trojanLoader.setAttribute(
+        "aria-hidden",
+        "true"
+    );
 
-trojanLoaderFill.style.width = "0%";
-
-trojanLoaderPercentage.textContent = "0%";
+    trojanLoaderFill.style.width = "0%";
+    trojanLoaderPercentage.textContent = "0%";
 
     trojanWindow.classList.remove(
         "trojan-glitch"
     );
 
     openWindow(trojanWindow);
-
-
+    startTrojanBinaryVideo();
 
     for (const line of trojanLines) {
-
         const shouldContinue =
             await typeTrojanLine(
                 line,
@@ -3062,22 +3273,19 @@ trojanLoaderPercentage.textContent = "0%";
             );
 
         if (!shouldContinue) {
-    return;
-}
+            return;
+        }
     }
 
     const loaderCompleted =
-    await runTrojanLoader(
-        currentSequenceId
-    );
+        await runTrojanLoader(
+            currentSequenceId
+        );
 
-if (!loaderCompleted) {
-    return;
-}
+    if (!loaderCompleted) {
+        return;
+    }
 
-    /*
-     * Very short pause before the glitch.
-     */
     await wait(TROJAN_TIMING.preGlitch);
 
     if (currentSequenceId !== trojanSequenceId) {
@@ -3105,7 +3313,6 @@ if (!loaderCompleted) {
     trojanWindow.classList.remove(
         "trojan-glitch"
     );
-
 }
 
 if (
@@ -3251,7 +3458,7 @@ function fitMagicalLakeToMobileViewport(windowElement) {
 }
 
 function positionMobileWindow(windowElement) {
-    if (windowElement.id === "magical-lake-window") {
+    if (["magical-lake-window", "hermit-tower-window"].includes(windowElement.id)) {
         fitMagicalLakeToMobileViewport(
             windowElement
         );
@@ -3265,6 +3472,10 @@ function positionMobileWindow(windowElement) {
 const originalOpenWindowForMobile = openWindow;
 
 openWindow = function(windowElement) {
+    if (!windowElement || windowElement.id === "haunted-mansion-window") {
+        return;
+    }
+
     originalOpenWindowForMobile(windowElement);
 
     if (isMobileViewport()) {
@@ -3514,12 +3725,12 @@ window.addEventListener("DOMContentLoaded", () => {
 );
 
     function resizeLakeCanvasToScreen() {
-    const mobile = isMobileLakeLayout();
+    const fullLayout = useFullLakeLayout();
 
     let targetWidth = BASE_WIDTH;
     let targetHeight = BASE_HEIGHT;
 
-    if (mobile) {
+    if (fullLayout) {
         const rectangle = lakeScreen
             ? lakeScreen.getBoundingClientRect()
             : null;
@@ -3581,7 +3792,7 @@ window.addEventListener("DOMContentLoaded", () => {
     WIDTH = canvas.width;
     HEIGHT = canvas.height;
 
-    WATER_LINE = mobile
+    WATER_LINE = fullLayout
         ? Math.round(
             Math.max(
                 198,
@@ -4308,7 +4519,7 @@ window.addEventListener("DOMContentLoaded", () => {
      * Extra stars continue through the
      * taller mobile sky.
      */
-    if (isMobileLakeLayout()) {
+    if (useFullLakeLayout()) {
         for (
             let index = 0;
             index < 44;
@@ -4442,7 +4653,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
         context.fillStyle = "#0a1722";
 
-const mainTrunkHeight = isMobileLakeLayout()
+const mainTrunkHeight = useFullLakeLayout()
     ? Math.max(
         139,
         WATER_LINE - 35
@@ -4647,7 +4858,7 @@ drawLilyPads(time);
         5.3
     );
 
-    if (isMobileLakeLayout()) {
+    if (useFullLakeLayout()) {
         const lakeDepth =
             HEIGHT - WATER_LINE;
 
@@ -4837,19 +5048,13 @@ drawLilyPads(time);
         });
     }
 
-    function isMobileLakeLayout() {
-    return (
-        window.innerWidth <= 700 ||
-        (
-            lakeScreen &&
-            lakeScreen.clientWidth > 0 &&
-            lakeScreen.clientWidth < 560
-        )
-    );
+    function useFullLakeLayout() {
+    // The detailed tall composition is now shared by desktop and mobile.
+    return true;
 }
 
     function drawMoonlitPath(time) {
-    if (!isMobileLakeLayout()) return;
+    if (!useFullLakeLayout()) return;
 
     const centerX =
         WIDTH * 0.5;
@@ -5273,7 +5478,7 @@ drawLilyPads(time);
 }
 
     function drawNymphCircle(time) {
-    if (!isMobileLakeLayout()) return;
+    if (!useFullLakeLayout()) return;
 
     const centerX =
         WIDTH * 0.5;
@@ -5437,7 +5642,7 @@ drawLilyPads(time);
 }
 
     function drawCircleFairies(time) {
-    if (!isMobileLakeLayout()) return;
+    if (!useFullLakeLayout()) return;
 
     const centerX =
         WIDTH * 0.5;
@@ -5670,7 +5875,7 @@ drawMushroom(
         context.globalAlpha = 1;
     }
     function drawExtendedLakeDetails(time) {
-    if (!isMobileLakeLayout()) return;
+    if (!useFullLakeLayout()) return;
 
     const lakeHeight =
         HEIGHT - WATER_LINE;
@@ -7137,3 +7342,2409 @@ drawMushroom(
 
     resetView(true);
 })();
+
+
+
+// ====================================
+// HAUNTED MANSION — 32-BIT CODE-DRAWN PIXEL SCENE
+// ====================================
+
+(() => {
+    const canvas = document.getElementById("haunted-mansion-canvas");
+    const mansionWindow = document.getElementById("haunted-mansion-window");
+
+    if (!canvas || !mansionWindow) return;
+
+    const context = canvas.getContext("2d", { alpha: false });
+    if (!context) return;
+
+    const reducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+    );
+
+    const artCanvas = document.createElement("canvas");
+    const art = artCanvas.getContext("2d", { alpha: false });
+
+    if (!art) return;
+
+    context.imageSmoothingEnabled = false;
+    art.imageSmoothingEnabled = false;
+
+    const palette = {
+        black: "#030209",
+        ink: "#07050f",
+        ink2: "#0b0716",
+
+        sky0: "#05030d",
+        sky1: "#090617",
+        sky2: "#100922",
+        sky3: "#17102f",
+        sky4: "#211640",
+        sky5: "#2e1f55",
+        sky6: "#3b2a68",
+        skyFlash: "#756aa8",
+
+        cloud0: "#0e0c19",
+        cloud1: "#171326",
+        cloud2: "#221b3a",
+        cloud3: "#322750",
+        cloud4: "#493966",
+        cloud5: "#665184",
+        cloudLit: "#8d82ad",
+
+        moonGlow: "#706a9d",
+        moonRim: "#cbd1f3",
+        moon: "#f0f1ff",
+        moonShade1: "#d0d3ed",
+        moonShade2: "#aaa8d2",
+
+        mist0: "#211a36",
+        mist1: "#30264c",
+        hillFar: "#0c0917",
+        hillMid: "#100c20",
+        hillNear: "#151027",
+        pineFar: "#100d21",
+        pineMid: "#16112c",
+        pineNear: "#1d1638",
+
+        tree0: "#08060f",
+        tree1: "#100a1d",
+        tree2: "#211237",
+        tree3: "#382056",
+        moss0: "#1a102d",
+        moss1: "#2d1848",
+
+        stone0: "#090711",
+        stone1: "#100c1d",
+        stone2: "#191229",
+        stone3: "#24193a",
+        stone4: "#34234e",
+        stone5: "#4a3266",
+        stoneLit: "#6b4a83",
+
+        roof0: "#06050c",
+        roof1: "#0c0915",
+        roof2: "#151023",
+        roof3: "#221633",
+        roof4: "#38234d",
+
+        metal0: "#0b0814",
+        metal1: "#24163a",
+        metal2: "#4b3568",
+
+        orange0: "#6d231e",
+        orange1: "#a83b28",
+        orange2: "#e15e36",
+        orange3: "#ff8b49",
+        orange4: "#ffb65f",
+        orange5: "#ffe29a",
+
+        water0: "#050611",
+        water1: "#090b1b",
+        water2: "#101329",
+        water3: "#191b3b",
+        water4: "#272651",
+        water5: "#403b72",
+        water6: "#6d649a",
+
+        lightningGlow: "#8996e0",
+        lightningBlue: "#c8d3ff",
+        lightning: "#fbfbff"
+    };
+
+    const ART_WIDTH = 384;
+    const OUTPUT_SCALE = 2;
+
+    let logicalWidth = ART_WIDTH;
+    let logicalHeight = 288;
+    let lastSizeKey = "";
+
+    let stars = [];
+    let farTrees = [];
+    let waterMarks = [];
+    let stoneNoise = [];
+    let foliageDots = [];
+    let rainSpecks = [];
+
+    let nextStrikeAt = 0;
+    let strikeStartedAt = -Infinity;
+    let strikeDuration = 620;
+    let lightningMain = [];
+    let lightningBranches = [];
+    let lightningSideGlow = 1;
+
+    function clamp(value, minimum, maximum) {
+        return Math.max(minimum, Math.min(maximum, value));
+    }
+
+    function mix(minimum, maximum, amount) {
+        return minimum + (maximum - minimum) * amount;
+    }
+
+    function px(value) {
+        return Math.round(value);
+    }
+
+    function hashSeed(text) {
+        let seed = 2166136261;
+
+        for (let index = 0; index < text.length; index += 1) {
+            seed ^= text.charCodeAt(index);
+            seed = Math.imul(seed, 16777619);
+        }
+
+        return seed >>> 0;
+    }
+
+    function makeRandom(seed) {
+        let value = seed >>> 0;
+
+        return () => {
+            value += 0x6D2B79F5;
+            let result = value;
+            result = Math.imul(result ^ (result >>> 15), result | 1);
+            result ^= result + Math.imul(result ^ (result >>> 7), result | 61);
+            return ((result ^ (result >>> 14)) >>> 0) / 4294967296;
+        };
+    }
+
+    function randomBetween(minimum, maximum) {
+        return minimum + Math.random() * (maximum - minimum);
+    }
+
+    function setCanvasSize() {
+        const screen = canvas.parentElement;
+        if (!screen) return;
+
+        const rectangle = screen.getBoundingClientRect();
+        const cssWidth = Math.max(320, rectangle.width || 860);
+        const cssHeight = Math.max(240, rectangle.height || 620);
+        const nextLogicalHeight = clamp(
+            Math.round(ART_WIDTH * (cssHeight / cssWidth)),
+            236,
+            430
+        );
+
+        const sizeKey = `${ART_WIDTH}x${nextLogicalHeight}`;
+        if (sizeKey === lastSizeKey) return;
+
+        lastSizeKey = sizeKey;
+        logicalWidth = ART_WIDTH;
+        logicalHeight = nextLogicalHeight;
+
+        artCanvas.width = logicalWidth;
+        artCanvas.height = logicalHeight;
+
+        canvas.width = logicalWidth * OUTPUT_SCALE;
+        canvas.height = logicalHeight * OUTPUT_SCALE;
+
+        context.imageSmoothingEnabled = false;
+        art.imageSmoothingEnabled = false;
+
+        rebuildStaticSceneData(sizeKey);
+    }
+
+    function rebuildStaticSceneData(sizeKey) {
+        const random = makeRandom(hashSeed(`haunted32:${sizeKey}`));
+
+        stars = Array.from({ length: 115 }, () => ({
+            x: Math.floor(random() * logicalWidth),
+            y: Math.floor(random() * logicalHeight * 0.42),
+            size: random() > 0.92 ? 2 : 1,
+            bright: random() > 0.70
+        }));
+
+        farTrees = [];
+        for (let x = -6; x < logicalWidth + 10; x += 6 + Math.floor(random() * 4)) {
+            farTrees.push({
+                x,
+                height: Math.floor(mix(18, 42, random())),
+                width: Math.floor(mix(10, 20, random())),
+                tone: random() > 0.5 ? 1 : 0
+            });
+        }
+
+        waterMarks = Array.from({ length: 135 }, () => ({
+            x: Math.floor(random() * logicalWidth),
+            y: random(),
+            width: Math.floor(mix(3, 24, random())),
+            tone: Math.floor(random() * 5),
+            phase: random() * Math.PI * 2,
+            speed: mix(0.35, 1.2, random())
+        }));
+
+        stoneNoise = Array.from({ length: 160 }, () => ({
+            x: random(),
+            y: random(),
+            w: random() > 0.78 ? 5 : random() > 0.5 ? 3 : 2,
+            tone: random()
+        }));
+
+        foliageDots = Array.from({ length: 170 }, () => ({
+            x: random(),
+            y: random(),
+            size: random() > 0.86 ? 2 : 1,
+            tone: random()
+        }));
+
+        rainSpecks = Array.from({ length: 70 }, () => ({
+            x: random() * logicalWidth,
+            y: random() * logicalHeight,
+            length: random() > 0.72 ? 3 : 2,
+            phase: random() * 1000
+        }));
+    }
+
+    function fillRect(x, y, width, height, color) {
+        art.fillStyle = color;
+        art.fillRect(px(x), px(y), Math.max(1, px(width)), Math.max(1, px(height)));
+    }
+
+    function rectOutline(x, y, width, height, color, thickness = 1) {
+        fillRect(x, y, width, thickness, color);
+        fillRect(x, y + height - thickness, width, thickness, color);
+        fillRect(x, y, thickness, height, color);
+        fillRect(x + width - thickness, y, thickness, height, color);
+    }
+
+    function polygon(points, color) {
+        if (!points.length) return;
+
+        art.fillStyle = color;
+        art.beginPath();
+        art.moveTo(px(points[0][0]), px(points[0][1]));
+
+        for (let index = 1; index < points.length; index += 1) {
+            art.lineTo(px(points[index][0]), px(points[index][1]));
+        }
+
+        art.closePath();
+        art.fill();
+    }
+
+    function strokePath(points, color, width = 1, alpha = 1) {
+        if (!points.length) return;
+
+        art.save();
+        art.globalAlpha = alpha;
+        art.strokeStyle = color;
+        art.lineWidth = width;
+        art.lineJoin = "miter";
+        art.lineCap = "square";
+        art.beginPath();
+        art.moveTo(px(points[0][0]), px(points[0][1]));
+
+        for (let index = 1; index < points.length; index += 1) {
+            art.lineTo(px(points[index][0]), px(points[index][1]));
+        }
+
+        art.stroke();
+        art.restore();
+    }
+
+    function ellipse(x, y, radiusX, radiusY, color) {
+        art.fillStyle = color;
+        art.beginPath();
+        art.ellipse(px(x), px(y), Math.max(1, px(radiusX)), Math.max(1, px(radiusY)), 0, 0, Math.PI * 2);
+        art.fill();
+    }
+
+    function ditherRect(x, y, width, height, color, density = 0.5, phase = 0) {
+        art.fillStyle = color;
+        const startX = px(x);
+        const startY = px(y);
+        const endX = px(x + width);
+        const endY = px(y + height);
+        const threshold = Math.max(1, Math.round(1 / Math.max(0.08, density)));
+
+        for (let yy = startY; yy < endY; yy += 2) {
+            for (let xx = startX; xx < endX; xx += 2) {
+                if (((xx + yy + phase) / 2) % threshold < 1) {
+                    art.fillRect(xx, yy, 1, 1);
+                }
+            }
+        }
+    }
+
+    function drawSky(flash) {
+        const colors = [
+            palette.sky0,
+            palette.sky1,
+            palette.sky2,
+            palette.sky3,
+            palette.sky4,
+            palette.sky5,
+            palette.sky6
+        ];
+
+        const skyBottom = logicalHeight * 0.62;
+        const bandHeight = Math.ceil(skyBottom / colors.length);
+
+        colors.forEach((color, index) => {
+            fillRect(0, index * bandHeight, logicalWidth, bandHeight + 2, color);
+
+            if (index > 0) {
+                ditherRect(
+                    0,
+                    index * bandHeight - 4,
+                    logicalWidth,
+                    8,
+                    colors[index - 1],
+                    0.34,
+                    index
+                );
+            }
+        });
+
+        if (flash > 0.03) {
+            art.save();
+            art.globalAlpha = flash * 0.32;
+            fillRect(0, 0, logicalWidth, skyBottom, palette.skyFlash);
+            art.restore();
+        }
+
+        stars.forEach(star => {
+            if (flash > 0.48 && !star.bright) return;
+            const tone = star.bright ? palette.moonRim : palette.cloud5;
+            fillRect(star.x, star.y, star.size, star.size, tone);
+        });
+    }
+
+    function drawMoon(flash) {
+        const x = logicalWidth * 0.185;
+        const y = logicalHeight * 0.19;
+        const radius = clamp(logicalWidth * 0.080, 24, 34);
+
+        ellipse(x, y, radius + 7, radius + 7, palette.moonGlow);
+        ditherRect(x - radius - 8, y - radius - 8, (radius + 8) * 2, (radius + 8) * 2, palette.sky5, 0.42, 1);
+        ellipse(x, y, radius + 2, radius + 2, palette.moonRim);
+        ellipse(x, y, radius, radius, flash > 0.62 ? "#ffffff" : palette.moon);
+
+        ellipse(x - radius * 0.34, y - radius * 0.23, radius * 0.18, radius * 0.12, palette.moonShade1);
+        ellipse(x + radius * 0.25, y - radius * 0.12, radius * 0.12, radius * 0.08, palette.moonShade2);
+        ellipse(x + radius * 0.06, y + radius * 0.27, radius * 0.24, radius * 0.12, palette.moonShade1);
+        ellipse(x - radius * 0.25, y + radius * 0.24, radius * 0.09, radius * 0.07, palette.moonShade2);
+
+        drawBat(x - 8, y - 2, 1.15);
+        drawBat(x + 22, y + 6, 0.72);
+        drawBat(x - 29, y + 14, 0.58);
+    }
+
+    function drawBat(x, y, scale, wing = 0) {
+        const flap = clamp(wing, -1, 1);
+        const wingTipY = y - (4 + flap * 3.1) * scale;
+        const lowerWingY = y + (2.5 - flap * 0.9) * scale;
+
+        polygon([
+            [x - 7 * scale, y],
+            [x - 4 * scale, wingTipY],
+            [x - 1.5 * scale, y - 1.5 * scale],
+            [x, y - 3 * scale],
+            [x + 1.5 * scale, y - 1.5 * scale],
+            [x + 4 * scale, wingTipY],
+            [x + 7 * scale, y],
+            [x + 3.5 * scale, y - 0.5 * scale],
+            [x + 1.4 * scale, lowerWingY],
+            [x, y + 1.2 * scale],
+            [x - 1.4 * scale, lowerWingY],
+            [x - 3.5 * scale, y - 0.5 * scale]
+        ], palette.black);
+    }
+
+    function drawPerspectiveBats(now) {
+        if (reducedMotion.matches) return;
+
+        const flights = [
+            { phase: 0.02, side: -1, lane: -0.08, scale: 5.4 },
+            { phase: 0.21, side:  1, lane:  0.07, scale: 4.4 },
+            { phase: 0.43, side: -1, lane:  0.03, scale: 3.9 },
+            { phase: 0.68, side:  1, lane: -0.04, scale: 4.8 }
+        ];
+
+        const cycleMs = 9800;
+        const activePortion = 0.61;
+
+        flights.forEach((flight, index) => {
+            const cycle = ((now / cycleMs) + flight.phase) % 1;
+            if (cycle > activePortion) return;
+
+            const progress = cycle / activePortion;
+            const eased = 1 - Math.pow(1 - progress, 2.15);
+            const side = flight.side;
+
+            // Start oversized and just behind/below the observer, then arc
+            // toward one side of the distant sky while shrinking rapidly.
+            const startX = logicalWidth * (0.5 + flight.lane);
+            const endX = logicalWidth * (side < 0 ? 0.075 : 0.925);
+            const curve = Math.sin(progress * Math.PI) * logicalWidth * 0.085 * side;
+            const x = mix(startX, endX, eased) + curve;
+            const y = mix(logicalHeight * 1.06, logicalHeight * 0.245, eased)
+                - Math.sin(progress * Math.PI) * logicalHeight * 0.075;
+
+            const perspective = Math.pow(1 - progress, 1.85);
+            const scale = 0.34 + flight.scale * perspective;
+            const wing = Math.sin(now * 0.020 + index * 1.7 + progress * 14);
+
+            art.save();
+            art.globalAlpha = clamp(0.34 + perspective * 0.66, 0, 1);
+            drawBat(x, y, scale, wing);
+            art.restore();
+        });
+    }
+
+    function drawCloudCluster(x, y, width, height, tone, litTone, flash, drift = 0) {
+        const xx = x + drift;
+
+        ellipse(xx + width * 0.14, y + height * 0.58, width * 0.18, height * 0.29, tone);
+        ellipse(xx + width * 0.30, y + height * 0.39, width * 0.23, height * 0.38, tone);
+        ellipse(xx + width * 0.50, y + height * 0.49, width * 0.28, height * 0.36, tone);
+        ellipse(xx + width * 0.70, y + height * 0.36, width * 0.19, height * 0.30, tone);
+        ellipse(xx + width * 0.85, y + height * 0.57, width * 0.17, height * 0.25, tone);
+        fillRect(xx + width * 0.10, y + height * 0.53, width * 0.78, height * 0.31, tone);
+
+        const highlight = flash > 0.25 ? litTone : palette.cloud4;
+        art.save();
+        art.globalAlpha = flash > 0.25 ? 0.38 + flash * 0.25 : 0.36;
+        ellipse(xx + width * 0.36, y + height * 0.32, width * 0.17, height * 0.12, highlight);
+        ellipse(xx + width * 0.68, y + height * 0.33, width * 0.11, height * 0.09, highlight);
+        art.restore();
+
+        ditherRect(xx + width * 0.08, y + height * 0.66, width * 0.76, height * 0.18, palette.cloud0, 0.32, px(x + y));
+    }
+
+    function drawClouds(now, flash) {
+        const drift = reducedMotion.matches ? 0 : Math.floor((now / 2100) % 12);
+
+        drawCloudCluster(-46 + drift, logicalHeight * 0.09, 155, 32, palette.cloud1, palette.cloudLit, flash, 0);
+        drawCloudCluster(45 - drift * 0.35, logicalHeight * 0.27, 145, 27, palette.cloud2, palette.cloudLit, flash, 0);
+        drawCloudCluster(167 + drift * 0.4, logicalHeight * 0.07, 166, 35, palette.cloud3, palette.cloudLit, flash, 0);
+        drawCloudCluster(287 - drift * 0.55, logicalHeight * 0.22, 130, 30, palette.cloud1, palette.cloudLit, flash, 0);
+        drawCloudCluster(116 + drift * 0.25, logicalHeight * 0.36, 190, 25, palette.cloud1, palette.cloudLit, flash, 0);
+    }
+
+    function drawHillsAndForest(flash) {
+        const horizon = logicalHeight * 0.665;
+
+        polygon([
+            [0, horizon],
+            [0, horizon - 29],
+            [31, horizon - 47],
+            [64, horizon - 35],
+            [95, horizon - 54],
+            [128, horizon - 37],
+            [169, horizon - 58],
+            [211, horizon - 39],
+            [247, horizon - 52],
+            [291, horizon - 35],
+            [333, horizon - 49],
+            [logicalWidth, horizon - 30],
+            [logicalWidth, horizon]
+        ], flash > 0.48 ? palette.mist0 : palette.hillFar);
+
+        polygon([
+            [0, horizon],
+            [0, horizon - 17],
+            [36, horizon - 30],
+            [76, horizon - 20],
+            [112, horizon - 36],
+            [151, horizon - 23],
+            [195, horizon - 39],
+            [235, horizon - 20],
+            [278, horizon - 35],
+            [325, horizon - 22],
+            [logicalWidth, horizon - 31],
+            [logicalWidth, horizon]
+        ], palette.hillMid);
+
+        farTrees.forEach(tree => {
+            const baseY = horizon + 2;
+            const tone = tree.tone ? palette.pineMid : palette.pineFar;
+            drawPine(tree.x, baseY, tree.width, tree.height, tone, palette.hillFar);
+        });
+
+        art.save();
+        art.globalAlpha = 0.55 + flash * 0.12;
+        fillRect(0, horizon - 8, logicalWidth, 8, palette.mist0);
+        ditherRect(0, horizon - 13, logicalWidth, 10, palette.mist1, 0.27, 2);
+        art.restore();
+    }
+
+    function drawPine(x, baseY, width, height, tone, shadowTone = null) {
+        const shadow = shadowTone || tone;
+        fillRect(x - 1, baseY - height * 0.68, 3, height * 0.68, shadow);
+
+        const tiers = 5;
+        for (let tier = 0; tier < tiers; tier += 1) {
+            const topY = baseY - height + tier * (height * 0.13);
+            const tierWidth = width * (0.42 + tier * 0.16);
+            polygon([
+                [x, topY],
+                [x - tierWidth * 0.55, topY + height * 0.20],
+                [x - tierWidth * 0.22, topY + height * 0.17],
+                [x - tierWidth * 0.72, topY + height * 0.29],
+                [x + tierWidth * 0.72, topY + height * 0.29],
+                [x + tierWidth * 0.22, topY + height * 0.17],
+                [x + tierWidth * 0.55, topY + height * 0.20]
+            ], tier % 2 ? shadow : tone);
+        }
+    }
+
+    function drawDistantTrees() {
+        const baseY = logicalHeight * 0.72;
+
+        drawPine(102, baseY, 31, 77, palette.pineNear, palette.pineMid);
+        drawPine(125, baseY + 2, 24, 58, palette.pineMid, palette.pineFar);
+        drawPine(311, baseY + 1, 30, 74, palette.pineNear, palette.pineMid);
+        drawPine(335, baseY + 2, 22, 54, palette.pineMid, palette.pineFar);
+        drawPine(77, baseY + 3, 18, 46, palette.pineMid, palette.pineFar);
+    }
+
+    function drawMansion(flash, now) {
+        const W = logicalWidth;
+        const H = logicalHeight;
+        const ground = H * 0.742;
+        const centerX = W * 0.605;
+        const baseLeft = centerX - 77;
+        const baseRight = centerX + 80;
+        const bodyTop = ground - 76;
+
+        // Foundation hill and approach.
+        polygon([
+            [W * 0.29, ground + 8],
+            [W * 0.34, ground - 7],
+            [W * 0.43, ground - 13],
+            [W * 0.61, ground - 17],
+            [W * 0.75, ground - 12],
+            [W * 0.83, ground - 4],
+            [W * 0.88, ground + 8],
+            [W * 0.88, ground + 20],
+            [W * 0.29, ground + 20]
+        ], palette.hillNear);
+
+        // Long rear wing.
+        fillRect(baseLeft, bodyTop + 18, baseRight - baseLeft, 62, palette.stone1);
+        fillRect(baseLeft + 4, bodyTop + 20, baseRight - baseLeft - 8, 2, palette.stone3);
+        fillRect(baseLeft + 1, bodyTop + 22, 3, 56, palette.stone4);
+        fillRect(baseRight - 5, bodyTop + 22, 4, 57, palette.stone0);
+
+        // Left and right projecting wings.
+        drawTower(baseLeft - 23, bodyTop + 6, 36, 74, 31, flash, "left");
+        drawTower(baseRight - 8, bodyTop + 11, 33, 69, 28, flash, "right");
+
+        // Central body and grand gable.
+        fillRect(centerX - 49, bodyTop - 8, 98, 89, palette.stone2);
+        fillRect(centerX - 46, bodyTop - 5, 3, 84, palette.stone4);
+        fillRect(centerX + 44, bodyTop - 2, 4, 82, palette.stone0);
+
+        polygon([
+            [centerX - 57, bodyTop - 6],
+            [centerX, bodyTop - 43],
+            [centerX + 57, bodyTop - 6]
+        ], palette.roof0);
+        polygon([
+            [centerX - 50, bodyTop - 7],
+            [centerX, bodyTop - 38],
+            [centerX + 22, bodyTop - 7]
+        ], palette.roof3);
+        strokePath([
+            [centerX - 55, bodyTop - 6],
+            [centerX, bodyTop - 43],
+            [centerX + 56, bodyTop - 6]
+        ], flash > 0.34 ? palette.stoneLit : palette.roof4, 1, 0.82);
+
+        // Main tower.
+        const towerX = centerX - 18;
+        const towerY = bodyTop - 70;
+        fillRect(towerX, towerY, 36, 95, palette.stone1);
+        fillRect(towerX + 2, towerY + 2, 3, 89, palette.stone4);
+        fillRect(towerX + 31, towerY + 4, 4, 88, palette.stone0);
+
+        // Tower crown and roof.
+        fillRect(towerX - 4, towerY + 14, 44, 6, palette.stone3);
+        fillRect(towerX - 5, towerY + 16, 46, 2, palette.stone5);
+        polygon([
+            [towerX - 4, towerY + 1],
+            [centerX, towerY - 45],
+            [towerX + 40, towerY + 1]
+        ], palette.roof0);
+        polygon([
+            [towerX + 2, towerY],
+            [centerX, towerY - 41],
+            [centerX + 8, towerY]
+        ], palette.roof3);
+        strokePath([
+            [towerX - 3, towerY + 1],
+            [centerX, towerY - 45],
+            [towerX + 39, towerY + 1]
+        ], flash > 0.28 ? palette.stoneLit : palette.roof4, 1, 0.8);
+
+        // Tall finial and weather vane.
+        fillRect(centerX, towerY - 56, 1, 12, flash > 0.55 ? palette.lightningBlue : palette.metal2);
+        fillRect(centerX - 6, towerY - 53, 12, 1, palette.metal2);
+        fillRect(centerX + 4, towerY - 55, 3, 2, palette.metal2);
+        polygon([
+            [centerX + 7, towerY - 55],
+            [centerX + 12, towerY - 53],
+            [centerX + 7, towerY - 51]
+        ], palette.metal1);
+
+        // Side turrets and pointed roofs.
+        drawTurret(centerX - 64, bodyTop - 17, 22, 66, 26, flash);
+        drawTurret(centerX + 50, bodyTop - 15, 21, 64, 24, flash);
+        drawTurret(baseLeft - 8, bodyTop + 1, 17, 55, 22, flash);
+        drawTurret(baseRight - 2, bodyTop + 1, 17, 54, 21, flash);
+
+        // Balcony under the tower.
+        fillRect(centerX - 29, towerY + 33, 58, 16, palette.stone2);
+        fillRect(centerX - 31, towerY + 47, 62, 3, palette.stone4);
+        fillRect(centerX - 31, towerY + 32, 62, 2, palette.stone5);
+        for (let x = centerX - 25; x <= centerX + 25; x += 7) {
+            fillRect(x, towerY + 29, 1, 5, palette.metal2);
+        }
+        fillRect(centerX - 29, towerY + 28, 58, 1, palette.metal2);
+
+        // Stone texture: tiny stable masonry marks.
+        stoneNoise.forEach(mark => {
+            const x = baseLeft + mark.x * (baseRight - baseLeft);
+            const y = bodyTop - 4 + mark.y * 82;
+
+            if (x > centerX - 17 && x < centerX + 18 && y < bodyTop + 4) return;
+
+            const color = mark.tone > 0.72
+                ? palette.stone4
+                : mark.tone > 0.36
+                    ? palette.stone3
+                    : palette.stone1;
+
+            art.save();
+            art.globalAlpha = 0.62;
+            fillRect(x, y, mark.w, 1, color);
+            art.restore();
+        });
+
+        // Roof shingles.
+        drawRoofShingles(centerX - 48, bodyTop - 33, 96, 27);
+        drawRoofShingles(centerX - 15, towerY - 35, 30, 33);
+
+        // Windows across the facade.
+        const flicker = reducedMotion.matches ? 1 : 0.92 + Math.sin(now / 570) * 0.08;
+        const windowGroups = [
+            [baseLeft - 13, bodyTop + 31, 0.72],
+            [baseLeft - 13, bodyTop + 53, 1],
+            [baseLeft + 18, bodyTop + 30, 0.92],
+            [baseLeft + 39, bodyTop + 31, 0.78],
+            [centerX - 34, bodyTop + 22, 0.9],
+            [centerX - 12, bodyTop + 18, 1],
+            [centerX + 13, bodyTop + 18, 0.82],
+            [centerX + 34, bodyTop + 22, 0.96],
+            [baseRight - 31, bodyTop + 34, 0.78],
+            [baseRight - 10, bodyTop + 31, 1],
+            [baseRight + 7, bodyTop + 51, 0.88],
+            [centerX - 8, towerY + 9, 1],
+            [centerX + 3, towerY + 9, 0.84],
+            [centerX - 7, towerY + 58, 0.82],
+            [centerX + 4, towerY + 58, 1]
+        ];
+
+        windowGroups.forEach(([x, y, intensity], index) => {
+            drawGothicWindow(x, y, index % 3 === 0 ? 7 : 6, index % 2 === 0 ? 13 : 12, intensity * flicker, flash);
+        });
+
+        // A human shadow is visible only when lightning illuminates the castle.
+        // It stands in the lower row of the main tower windows.
+        drawLightningWindowShadow(centerX + 4, towerY + 58, 6, 13, flash);
+
+        // Tall arched entrance.
+        drawDoor(centerX - 8, ground - 28, 16, 28, flash);
+
+        // Stairway.
+        for (let step = 0; step < 7; step += 1) {
+            const width = 24 + step * 7;
+            fillRect(centerX - width / 2, ground + step * 2, width, 2, step % 2 ? palette.stone2 : palette.stone4);
+        }
+
+        // Side stairs and retaining stones.
+        strokePath([
+            [centerX - 55, ground - 4],
+            [centerX - 48, ground + 4],
+            [centerX - 39, ground + 9]
+        ], palette.stone4, 2);
+        strokePath([
+            [centerX + 55, ground - 4],
+            [centerX + 47, ground + 4],
+            [centerX + 38, ground + 9]
+        ], palette.stone0, 2);
+
+        // Wrought iron fence and gate.
+        drawFence(baseLeft - 58, ground + 12, 58);
+        drawFence(baseRight, ground + 12, 54);
+        drawGate(centerX - 28, ground + 12, 56, 22);
+
+        // Gate pillars and lanterns.
+        drawGatePillar(centerX - 38, ground + 12, flash);
+        drawGatePillar(centerX + 34, ground + 12, flash);
+
+        // Ivy climbing one side.
+        drawIvy(baseRight - 21, bodyTop + 16, 44);
+    }
+
+    function drawTower(x, y, width, height, roofHeight, flash, side) {
+        fillRect(x, y, width, height, palette.stone1);
+        fillRect(x + 2, y + 2, 3, height - 4, palette.stone3);
+        fillRect(x + width - 4, y + 3, 3, height - 3, palette.stone0);
+
+        polygon([
+            [x - 4, y + 2],
+            [x + width * 0.5, y - roofHeight],
+            [x + width + 4, y + 2]
+        ], palette.roof0);
+        polygon([
+            [x + 2, y + 1],
+            [x + width * 0.5, y - roofHeight + 4],
+            [x + width * 0.62, y + 1]
+        ], palette.roof3);
+
+        const rim = flash > 0.34 ? palette.stoneLit : palette.roof4;
+        strokePath([
+            [x - 3, y + 1],
+            [x + width * 0.5, y - roofHeight],
+            [x + width + 3, y + 1]
+        ], rim, 1, 0.72);
+
+        if (side === "left") {
+            fillRect(x + 6, y + height * 0.54, 1, 13, palette.stone4);
+        }
+    }
+
+    function drawTurret(x, y, width, height, roofHeight, flash) {
+        fillRect(x, y, width, height, palette.stone1);
+        fillRect(x + 2, y + 2, 2, height - 4, palette.stone4);
+        fillRect(x + width - 3, y + 4, 2, height - 4, palette.stone0);
+
+        polygon([
+            [x - 3, y + 1],
+            [x + width * 0.5, y - roofHeight],
+            [x + width + 3, y + 1]
+        ], palette.roof0);
+        polygon([
+            [x + 1, y],
+            [x + width * 0.5, y - roofHeight + 3],
+            [x + width * 0.60, y]
+        ], palette.roof3);
+
+        if (flash > 0.35) {
+            strokePath([
+                [x - 2, y],
+                [x + width * 0.5, y - roofHeight],
+                [x + width + 2, y]
+            ], palette.stoneLit, 1, flash * 0.65);
+        }
+    }
+
+    function drawRoofShingles(x, y, width, height) {
+        art.save();
+        art.globalAlpha = 0.58;
+
+        for (let yy = y; yy < y + height; yy += 4) {
+            const row = Math.floor((yy - y) / 4);
+            const inset = row * 2.4;
+            const start = x + inset;
+            const end = x + width - inset;
+
+            for (let xx = start + (row % 2) * 3; xx < end; xx += 7) {
+                fillRect(xx, yy, 4, 1, row % 2 ? palette.roof2 : palette.roof4);
+            }
+        }
+
+        art.restore();
+    }
+
+    function drawGothicWindow(x, y, width, height, intensity, flash) {
+        const warm = intensity > 0.92
+            ? palette.orange4
+            : intensity > 0.78
+                ? palette.orange3
+                : palette.orange2;
+
+        fillRect(x - 1, y + 2, width + 2, height - 2, palette.stone0);
+        polygon([
+            [x - 1, y + 3],
+            [x + width * 0.5, y - 2],
+            [x + width + 1, y + 3]
+        ], palette.stone0);
+
+        const glow = flash > 0.68 ? palette.orange5 : warm;
+        fillRect(x, y + 3, width, height - 4, glow);
+        polygon([
+            [x, y + 3],
+            [x + width * 0.5, y],
+            [x + width, y + 3]
+        ], glow);
+
+        art.save();
+        art.globalAlpha = 0.55 + intensity * 0.35;
+        fillRect(x + Math.floor(width / 2), y + 2, 1, height - 2, palette.orange0);
+        fillRect(x, y + Math.floor(height * 0.53), width, 1, palette.orange0);
+        art.restore();
+
+        // Tiny sill / hot edge.
+        fillRect(x, y + height - 1, width, 1, palette.orange1);
+        if (intensity > 0.9) {
+            fillRect(x + 1, y + 4, 1, Math.max(2, height - 7), palette.orange5);
+        }
+    }
+
+    function drawLightningWindowShadow(x, y, width, height, flash) {
+        if (flash <= 0.055) return;
+
+        const visibility = clamp((flash - 0.055) / 0.42, 0, 1);
+        const center = Math.round(x + width * 0.5);
+        const headY = Math.round(y + 4);
+
+        art.save();
+        art.globalAlpha = 0.34 + visibility * 0.64;
+
+        // Head, neck, shoulders and narrow torso, clipped by the tiny gothic window.
+        fillRect(center - 1, headY, 3, 3, palette.black);
+        fillRect(center, headY + 3, 1, 1, palette.black);
+        fillRect(center - 2, headY + 4, 5, 2, palette.black);
+        fillRect(center - 1, headY + 6, 3, Math.max(2, height - 10), palette.black);
+
+        // Lightning rim makes the silhouette read as a person without glowing
+        // after the flash has gone.
+        art.globalAlpha = visibility * 0.22;
+        fillRect(center - 2, headY + 3, 1, 4, palette.lightningBlue);
+
+        art.restore();
+    }
+
+    function drawDoor(x, y, width, height, flash) {
+        fillRect(x - 2, y + 6, width + 4, height - 6, palette.stone0);
+        polygon([
+            [x - 2, y + 7],
+            [x + width * 0.5, y - 2],
+            [x + width + 2, y + 7]
+        ], palette.stone0);
+
+        fillRect(x, y + 8, width, height - 8, palette.orange0);
+        polygon([
+            [x, y + 8],
+            [x + width * 0.5, y + 1],
+            [x + width, y + 8]
+        ], palette.orange2);
+
+        fillRect(x + 2, y + 9, width - 4, height - 10, flash > 0.55 ? palette.orange4 : palette.orange2);
+        fillRect(x + width * 0.5, y + 7, 1, height - 7, palette.orange0);
+        fillRect(x + 2, y + 16, width - 4, 1, palette.orange0);
+        fillRect(x + width - 4, y + 20, 1, 1, palette.orange5);
+    }
+
+    function drawFence(x, baseY, width) {
+        fillRect(x, baseY - 10, width, 1, palette.metal1);
+        fillRect(x, baseY - 4, width, 1, palette.metal2);
+
+        for (let xx = x; xx <= x + width; xx += 6) {
+            fillRect(xx, baseY - 18, 1, 18, palette.metal2);
+            polygon([
+                [xx - 2, baseY - 18],
+                [xx, baseY - 23],
+                [xx + 2, baseY - 18]
+            ], palette.metal2);
+        }
+    }
+
+    function drawGate(x, baseY, width, height) {
+        fillRect(x, baseY - height, 2, height, palette.metal2);
+        fillRect(x + width - 2, baseY - height, 2, height, palette.metal2);
+        fillRect(x, baseY - height, width, 1, palette.metal2);
+
+        const half = width / 2;
+        for (let xx = x + 6; xx < x + width - 5; xx += 7) {
+            fillRect(xx, baseY - height + 4, 1, height - 4, palette.metal2);
+            polygon([
+                [xx - 2, baseY - height + 4],
+                [xx, baseY - height],
+                [xx + 2, baseY - height + 4]
+            ], palette.metal2);
+        }
+
+        strokePath([
+            [x + 2, baseY - height + 7],
+            [x + half, baseY - 2],
+            [x + width - 2, baseY - height + 7]
+        ], palette.metal1, 1);
+    }
+
+    function drawGatePillar(x, baseY, flash) {
+        fillRect(x, baseY - 27, 9, 27, palette.stone2);
+        fillRect(x + 1, baseY - 26, 2, 25, palette.stone4);
+        fillRect(x - 2, baseY - 29, 13, 3, palette.stone3);
+        fillRect(x - 1, baseY - 32, 11, 3, palette.stone1);
+
+        fillRect(x + 2, baseY - 38, 5, 6, palette.metal0);
+        fillRect(x + 3, baseY - 37, 3, 4, flash > 0.55 ? palette.orange5 : palette.orange4);
+        fillRect(x + 2, baseY - 39, 5, 1, palette.metal2);
+    }
+
+    function drawIvy(x, y, height) {
+        strokePath([
+            [x, y],
+            [x - 5, y + 10],
+            [x + 2, y + 18],
+            [x - 4, y + 27],
+            [x + 1, y + height]
+        ], palette.tree3, 1, 0.8);
+
+        for (let index = 0; index < 9; index += 1) {
+            const yy = y + 4 + index * 4;
+            const xx = x + (index % 2 ? 2 : -3);
+            fillRect(xx, yy, 3, 2, index % 3 ? palette.tree2 : palette.tree3);
+        }
+    }
+
+    function drawGroundAndFoliage(flash) {
+        const ground = logicalHeight * 0.742;
+        const waterTop = logicalHeight * 0.835;
+
+        fillRect(0, ground + 10, logicalWidth, waterTop - ground - 10, palette.hillNear);
+
+        // Cobblestone path from gate toward the pond.
+        polygon([
+            [logicalWidth * 0.545, ground + 16],
+            [logicalWidth * 0.665, ground + 16],
+            [logicalWidth * 0.74, waterTop],
+            [logicalWidth * 0.42, waterTop]
+        ], palette.stone1);
+
+        for (let row = 0; row < 9; row += 1) {
+            const y = ground + 20 + row * 5;
+            const widening = row * 5.3;
+            const left = logicalWidth * 0.605 - 25 - widening;
+            const width = 50 + widening * 2;
+            const offset = row % 2 ? 5 : 0;
+
+            for (let x = left + offset; x < left + width; x += 13) {
+                fillRect(x, y, 8, 1, row % 3 === 0 ? palette.stone4 : palette.stone3);
+            }
+        }
+
+        // Dense purple shrubs and rocks.
+        foliageDots.forEach(dot => {
+            const leftSide = dot.x < 0.5;
+            const xx = leftSide
+                ? mix(15, logicalWidth * 0.43, dot.x * 2)
+                : mix(logicalWidth * 0.78, logicalWidth - 15, (dot.x - 0.5) * 2);
+            const yy = mix(ground + 2, waterTop + 5, dot.y);
+            const color = dot.tone > 0.76
+                ? (flash > 0.45 ? palette.stoneLit : palette.tree3)
+                : dot.tone > 0.42
+                    ? palette.tree2
+                    : palette.pineNear;
+
+            fillRect(xx, yy, dot.size + 1, dot.size, color);
+        });
+
+        // Foreground rocks.
+        polygon([[8, waterTop], [23, waterTop - 17], [38, waterTop - 9], [49, waterTop], [49, waterTop + 9], [8, waterTop + 9]], palette.tree0);
+        polygon([[logicalWidth - 62, waterTop], [logicalWidth - 45, waterTop - 20], [logicalWidth - 28, waterTop - 12], [logicalWidth - 10, waterTop], [logicalWidth - 10, waterTop + 9], [logicalWidth - 62, waterTop + 9]], palette.tree0);
+        strokePath([[16, waterTop - 2], [24, waterTop - 14], [36, waterTop - 7]], palette.tree3, 2, 0.65);
+        strokePath([[logicalWidth - 56, waterTop - 1], [logicalWidth - 44, waterTop - 16], [logicalWidth - 31, waterTop - 8]], palette.tree3, 2, 0.65);
+    }
+
+    function drawWater(now, flash) {
+        const waterTop = logicalHeight * 0.835;
+        const height = logicalHeight - waterTop;
+
+        fillRect(0, waterTop, logicalWidth, height, palette.water0);
+        fillRect(0, waterTop, logicalWidth, 2, palette.water3);
+
+        // Moon reflection on the left.
+        const moonCenter = logicalWidth * 0.185;
+        for (let row = 0; row < 13; row += 1) {
+            const y = waterTop + 3 + row * 3;
+            const spread = 9 + row * 2.4;
+            const shift = Math.sin(now / 360 + row) * 3;
+            const tone = row % 3 === 0 ? palette.water6 : row % 2 ? palette.water5 : palette.cloud5;
+            fillRect(moonCenter - spread / 2 + shift, y, spread, 1, tone);
+        }
+
+        // Mansion window reflections.
+        const mansionCenter = logicalWidth * 0.605;
+        for (let row = 0; row < 12; row += 1) {
+            const y = waterTop + 3 + row * 3;
+            const spread = 13 + row * 1.7;
+            const shift = Math.sin(now / 420 + row * 0.8) * 2;
+            const tone = row % 4 === 0 ? palette.orange3 : row % 2 ? palette.orange1 : palette.water5;
+            art.save();
+            art.globalAlpha = row < 5 ? 0.92 : 0.64;
+            fillRect(mansionCenter - spread / 2 + shift, y, spread, 1, tone);
+            art.restore();
+        }
+
+        // Fine ripple field.
+        waterMarks.forEach(mark => {
+            const yy = waterTop + 2 + mark.y * Math.max(1, height - 3);
+            const shimmer = reducedMotion.matches
+                ? 0
+                : Math.sin(now / 520 * mark.speed + mark.phase) * 2;
+            const xx = mark.x + shimmer;
+            const tones = [palette.water1, palette.water2, palette.water3, palette.water4, palette.water5];
+            const color = tones[mark.tone] || palette.water2;
+            fillRect(xx, yy, mark.width, 1, color);
+        });
+
+        // Lightning reflection.
+        if (flash > 0.05) {
+            const boltX = lightningMain.length
+                ? lightningMain[lightningMain.length - 1][0]
+                : logicalWidth * 0.40;
+            const strength = flash;
+
+            art.save();
+            art.globalAlpha = 0.35 + strength * 0.55;
+            for (let row = 0; row < 11; row += 1) {
+                const y = waterTop + 2 + row * 3;
+                const width = 5 + row * 1.8;
+                const shift = Math.sin(row * 2.3 + now / 95) * 3;
+                fillRect(boltX - width / 2 + shift, y, width, 1, strength > 0.52 ? palette.lightning : palette.lightningGlow);
+            }
+            art.restore();
+        }
+    }
+
+    function drawGnarledTree(side, flash) {
+        const left = side === "left";
+        const dir = left ? 1 : -1;
+        const baseX = left ? 18 : logicalWidth - 18;
+        const baseY = logicalHeight + 6;
+        const trunkTopY = logicalHeight * 0.18;
+
+        // Thick trunk silhouette.
+        polygon([
+            [baseX - 17 * dir, baseY],
+            [baseX - 12 * dir, logicalHeight * 0.77],
+            [baseX - 9 * dir, logicalHeight * 0.59],
+            [baseX - 3 * dir, logicalHeight * 0.43],
+            [baseX + 2 * dir, logicalHeight * 0.31],
+            [baseX + 7 * dir, trunkTopY],
+            [baseX + 17 * dir, trunkTopY - 8],
+            [baseX + 13 * dir, logicalHeight * 0.36],
+            [baseX + 18 * dir, logicalHeight * 0.57],
+            [baseX + 23 * dir, logicalHeight * 0.77],
+            [baseX + 28 * dir, baseY]
+        ], palette.tree0);
+
+        // Main limbs crossing the top corners.
+        drawBranch([
+            [baseX + 5 * dir, logicalHeight * 0.39],
+            [baseX + 15 * dir, logicalHeight * 0.25],
+            [baseX + 31 * dir, logicalHeight * 0.14],
+            [baseX + 58 * dir, logicalHeight * 0.09],
+            [baseX + 86 * dir, logicalHeight * 0.11]
+        ], 8, flash, dir);
+
+        drawBranch([
+            [baseX + 7 * dir, logicalHeight * 0.48],
+            [baseX + 28 * dir, logicalHeight * 0.37],
+            [baseX + 52 * dir, logicalHeight * 0.33],
+            [baseX + 74 * dir, logicalHeight * 0.25]
+        ], 6, flash, dir);
+
+        drawBranch([
+            [baseX + 4 * dir, logicalHeight * 0.61],
+            [baseX + 26 * dir, logicalHeight * 0.66],
+            [baseX + 45 * dir, logicalHeight * 0.76]
+        ], 7, flash, dir);
+
+        drawBranch([
+            [baseX + 12 * dir, logicalHeight * 0.27],
+            [baseX + 7 * dir, logicalHeight * 0.15],
+            [baseX + 11 * dir, logicalHeight * 0.06]
+        ], 5, flash, dir);
+
+        // Smaller crooked twigs.
+        const twigSets = left
+            ? [
+                [[46, 56], [65, 42], [79, 41]],
+                [[70, 39], [83, 28], [99, 27]],
+                [[79, 93], [97, 83], [109, 84]],
+                [[42, 111], [57, 103], [67, 95]]
+            ]
+            : [
+                [[logicalWidth - 47, 62], [logicalWidth - 67, 46], [logicalWidth - 86, 47]],
+                [[logicalWidth - 70, 47], [logicalWidth - 89, 34], [logicalWidth - 107, 35]],
+                [[logicalWidth - 77, 96], [logicalWidth - 99, 83], [logicalWidth - 116, 86]],
+                [[logicalWidth - 43, 118], [logicalWidth - 61, 105], [logicalWidth - 75, 101]]
+            ];
+
+        twigSets.forEach(points => {
+            strokePath(points, palette.tree0, 3);
+            if (flash > 0.22) {
+                strokePath(points, palette.tree3, 1, flash * 0.48);
+            }
+        });
+
+        // Bark highlights.
+        strokePath([
+            [baseX - 2 * dir, logicalHeight * 0.72],
+            [baseX + 3 * dir, logicalHeight * 0.51],
+            [baseX + 10 * dir, logicalHeight * 0.30],
+            [baseX + 13 * dir, trunkTopY]
+        ], flash > 0.42 ? palette.stoneLit : palette.tree3, 2, 0.72);
+
+        strokePath([
+            [baseX + 9 * dir, logicalHeight * 0.83],
+            [baseX + 4 * dir, logicalHeight * 0.69],
+            [baseX + 8 * dir, logicalHeight * 0.54]
+        ], palette.tree2, 2, 0.8);
+
+        // Hanging moss / dead vines.
+        const mossX = left ? baseX + 38 : baseX - 44;
+        for (let index = 0; index < 9; index += 1) {
+            const x = mossX + dir * index * 7;
+            const y = logicalHeight * (0.115 + (index % 3) * 0.035);
+            const length = 11 + (index % 4) * 6;
+            strokePath([
+                [x, y],
+                [x + dir * 2, y + length * 0.45],
+                [x, y + length]
+            ], index % 2 ? palette.moss0 : palette.moss1, 1, 0.85);
+        }
+
+        // Roots.
+        drawBranch([
+            [baseX + 2 * dir, logicalHeight * 0.89],
+            [baseX + 28 * dir, logicalHeight * 0.91],
+            [baseX + 52 * dir, logicalHeight * 0.96]
+        ], 7, flash, dir);
+    }
+
+    function drawBranch(points, width, flash, dir) {
+        strokePath(points, palette.tree0, width);
+        strokePath(points, palette.tree1, Math.max(2, width - 3), 0.78);
+
+        const highlight = flash > 0.35 ? palette.stoneLit : palette.tree3;
+        const shifted = points.map(([x, y]) => [x - dir, y - 1]);
+        strokePath(shifted, highlight, 1, flash > 0.35 ? 0.45 + flash * 0.35 : 0.45);
+    }
+
+    function drawMist(now, flash) {
+        const y = logicalHeight * 0.69;
+        const drift = reducedMotion.matches ? 0 : Math.floor((now / 110) % 22);
+
+        art.save();
+        art.globalAlpha = 0.14 + flash * 0.08;
+        for (let row = 0; row < 4; row += 1) {
+            const offset = row % 2 ? -drift : drift;
+            fillRect(-28 + offset, y + row * 7, logicalWidth + 56, 2, row % 2 ? palette.mist0 : palette.mist1);
+            ditherRect(-20 + offset, y - 2 + row * 7, logicalWidth + 40, 7, palette.cloud5, 0.18, row);
+        }
+        art.restore();
+    }
+
+    function buildLightningPath() {
+        const startX = randomBetween(logicalWidth * 0.34, logicalWidth * 0.53);
+        const targetX = randomBetween(logicalWidth * 0.30, logicalWidth * 0.47);
+        const stopY = randomBetween(logicalHeight * 0.48, logicalHeight * 0.61);
+
+        const points = [[startX, -3]];
+        let x = startX;
+        let y = -3;
+
+        while (y < stopY) {
+            const nextY = Math.min(stopY, y + randomBetween(8, 16));
+            const progress = nextY / stopY;
+            const pull = (targetX - x) * (0.12 + progress * 0.08);
+            x += randomBetween(-11, 11) + pull;
+            x = clamp(x, logicalWidth * 0.18, logicalWidth * 0.62);
+            y = nextY;
+            points.push([x, y]);
+        }
+
+        return points;
+    }
+
+    function beginLightning(now) {
+        strikeStartedAt = now;
+        strikeDuration = randomBetween(560, 790);
+        lightningMain = buildLightningPath();
+        lightningBranches = [];
+        lightningSideGlow = Math.random() > 0.5 ? 1 : -1;
+
+        const branchCount = Math.random() > 0.56 ? 3 : 2;
+
+        for (let branch = 0; branch < branchCount; branch += 1) {
+            const startIndex = clamp(
+                Math.floor(lightningMain.length * randomBetween(0.28, 0.72)),
+                1,
+                lightningMain.length - 2
+            );
+            const [startX, startY] = lightningMain[startIndex];
+            const branchPoints = [[startX, startY]];
+            let x = startX;
+            let y = startY;
+            const direction = branch % 2 === 0 ? -1 : 1;
+            const length = randomBetween(28, 55);
+            const endY = Math.min(logicalHeight * 0.66, startY + length);
+
+            while (y < endY) {
+                y += randomBetween(6, 11);
+                x += direction * randomBetween(3, 9) + randomBetween(-4, 4);
+                branchPoints.push([x, y]);
+            }
+
+            lightningBranches.push(branchPoints);
+        }
+
+        nextStrikeAt = now + randomBetween(3500, 7000);
+    }
+
+    function getFlashStrength(now) {
+        const elapsed = now - strikeStartedAt;
+        if (elapsed < 0 || elapsed > strikeDuration) return 0;
+
+        const pulseA = Math.max(0, 1 - Math.abs(elapsed - 42) / 48);
+        const pulseB = Math.max(0, 1 - Math.abs(elapsed - 160) / 70) * 0.80;
+        const pulseC = Math.max(0, 1 - Math.abs(elapsed - 325) / 100) * 0.45;
+        const pulseD = Math.max(0, 1 - Math.abs(elapsed - 505) / 130) * 0.18;
+
+        return clamp(Math.max(pulseA, pulseB, pulseC, pulseD), 0, 1);
+    }
+
+    function drawLightning(flash) {
+        if (flash <= 0.03 || lightningMain.length < 2) return;
+
+        art.save();
+        art.globalAlpha = clamp(0.35 + flash * 0.72, 0, 1);
+        strokePath(lightningMain, palette.lightningGlow, 7, 0.24 + flash * 0.26);
+        strokePath(lightningMain, palette.lightningBlue, 3, 0.70 + flash * 0.25);
+        strokePath(lightningMain, palette.lightning, 1, 1);
+
+        lightningBranches.forEach((branch, index) => {
+            const strength = index === 0 ? 0.72 : 0.52;
+            strokePath(branch, palette.lightningGlow, 4, flash * 0.20 * strength);
+            strokePath(branch, palette.lightningBlue, 2, flash * strength);
+            strokePath(branch, palette.lightning, 1, flash * strength);
+        });
+        art.restore();
+    }
+
+    function drawRain(now, flash) {
+        if (reducedMotion.matches) return;
+
+        art.save();
+        art.globalAlpha = 0.10 + flash * 0.12;
+
+        rainSpecks.forEach(drop => {
+            const travel = ((now * 0.035 + drop.phase) % (logicalHeight + 30)) - 15;
+            const x = (drop.x + travel * 0.18) % (logicalWidth + 8) - 4;
+            strokePath([
+                [x, travel],
+                [x - 1, travel + drop.length]
+            ], flash > 0.45 ? palette.lightningBlue : palette.cloud5, 1, 1);
+        });
+
+        art.restore();
+    }
+
+    function drawForegroundVignette() {
+        // Pixel-darkened corners rather than a smooth photographic vignette.
+        const layers = 9;
+
+        for (let layer = 0; layer < layers; layer += 1) {
+            const alpha = 0.025 + layer * 0.008;
+            art.save();
+            art.globalAlpha = alpha;
+            rectOutline(layer, layer, logicalWidth - layer * 2, logicalHeight - layer * 2, palette.black, 1);
+            art.restore();
+        }
+    }
+
+    function compositeToCanvas() {
+        context.fillStyle = palette.black;
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        context.imageSmoothingEnabled = false;
+        context.drawImage(artCanvas, 0, 0, canvas.width, canvas.height);
+    }
+
+    function drawScene(now) {
+        setCanvasSize();
+
+        if (
+            nextStrikeAt === 0 ||
+            (!reducedMotion.matches && now >= nextStrikeAt)
+        ) {
+            beginLightning(now);
+        }
+
+        const flash = reducedMotion.matches ? 0 : getFlashStrength(now);
+
+        drawSky(flash);
+        drawMoon(flash);
+        drawClouds(now, flash);
+        drawLightning(flash);
+        drawRain(now, flash);
+        drawHillsAndForest(flash);
+        drawDistantTrees();
+        drawMist(now, flash);
+        drawMansion(flash, now);
+        drawGroundAndFoliage(flash);
+        drawWater(now, flash);
+        drawGnarledTree("left", flash);
+        drawGnarledTree("right", flash);
+        drawPerspectiveBats(now);
+        drawForegroundVignette();
+
+        compositeToCanvas();
+
+        const flashOverlay = mansionWindow.querySelector(
+            ".haunted-mansion-flash"
+        );
+
+        if (flashOverlay) {
+            flashOverlay.style.opacity = String(
+                clamp(flash * 0.30, 0, 0.30)
+            );
+        }
+    }
+
+    function animate(now) {
+        if (!mansionWindow.classList.contains("hidden")) {
+            drawScene(now);
+        }
+
+        window.requestAnimationFrame(animate);
+    }
+
+    const resizeObserver = new ResizeObserver(() => {
+        lastSizeKey = "";
+
+        if (!mansionWindow.classList.contains("hidden")) {
+            drawScene(performance.now());
+        }
+    });
+
+    if (canvas.parentElement) {
+        resizeObserver.observe(canvas.parentElement);
+    }
+
+    setCanvasSize();
+    nextStrikeAt = performance.now() + 950;
+    drawScene(performance.now());
+    window.requestAnimationFrame(animate);
+})();
+
+
+
+
+// ====================================
+// HERMIT TOWER — EXACT ART + ANIMATED LAYERS
+// ====================================
+// The exact supplied artwork is used as the high-resolution base scene.
+// JavaScript Canvas adds the motion: moonlight, sky shimmer, twinkles,
+// drifting cloud highlights, moving hermit, and magic particles.
+// ====================================
+
+(() => {
+    const canvas = document.getElementById("hermit-tower-canvas");
+    const towerWindow = document.getElementById("hermit-tower-window");
+
+    if (!canvas || !towerWindow) return;
+
+    const context = canvas.getContext("2d", { alpha: false });
+    if (!context) return;
+
+    const reducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+    );
+
+    const SCENE_WIDTH = 1174;
+    const SCENE_HEIGHT = 930;
+
+    const sceneImage = new Image();
+    sceneImage.decoding = "async";
+    sceneImage.src = "assets/images/hermit-tower-scene.png";
+
+    const mageImage = new Image();
+    mageImage.decoding = "async";
+    mageImage.src = "assets/images/hermit-tower-mage.png";
+
+    const frameCanvas = document.createElement("canvas");
+    frameCanvas.width = SCENE_WIDTH;
+    frameCanvas.height = SCENE_HEIGHT;
+
+    const frame = frameCanvas.getContext("2d", { alpha: false });
+    if (!frame) return;
+
+    context.imageSmoothingEnabled = true;
+    context.imageSmoothingQuality = "high";
+    frame.imageSmoothingEnabled = true;
+    frame.imageSmoothingQuality = "high";
+
+    let sceneReady = false;
+    let mageReady = false;
+    let cloudLayers = [];
+    let windCanopyLayers = [];
+
+    const moonGlints = [
+        [574, 498, 0.2],
+        [604, 561, 1.4],
+        [545, 678, 2.1],
+        [511, 728, 3.4],
+        [428, 762, 4.0],
+        [825, 586, 5.3],
+        [916, 574, 6.2],
+        [1007, 698, 7.1],
+        [347, 601, 8.2],
+        [281, 688, 9.0]
+    ];
+
+    const windLeaves = Array.from({ length: 34 }, (_, index) => ({
+        x: (index * 83 + 31) % SCENE_WIDTH,
+        y: 455 + ((index * 61) % 400),
+        speed: 0.018 + (index % 7) * 0.0035,
+        phase: index * 1.37,
+        size: index % 9 === 0 ? 3 : index % 3 === 0 ? 2 : 1,
+        tone: index % 5
+    }));
+
+    const starPoints = [
+        [47, 51], [126, 50], [175, 101], [235, 38], [302, 77],
+        [355, 96], [413, 52], [479, 66], [550, 111], [831, 72],
+        [975, 96], [1076, 46], [1112, 170], [1021, 338], [892, 283],
+        [223, 285], [145, 219], [344, 254], [483, 207], [1040, 254]
+    ];
+
+    const magicParticles = Array.from({ length: 36 }, (_, index) => ({
+        angle: index * 0.91,
+        radius: 10 + (index % 9) * 7,
+        speed: 0.0009 + (index % 7) * 0.00013,
+        size: index % 6 === 0 ? 3 : index % 3 === 0 ? 2 : 1,
+        phase: index * 1.73
+    }));
+
+    function buildCloudLayer(sx, sy, sw, sh, feather = 0.84) {
+        const layerCanvas = document.createElement("canvas");
+        layerCanvas.width = sw;
+        layerCanvas.height = sh;
+
+        const layer = layerCanvas.getContext("2d");
+        if (!layer) return null;
+
+        layer.imageSmoothingEnabled = true;
+        layer.imageSmoothingQuality = "high";
+
+        layer.drawImage(
+            sceneImage,
+            sx, sy, sw, sh,
+            0, 0, sw, sh
+        );
+
+        layer.globalCompositeOperation = "destination-in";
+
+        const gradient = layer.createRadialGradient(
+            sw * 0.5,
+            sh * 0.5,
+            Math.min(sw, sh) * 0.12,
+            sw * 0.5,
+            sh * 0.5,
+            Math.max(sw, sh) * 0.58
+        );
+
+        gradient.addColorStop(0, "rgba(255,255,255,1)");
+        gradient.addColorStop(feather, "rgba(255,255,255,0.78)");
+        gradient.addColorStop(1, "rgba(255,255,255,0)");
+
+        layer.fillStyle = gradient;
+        layer.fillRect(0, 0, sw, sh);
+        layer.globalCompositeOperation = "source-over";
+
+        return {
+            canvas: layerCanvas,
+            x: sx,
+            y: sy,
+            width: sw,
+            height: sh
+        };
+    }
+
+    function prepareCloudLayers() {
+        cloudLayers = [
+            buildCloudLayer(14, 112, 438, 287),
+            buildCloudLayer(800, 55, 354, 333),
+            buildCloudLayer(282, 266, 336, 265),
+            buildCloudLayer(760, 344, 348, 224)
+        ].filter(Boolean);
+    }
+
+
+    function buildWindCanopyLayer(sx, sy, sw, sh, feather = 0.72) {
+        const layerCanvas = document.createElement("canvas");
+        layerCanvas.width = sw;
+        layerCanvas.height = sh;
+
+        const layer = layerCanvas.getContext("2d");
+        if (!layer) return null;
+
+        layer.imageSmoothingEnabled = true;
+        layer.imageSmoothingQuality = "high";
+
+        layer.drawImage(
+            sceneImage,
+            sx, sy, sw, sh,
+            0, 0, sw, sh
+        );
+
+        layer.globalCompositeOperation = "destination-in";
+
+        const gradient = layer.createRadialGradient(
+            sw * 0.5,
+            sh * 0.48,
+            Math.min(sw, sh) * 0.18,
+            sw * 0.5,
+            sh * 0.48,
+            Math.max(sw, sh) * 0.60
+        );
+
+        gradient.addColorStop(0, "rgba(255,255,255,1)");
+        gradient.addColorStop(feather, "rgba(255,255,255,0.82)");
+        gradient.addColorStop(1, "rgba(255,255,255,0)");
+
+        layer.fillStyle = gradient;
+        layer.fillRect(0, 0, sw, sh);
+        layer.globalCompositeOperation = "source-over";
+
+        return {
+            canvas: layerCanvas,
+            x: sx,
+            y: sy,
+            width: sw,
+            height: sh
+        };
+    }
+
+    function prepareWindCanopyLayers() {
+        windCanopyLayers = [
+            buildWindCanopyLayer(0, 430, 355, 365),
+            buildWindCanopyLayer(826, 390, 348, 408),
+            buildWindCanopyLayer(300, 500, 318, 260),
+            buildWindCanopyLayer(680, 680, 470, 235)
+        ].filter(Boolean);
+    }
+
+    function drawBaseScene() {
+        frame.globalCompositeOperation = "source-over";
+        frame.globalAlpha = 1;
+        frame.drawImage(
+            sceneImage,
+            0,
+            0,
+            SCENE_WIDTH,
+            SCENE_HEIGHT
+        );
+    }
+
+    function getWindStrength(now) {
+        if (reducedMotion.matches) return 0.28;
+
+        const slow = 0.5 + 0.5 * Math.sin(now / 4200);
+        const gust = 0.5 + 0.5 * Math.sin(now / 1180 + 0.8);
+
+        return 0.28 + slow * 0.38 + gust * 0.24;
+    }
+
+    function drawSkyShimmer(now) {
+        if (reducedMotion.matches) return;
+
+        const wind = getWindStrength(now);
+
+        frame.save();
+
+        /*
+         * The cloud patches are copied from the exact artwork itself.
+         * Small horizontal movement makes the sky visibly breathe/blow
+         * without replacing the original illustration.
+         */
+        cloudLayers.forEach((layer, index) => {
+            const direction = index % 2 === 0 ? 1 : 0.72;
+            const xShift =
+                Math.sin(now / (5100 + index * 620) + index * 0.7) *
+                (5 + index * 1.7) *
+                wind *
+                direction;
+
+            const yShift =
+                Math.cos(now / (7600 + index * 510) + index * 0.42) *
+                (0.8 + index * 0.22);
+
+            frame.globalCompositeOperation = "source-over";
+            frame.globalAlpha = 0.055 + wind * 0.035;
+
+            frame.drawImage(
+                layer.canvas,
+                layer.x + xShift,
+                layer.y + yShift,
+                layer.width,
+                layer.height
+            );
+
+            frame.globalCompositeOperation = "screen";
+            frame.globalAlpha = 0.035 + wind * 0.045;
+
+            frame.drawImage(
+                layer.canvas,
+                layer.x + xShift * 1.18,
+                layer.y + yShift - 1,
+                layer.width,
+                layer.height
+            );
+        });
+
+        /*
+         * Fine wind streaks across the upper sky. They are intentionally
+         * low-opacity so they read as moving air rather than rain.
+         */
+        frame.globalCompositeOperation = "screen";
+        frame.strokeStyle = "#b9d7ff";
+        frame.lineWidth = 1;
+
+        for (let index = 0; index < 15; index += 1) {
+            const travel =
+                ((now * (0.018 + index * 0.0007) + index * 97) %
+                    (SCENE_WIDTH + 260)) -
+                130;
+
+            const y =
+                105 +
+                ((index * 47) % 360) +
+                Math.sin(now / 1500 + index) * 4;
+
+            const length = 12 + (index % 5) * 7;
+
+            frame.globalAlpha =
+                0.018 +
+                wind * 0.028 +
+                (index % 4 === 0 ? 0.014 : 0);
+
+            frame.beginPath();
+            frame.moveTo(travel, y);
+            frame.lineTo(travel + length, y - 2);
+            frame.stroke();
+        }
+
+        const skyPulse = 0.5 + 0.5 * Math.sin(now / 5200);
+        const skyGradient = frame.createLinearGradient(
+            0,
+            0,
+            0,
+            SCENE_HEIGHT * 0.58
+        );
+
+        skyGradient.addColorStop(
+            0,
+            `rgba(105,150,255,${0.014 + skyPulse * 0.014})`
+        );
+        skyGradient.addColorStop(
+            0.65,
+            `rgba(73,108,211,${0.008 + skyPulse * 0.008})`
+        );
+        skyGradient.addColorStop(1, "rgba(0,0,0,0)");
+
+        frame.fillStyle = skyGradient;
+        frame.fillRect(
+            0,
+            0,
+            SCENE_WIDTH,
+            SCENE_HEIGHT * 0.62
+        );
+
+        frame.restore();
+    }
+
+    function drawMoonlight(now) {
+        const pulse = reducedMotion.matches
+            ? 0.62
+            : 0.62 +
+              Math.sin(now / 2350) * 0.10 +
+              Math.sin(now / 7600) * 0.045;
+
+        const sway = reducedMotion.matches
+            ? 0
+            : Math.sin(now / 7600) * 14;
+
+        const moonX = 244;
+        const moonY = 80;
+
+        frame.save();
+        frame.globalCompositeOperation = "screen";
+
+        /*
+         * Breathing halo around the crescent. The radius expands a little
+         * while brightness rises and falls, which makes the moon feel alive.
+         */
+        const haloRadius =
+            150 +
+            pulse * 28 +
+            (reducedMotion.matches ? 0 : Math.sin(now / 1800) * 7);
+
+        const halo = frame.createRadialGradient(
+            moonX,
+            moonY,
+            8,
+            moonX,
+            moonY,
+            haloRadius
+        );
+
+        halo.addColorStop(
+            0,
+            `rgba(255,248,204,${0.28 * pulse})`
+        );
+        halo.addColorStop(
+            0.16,
+            `rgba(236,242,255,${0.17 * pulse})`
+        );
+        halo.addColorStop(
+            0.48,
+            `rgba(146,181,239,${0.082 * pulse})`
+        );
+        halo.addColorStop(
+            0.78,
+            `rgba(91,128,211,${0.035 * pulse})`
+        );
+        halo.addColorStop(
+            1,
+            "rgba(57,76,145,0)"
+        );
+
+        frame.fillStyle = halo;
+        frame.fillRect(
+            moonX - haloRadius,
+            moonY - haloRadius,
+            haloRadius * 2,
+            haloRadius * 2
+        );
+
+        /*
+         * A large moving moonbeam sweeps subtly across the tower and cliff.
+         * It stays soft so the original painting remains intact.
+         */
+        const beam = frame.createLinearGradient(
+            120 + sway,
+            70,
+            770 + sway,
+            770
+        );
+
+        beam.addColorStop(
+            0,
+            `rgba(238,246,255,${0.062 * pulse})`
+        );
+        beam.addColorStop(
+            0.40,
+            `rgba(196,220,255,${0.038 * pulse})`
+        );
+        beam.addColorStop(
+            0.76,
+            `rgba(139,179,238,${0.020 * pulse})`
+        );
+        beam.addColorStop(
+            1,
+            "rgba(90,135,220,0)"
+        );
+
+        frame.fillStyle = beam;
+        frame.beginPath();
+        frame.moveTo(115 + sway, 91);
+        frame.lineTo(338 + sway, 65);
+        frame.lineTo(845 + sway * 0.35, 815);
+        frame.lineTo(500 + sway * 0.22, 846);
+        frame.closePath();
+        frame.fill();
+
+        /*
+         * A second, narrower ray gives the beam a visible moving center.
+         */
+        const ray = frame.createLinearGradient(
+            210 + sway * 0.7,
+            90,
+            675 + sway * 0.32,
+            720
+        );
+
+        ray.addColorStop(
+            0,
+            `rgba(255,252,229,${0.045 * pulse})`
+        );
+        ray.addColorStop(
+            0.58,
+            `rgba(205,226,255,${0.026 * pulse})`
+        );
+        ray.addColorStop(
+            1,
+            "rgba(150,190,255,0)"
+        );
+
+        frame.fillStyle = ray;
+        frame.beginPath();
+        frame.moveTo(205 + sway * 0.7, 89);
+        frame.lineTo(270 + sway * 0.7, 82);
+        frame.lineTo(690 + sway * 0.32, 740);
+        frame.lineTo(566 + sway * 0.32, 755);
+        frame.closePath();
+        frame.fill();
+
+        /*
+         * Moonlight glints appear on stone and foliage in rhythm with the
+         * halo, making the light feel as though it is touching the scene.
+         */
+        moonGlints.forEach((glint, index) => {
+            const sparkle =
+                0.5 +
+                0.5 *
+                    Math.sin(
+                        now / 620 +
+                        glint[2] +
+                        index * 0.47
+                    );
+
+            if (sparkle < 0.55) return;
+
+            frame.globalAlpha =
+                (0.08 + sparkle * 0.12) * pulse;
+
+            frame.fillStyle =
+                index % 3 === 0
+                    ? "#fff8d4"
+                    : "#d7e7ff";
+
+            frame.fillRect(
+                Math.round(glint[0] - 2),
+                Math.round(glint[1]),
+                5,
+                1
+            );
+
+            frame.fillRect(
+                Math.round(glint[0]),
+                Math.round(glint[1] - 2),
+                1,
+                5
+            );
+        });
+
+        frame.restore();
+    }
+
+    function drawStarTwinkles(now) {
+        if (reducedMotion.matches) return;
+
+        frame.save();
+        frame.globalCompositeOperation = "screen";
+
+        starPoints.forEach((point, index) => {
+            const pulse = 0.5 + 0.5 * Math.sin(now / 430 + index * 1.81);
+            if (pulse < 0.60) return;
+
+            const [x, y] = point;
+            const size = pulse > 0.88 ? 3 : 2;
+            const alpha = 0.35 + pulse * 0.55;
+
+            frame.globalAlpha = alpha;
+            frame.fillStyle = index % 4 === 0 ? "#fff0a6" : "#eef7ff";
+            frame.fillRect(Math.round(x - size), Math.round(y), size * 2 + 1, 1);
+            frame.fillRect(Math.round(x), Math.round(y - size), 1, size * 2 + 1);
+
+            if (pulse > 0.92) {
+                frame.globalAlpha = 0.20;
+                frame.fillRect(x - 4, y - 4, 9, 9);
+            }
+        });
+
+        frame.restore();
+    }
+
+    function drawWind(now) {
+        const wind = getWindStrength(now);
+
+        frame.save();
+
+        /*
+         * Exact foliage patches from the supplied art are gently shifted
+         * and rotated. Low opacity keeps the base painting crisp while the
+         * leaf edges visibly sway during gusts.
+         */
+        windCanopyLayers.forEach((layer, index) => {
+            const direction = index % 2 === 0 ? 1 : -1;
+
+            const sway =
+                Math.sin(
+                    now / (1250 + index * 230) +
+                    index * 1.4
+                ) *
+                (1.6 + index * 0.45) *
+                wind;
+
+            const lift =
+                Math.cos(
+                    now / (1850 + index * 190) +
+                    index
+                ) *
+                0.8 *
+                wind;
+
+            const angle =
+                direction *
+                Math.sin(
+                    now / (1700 + index * 260) +
+                    index * 0.8
+                ) *
+                0.0045 *
+                wind;
+
+            const centerX =
+                layer.x + layer.width * 0.5;
+
+            const centerY =
+                layer.y + layer.height * 0.72;
+
+            frame.save();
+            frame.globalCompositeOperation = "source-over";
+            frame.globalAlpha = 0.075 + wind * 0.045;
+
+            frame.translate(
+                centerX + sway,
+                centerY + lift
+            );
+
+            frame.rotate(angle);
+
+            frame.drawImage(
+                layer.canvas,
+                -layer.width * 0.5,
+                -layer.height * 0.72,
+                layer.width,
+                layer.height
+            );
+
+            frame.restore();
+
+            /*
+             * A light-catching pass makes the moving leaf edges shimmer.
+             */
+            frame.save();
+            frame.globalCompositeOperation = "screen";
+            frame.globalAlpha = 0.018 + wind * 0.024;
+
+            frame.drawImage(
+                layer.canvas,
+                layer.x + sway * 1.35,
+                layer.y + lift - 1,
+                layer.width,
+                layer.height
+            );
+
+            frame.restore();
+        });
+
+        /*
+         * Loose leaves cross the screen during the wind. They remain tiny
+         * pixel-art marks so they belong to the original visual language.
+         */
+        const leafColors = [
+            "#72a84e",
+            "#a8cf68",
+            "#567a3c",
+            "#d0c36a",
+            "#71985b"
+        ];
+
+        windLeaves.forEach((leaf, index) => {
+            const travel =
+                ((leaf.x +
+                    now * leaf.speed * (26 + wind * 36)) %
+                    (SCENE_WIDTH + 80)) -
+                40;
+
+            const verticalWave =
+                Math.sin(
+                    now / (460 + index * 19) +
+                    leaf.phase
+                ) *
+                (4 + (index % 4));
+
+            const y =
+                leaf.y +
+                verticalWave +
+                Math.sin(now / 1900 + leaf.phase) *
+                    12 *
+                    wind;
+
+            frame.globalCompositeOperation = "source-over";
+            frame.globalAlpha =
+                0.22 +
+                wind * 0.46;
+
+            frame.fillStyle =
+                leafColors[leaf.tone];
+
+            frame.fillRect(
+                Math.round(travel),
+                Math.round(y),
+                leaf.size + 1,
+                leaf.size
+            );
+
+            if (
+                leaf.size > 1 &&
+                index % 3 === 0
+            ) {
+                frame.fillRect(
+                    Math.round(travel + 2),
+                    Math.round(y - 1),
+                    1,
+                    1
+                );
+            }
+        });
+
+        frame.restore();
+    }
+
+    function drawAnimatedMage(now) {
+        if (!mageReady) return;
+
+        // Exact sprite was cropped from the supplied artwork.
+        const baseX = 636;
+        const baseY = 611;
+
+        const wind = getWindStrength(now);
+
+        const bob = reducedMotion.matches
+            ? 0
+            : Math.round(
+                Math.sin(now / 520) * 1.5 +
+                Math.sin(now / 1480) * wind
+            );
+
+        const lean = reducedMotion.matches
+            ? 0
+            : Math.round(
+                Math.sin(now / 780) * 1.2 +
+                Math.sin(now / 2100) * wind * 1.4
+            );
+
+        frame.save();
+        frame.globalCompositeOperation = "source-over";
+        frame.globalAlpha = 1;
+        frame.imageSmoothingEnabled = false;
+
+        // Draw the exact hermit sprite over its original position.
+        // The 1–2 pixel motion is enough to feel alive while preserving the art.
+        frame.drawImage(
+            mageImage,
+            baseX + lean,
+            baseY + bob
+        );
+
+        frame.restore();
+    }
+
+    function drawMagic(now) {
+        const handX = 704;
+        const handY = 651;
+        const burstX = 747;
+        const burstY = 634;
+
+        frame.save();
+        frame.globalCompositeOperation = "screen";
+
+        const pulse = reducedMotion.matches
+            ? 0.7
+            : 0.66 + Math.sin(now / 260) * 0.22;
+
+        // Animated spell beam layered over the original painted beam.
+        frame.globalAlpha = 0.26 + pulse * 0.25;
+        frame.strokeStyle = "#ffe16e";
+        frame.lineWidth = 1;
+        frame.beginPath();
+        frame.moveTo(handX, handY);
+        frame.quadraticCurveTo(722, 646, burstX, burstY);
+        frame.stroke();
+
+        const glow = frame.createRadialGradient(
+            burstX,
+            burstY,
+            1,
+            burstX,
+            burstY,
+            50 + pulse * 10
+        );
+
+        glow.addColorStop(0, `rgba(255,248,177,${0.38 + pulse * 0.28})`);
+        glow.addColorStop(0.16, `rgba(255,194,48,${0.22 + pulse * 0.16})`);
+        glow.addColorStop(0.55, "rgba(255,155,25,0.07)");
+        glow.addColorStop(1, "rgba(255,155,25,0)");
+
+        frame.fillStyle = glow;
+        frame.fillRect(burstX - 65, burstY - 65, 130, 130);
+
+        magicParticles.forEach((particle, index) => {
+            const time = now * particle.speed + particle.phase;
+            const radius = particle.radius + Math.sin(time * 2.3) * 4;
+            const x = burstX + Math.cos(particle.angle + time) * radius;
+            const y = burstY + Math.sin(particle.angle * 0.73 + time * 1.27) * radius * 0.60;
+
+            const sparkle = 0.5 + 0.5 * Math.sin(now / 150 + index * 1.3);
+            if (sparkle < 0.26) return;
+
+            frame.globalAlpha = 0.22 + sparkle * 0.78;
+            frame.fillStyle = index % 5 === 0
+                ? "#fffbd0"
+                : index % 3 === 0
+                    ? "#ffef87"
+                    : "#ffc839";
+
+            const size = particle.size;
+            frame.fillRect(Math.round(x), Math.round(y), size, size);
+
+            if (sparkle > 0.78 && index % 4 === 0) {
+                frame.fillRect(Math.round(x - 3), Math.round(y), 7, 1);
+                frame.fillRect(Math.round(x), Math.round(y - 3), 1, 7);
+            }
+        });
+
+        frame.restore();
+    }
+
+    function resizeCanvasToScreen() {
+        const screen = canvas.parentElement;
+        if (!screen) return;
+
+        const box = screen.getBoundingClientRect();
+        const width = Math.max(300, Math.round(box.width));
+        const height = Math.max(220, Math.round(box.height));
+
+        const ratio = Math.min(
+            2,
+            Math.max(1, window.devicePixelRatio || 1)
+        );
+
+        const targetWidth = Math.round(width * ratio);
+        const targetHeight = Math.round(height * ratio);
+
+        if (
+            canvas.width !== targetWidth ||
+            canvas.height !== targetHeight
+        ) {
+            canvas.width = targetWidth;
+            canvas.height = targetHeight;
+            context.imageSmoothingEnabled = true;
+            context.imageSmoothingQuality = "high";
+        }
+    }
+
+    function compositeFrame() {
+        resizeCanvasToScreen();
+
+        context.fillStyle = "#020611";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+
+        const scale = Math.min(
+            canvas.width / SCENE_WIDTH,
+            canvas.height / SCENE_HEIGHT
+        );
+
+        const width = SCENE_WIDTH * scale;
+        const height = SCENE_HEIGHT * scale;
+        const left = (canvas.width - width) / 2;
+        const top = (canvas.height - height) / 2;
+
+        context.imageSmoothingEnabled = true;
+        context.imageSmoothingQuality = "high";
+
+        context.drawImage(
+            frameCanvas,
+            0,
+            0,
+            SCENE_WIDTH,
+            SCENE_HEIGHT,
+            Math.round(left),
+            Math.round(top),
+            Math.round(width),
+            Math.round(height)
+        );
+    }
+
+    function render(now) {
+        if (!sceneReady) return;
+
+        drawBaseScene();
+        drawSkyShimmer(now);
+        drawMoonlight(now);
+        drawStarTwinkles(now);
+        drawWind(now);
+        drawAnimatedMage(now);
+        drawMagic(now);
+        compositeFrame();
+    }
+
+    function animate(now) {
+        if (!towerWindow.classList.contains("hidden")) {
+            render(now);
+        }
+
+        window.requestAnimationFrame(animate);
+    }
+
+    sceneImage.addEventListener("load", () => {
+        sceneReady = true;
+        prepareCloudLayers();
+        prepareWindCanopyLayers();
+        render(performance.now());
+    });
+
+    mageImage.addEventListener("load", () => {
+        mageReady = true;
+        if (sceneReady) render(performance.now());
+    });
+
+    const resizeObserver = new ResizeObserver(() => {
+        if (sceneReady && !towerWindow.classList.contains("hidden")) {
+            render(performance.now());
+        }
+    });
+
+    if (canvas.parentElement) {
+        resizeObserver.observe(canvas.parentElement);
+    }
+
+    window.requestAnimationFrame(animate);
+})();
+
+/* =========================================================
+   PHOTOGRAPHY — GROUP ALBUMS INTO PAGES OF 6
+========================================================= */
+
+/* =========================================================
+   PHOTOGRAPHY
+   SORT NEWEST → OLDEST
+   THEN GROUP INTO PAGES OF 6
+
+   1 2 3   |   7 8 9
+   4 5 6   |  10 11 12
+========================================================= */
+
+function buildPhotographyAlbumPages() {
+
+    const gallery = document.querySelector(
+        "#photography-window .photo-gallery"
+    );
+
+    if (!gallery) return;
+
+
+    /* -----------------------------------------
+       GET ALL ALBUMS
+
+       This works even if the function is
+       called again after pages were built.
+    ----------------------------------------- */
+
+    let albums = [
+        ...gallery.querySelectorAll(
+            ":scope > .photo-folder"
+        )
+    ];
+
+
+    /* If albums are already inside pages,
+       pull them back out first */
+    const existingPages = [
+        ...gallery.querySelectorAll(
+            ":scope > .photo-album-page"
+        )
+    ];
+
+    if (existingPages.length) {
+
+        albums = existingPages.flatMap(page => [
+            ...page.querySelectorAll(
+                ":scope > .photo-folder"
+            )
+        ]);
+
+        existingPages.forEach(page => {
+            page.remove();
+        });
+    }
+
+
+    /* -----------------------------------------
+       SORT BY YEAR
+       NEWEST FIRST
+    ----------------------------------------- */
+
+    albums.sort((albumA, albumB) => {
+
+        const yearA =
+            Number(albumA.dataset.year) || 0;
+
+        const yearB =
+            Number(albumB.dataset.year) || 0;
+
+        return yearB - yearA;
+
+    });
+
+
+    /* -----------------------------------------
+       BUILD 6-ALBUM PAGES
+    ----------------------------------------- */
+
+    const albumsPerPage = 6;
+
+    for (
+        let i = 0;
+        i < albums.length;
+        i += albumsPerPage
+    ) {
+
+        const page =
+            document.createElement("div");
+
+        page.className =
+            "photo-album-page";
+
+
+        const group =
+            albums.slice(
+                i,
+                i + albumsPerPage
+            );
+
+
+        group.forEach(album => {
+            page.appendChild(album);
+        });
+
+
+        gallery.appendChild(page);
+    }
+
+}
+
+
+/* Run after the page has loaded */
+if (document.readyState === "loading") {
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        buildPhotographyAlbumPages
+    );
+
+} else {
+
+    buildPhotographyAlbumPages();
+
+}

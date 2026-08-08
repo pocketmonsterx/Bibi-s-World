@@ -3586,103 +3586,10 @@ body.desktop-loaded #windows-container {
 
 
 
-#trojan-window .title-bar {
-    background:
-        linear-gradient(
-            to right,
-            rgba(29, 18, 44, 0.98),
-            rgba(116, 39, 113, 0.98)
-        );
-}
-
-.trojan-body {
-    position: relative;
-
-    height: calc(100% - 28px);
-
-    padding: 0 !important;
-
-    overflow: hidden;
-
-    background: #050505 !important;
-}
 
 /* =========================================
-   TERMINAL
+   TERMINAL TRANSITION STATE
 ========================================= */
-
-.trojan-terminal {
-    position: absolute;
-    inset: 0;
-
-    padding: 15px 17px;
-
-    color: #b7ffb0;
-    background:
-        repeating-linear-gradient(
-            to bottom,
-            rgba(255, 255, 255, 0.025) 0,
-            rgba(255, 255, 255, 0.025) 1px,
-            transparent 1px,
-            transparent 4px
-        ),
-        radial-gradient(
-            circle at center,
-            rgba(28, 70, 36, 0.18),
-            transparent 70%
-        ),
-        #030604;
-
-    overflow-y: auto;
-    overflow-x: hidden;
-
-    font-family:
-        "Lucida Console",
-        "Courier New",
-        monospace;
-
-    font-size: 13px;
-    line-height: 1.45;
-
-    text-shadow:
-        0 0 3px rgba(126, 255, 132, 0.65),
-        0 0 8px rgba(75, 255, 92, 0.22);
-
-    opacity: 1;
-
-    transition:
-        opacity 1.2s ease,
-        filter 1.2s ease,
-        transform 1.2s ease;
-}
-
-.trojan-terminal::after {
-    content: "";
-
-    display: inline-block;
-
-    width: 8px;
-    height: 15px;
-
-    margin-left: 4px;
-
-    vertical-align: -2px;
-
-    background: #b7ffb0;
-
-    box-shadow:
-        0 0 6px rgba(126, 255, 132, 0.75);
-
-    animation:
-        trojanCursorBlink 0.7s steps(1) infinite;
-}
-
-.trojan-line {
-    min-height: 1.45em;
-
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-}
 
 .trojan-terminal-hidden {
     opacity: 0;
@@ -3890,7 +3797,7 @@ body.desktop-loaded #windows-container {
 
     0%,
     100% {
-        opacity: 0.58;
+        opacity: 0.42;
 
         transform:
             translateX(-50%)
@@ -3956,25 +3863,6 @@ body.desktop-loaded #windows-container {
     }
 }
 
-/* =========================================
-   MOBILE
-========================================= */
-
-@media (max-width: 600px) {
-
-    #trojan-window {
-        width: calc(100vw - 20px);
-        height: calc(100vh - 58px);
-    }
-
-    .trojan-terminal {
-        padding: 12px;
-
-        font-size: 11px;
-    }
-
-    
-}
 
 /* =========================================================
    SHARED WINDOWS APPLICATION MENUS + SHEER NOTEPAD
@@ -5020,8 +4908,7 @@ textarea:disabled,
 }
 
 /* =========================================================
-   FINAL TROJAN WINDOW WEBSITE MATCH
-   Keep this at the absolute bottom of style.css
+   TROJAN.EXE — CANONICAL WINDOW + TERMINAL STYLES
 ========================================================= */
 
 /*
@@ -5030,10 +4917,12 @@ textarea:disabled,
  */
 
 #trojan-window {
-    width: 720px;
-    height: 500px;
+    /* Reference screenshot: large centered cmd.exe-style media window. */
+    width: 1100px;
+    height: 700px;
 
-    max-width: calc(100vw - 20px);
+    /* Stay fully usable on smaller desktop screens. */
+    max-width: calc(100vw - 32px);
     max-height: calc(100vh - 58px);
 
     display: flex;
@@ -5125,7 +5014,7 @@ textarea:disabled,
     min-height: 0;
     flex: 1;
 
-    padding: 7px !important;
+    padding: 0 !important;
 
     overflow: hidden;
 
@@ -5149,26 +5038,211 @@ textarea:disabled,
 }
 
 /*
- * Terminal becomes inset content inside the glass body,
- * rather than replacing the complete window structure.
+ * Trojan boot screen layer order:
+ * video → soft VHS veil → translucent terminal → bright typed text.
+ * The previous generated binary SVG/noise background was removed so it
+ * cannot cover the real MP4.
  */
 
+#trojan-window > .trojan-body {
+    position: relative;
+
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    flex: 1;
+
+    padding: 0 !important;
+
+    overflow: hidden;
+
+    background: #020503 !important;
+
+    border-top:
+        1px solid rgba(255, 255, 255, 0.22);
+}
+
+/* Real binary-rain video fills the whole application body. */
+#trojan-window .trojan-binary-video {
+    position: absolute;
+    inset: 0;
+
+    z-index: 0;
+
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    object-position: center;
+
+    opacity: 0.62;
+
+    filter:
+        brightness(0.78)
+        contrast(1.08)
+        saturate(0.82);
+
+    pointer-events: none;
+}
+
+/* Very soft VHS/dark veil — no dense procedural grain. */
+#trojan-window > .trojan-body::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    z-index: 1;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0.10),
+            rgba(0, 0, 0, 0.18)
+        ),
+        radial-gradient(
+            ellipse at center,
+            rgba(3, 13, 6, 0.02) 0%,
+            rgba(0, 0, 0, 0.18) 76%,
+            rgba(0, 0, 0, 0.32) 100%
+        );
+}
+
+/* Terminal is translucent so the video remains visible underneath. */
 #trojan-window .trojan-terminal {
     position: absolute;
+    inset: 0;
 
-    top: 7px;
-    right: 7px;
-    bottom: 7px;
-    left: 7px;
+    z-index: 2;
 
-    border:
-        1px solid rgba(255, 255, 255, 0.18);
+    isolation: isolate;
 
-    border-radius: 4px;
+    padding: 9px 11px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    color: #d3ffcf;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(1, 7, 3, 0.22),
+            rgba(1, 6, 3, 0.34)
+        );
+
+    border: 0;
+    border-radius: 0;
 
     box-shadow:
-        inset 0 0 20px rgba(0, 0, 0, 0.52),
-        0 1px 0 rgba(255, 255, 255, 0.15);
+        inset 0 0 24px rgba(0, 0, 0, 0.34);
+
+    font-family:
+        "Lucida Console",
+        "Courier New",
+        monospace;
+
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.08;
+
+    text-shadow:
+        0 0 1px rgba(255, 255, 255, 0.98),
+        0 0 3px rgba(164, 255, 169, 0.92),
+        0 0 8px rgba(66, 255, 87, 0.32);
+
+    transition:
+        opacity 1.2s ease,
+        filter 1.2s ease,
+        transform 1.2s ease;
+}
+
+#trojan-window .trojan-terminal::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    z-index: 1;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            to bottom,
+            transparent 0%,
+            transparent 44%,
+            rgba(194, 255, 199, 0.015) 47%,
+            rgba(236, 255, 237, 0.045) 49%,
+            rgba(114, 255, 129, 0.025) 50%,
+            transparent 53%,
+            transparent 100%
+        );
+
+    background-size: 100% 190px;
+
+    opacity: 0.58;
+
+    mix-blend-mode: screen;
+
+    animation:
+        trojanVhsTracking 5.8s linear infinite;
+}
+
+#trojan-window .trojan-line {
+    position: relative;
+
+    z-index: 2;
+
+    min-height: 1.08em;
+
+    margin: 0;
+
+    line-height: 1.08;
+
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+#trojan-window .trojan-terminal::after {
+    content: "";
+
+    position: relative;
+
+    z-index: 3;
+
+    display: inline-block;
+
+    width: 9px;
+    height: 17px;
+
+    margin-left: 3px;
+
+    vertical-align: -3px;
+
+    background: #c8ffc4;
+
+    box-shadow:
+        0 0 2px rgba(238, 255, 237, 0.95),
+        0 0 6px rgba(143, 255, 147, 0.72);
+
+    animation:
+        trojanCursorBlink 0.7s steps(1) infinite;
+}
+
+
+@keyframes trojanVhsTracking {
+    from {
+        background-position: 0 -190px;
+    }
+
+    to {
+        background-position: 0 760px;
+    }
 }
 
 /*
@@ -5178,19 +5252,14 @@ textarea:disabled,
 #trojan-window .trojan-reveal {
     position: absolute;
 
-    top: 7px;
-    right: 7px;
-    bottom: 7px;
-    left: 7px;
+    inset: 0;
+    z-index: 30;
 
-    border:
-        1px solid rgba(255, 255, 255, 0.18);
-
-    border-radius: 4px;
+    border: 0;
+    border-radius: 0;
 
     box-shadow:
-        inset 0 0 18px rgba(0, 0, 0, 0.32),
-        0 1px 0 rgba(255, 255, 255, 0.15);
+        inset 0 0 18px rgba(0, 0, 0, 0.32);
 }
 
 /*
@@ -5200,9 +5269,10 @@ textarea:disabled,
 
 #trojan-window .trojan-loader {
     position: absolute;
-    inset: 7px;
+    inset: 0;
+    z-index: 40;
 
-    border-radius: 4px;
+    border-radius: 0;
 
     overflow: hidden;
 }
@@ -5299,13 +5369,23 @@ textarea:disabled,
     }
 
     #trojan-window > .trojan-body {
-        padding: 5px !important;
+        padding: 0 !important;
     }
 
-    #trojan-window .trojan-terminal,
+    #trojan-window .trojan-terminal {
+        padding: 8px 9px;
+        font-size: 11px;
+        line-height: 1.12;
+    }
+
+    #trojan-window .trojan-line {
+        min-height: 1.12em;
+        line-height: 1.12;
+    }
+
     #trojan-window .trojan-reveal,
     #trojan-window .trojan-loader {
-        inset: 5px;
+        inset: 0;
     }
 }
 /* =========================================================
@@ -9230,7 +9310,7 @@ body.booting #magical-waterfall-canvas {
         linear-gradient(
             180deg,
             rgba(255, 255, 255, 0.12),
-            rgba(255, 255, 255, 0.035)
+            rgba(255, 255, 255, 0.06)
         );
 
     border: 1px solid rgba(236, 210, 255, 0.20);
@@ -10769,3 +10849,1208 @@ body.booting #magical-waterfall-canvas {
         min-height: 120px !important;
     }
 }
+
+
+/* =========================================================
+   HAUNTED MANSION — 32-BIT CODE-DRAWN PIXEL WINDOW
+========================================================= */
+
+#haunted-mansion-window {
+    width: min(860px, calc(100vw - 36px));
+    height: min(640px, calc(100vh - 58px));
+    min-width: 540px;
+    min-height: 400px;
+}
+
+.haunted-mansion-body {
+    height: calc(100% - 28px) !important;
+    min-height: 0;
+    padding: 8px !important;
+    overflow: hidden;
+    background: rgba(29, 18, 45, 0.92) !important;
+}
+
+.haunted-mansion-screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+
+    display: flex;
+    align-items: stretch;
+    justify-content: stretch;
+
+    background: #05030d;
+    border: 1px solid var(--bibi-dark-border-strong, #765a91);
+    border-radius: 3px;
+
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.18),
+        inset 0 0 0 2px #0b0818,
+        inset 0 0 30px rgba(65, 43, 105, 0.34);
+}
+
+#haunted-mansion-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+
+    background: #05030d;
+    outline: none;
+    touch-action: none;
+}
+
+#haunted-mansion-canvas:focus-visible {
+    box-shadow:
+        inset 0 0 0 2px #f2edff,
+        inset 0 0 0 4px #6f52a1;
+}
+
+.haunted-mansion-flash {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+
+    pointer-events: none;
+    opacity: 0;
+    background: rgba(203, 211, 255, 0.42);
+    mix-blend-mode: screen;
+}
+
+/* Very light scanline texture: enough to feel like a rendered game screen,
+   but subtle enough to preserve the richer 32-bit color/detail work. */
+.haunted-mansion-screen::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+
+    pointer-events: none;
+    background-image:
+        repeating-linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.012) 0,
+            rgba(255, 255, 255, 0.012) 1px,
+            rgba(0, 0, 0, 0.028) 1px,
+            rgba(0, 0, 0, 0.028) 3px
+        );
+    mix-blend-mode: soft-light;
+}
+
+.haunted-mansion-desktop-icon img,
+.task-button-icon[src$="haunted-mansion.svg"] {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+@media (max-width: 700px) {
+    #haunted-mansion-window {
+        width: calc(100vw - 20px);
+        height: calc(100dvh - 62px);
+        min-width: 0;
+        min-height: 0;
+    }
+
+    .haunted-mansion-body {
+        padding: 5px !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .haunted-mansion-flash {
+        display: none;
+    }
+}
+
+
+/* =========================================================
+   HERMIT TOWER — 32-BIT CODE-DRAWN PIXEL WINDOW
+========================================================= */
+
+#hermit-tower-window {
+    width: min(860px, calc(100vw - 36px));
+    height: min(640px, calc(100vh - 58px));
+    min-width: 540px;
+    min-height: 400px;
+}
+
+.hermit-tower-body {
+    height: calc(100% - 28px) !important;
+    min-height: 0;
+    padding: 8px !important;
+    overflow: hidden;
+    background: rgba(18, 26, 38, 0.94) !important;
+}
+
+.hermit-tower-screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+
+    display: flex;
+    align-items: stretch;
+    justify-content: stretch;
+
+    background: #07111d;
+    border: 1px solid var(--bibi-dark-border-strong, #6d7ea4);
+    border-radius: 3px;
+
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.18),
+        inset 0 0 0 2px #08111e,
+        inset 0 0 30px rgba(77, 104, 158, 0.18);
+}
+
+#hermit-tower-status.hermit-tower-message {
+    position: absolute;
+    top: 4px;
+    right: 8px;
+    z-index: 3;
+
+    min-width: 0;
+    margin-left: auto;
+    padding: 0 8px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color: #e8f1ff;
+    background: rgba(14, 24, 39, 0.38);
+    border-radius: 999px;
+
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-size: 11px;
+    line-height: 22px;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.65);
+}
+
+#hermit-tower-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+
+    background: #07111d;
+    outline: none;
+    touch-action: none;
+}
+
+#hermit-tower-canvas:focus-visible {
+    box-shadow:
+        inset 0 0 0 2px #f3f7ff,
+        inset 0 0 0 4px #6b90c8;
+}
+
+.hermit-tower-screen::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+
+    pointer-events: none;
+    background-image:
+        repeating-linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.012) 0,
+            rgba(255, 255, 255, 0.012) 1px,
+            rgba(0, 0, 0, 0.022) 1px,
+            rgba(0, 0, 0, 0.022) 3px
+        );
+    mix-blend-mode: soft-light;
+}
+
+.hermit-tower-desktop-icon img,
+.task-button-icon[src$="hermit-tower.svg"] {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+@media (max-width: 700px) {
+    #hermit-tower-window {
+        width: calc(100vw - 20px);
+        height: calc(100dvh - 62px);
+        min-width: 0;
+        min-height: 0;
+    }
+
+    .hermit-tower-body {
+        padding: 5px !important;
+    }
+
+    #hermit-tower-status.hermit-tower-message {
+        right: 5px;
+        max-width: calc(100% - 10px);
+        font-size: 10px;
+        line-height: 20px;
+    }
+}
+
+
+/* Hermit Tower reference-match refinement */
+#hermit-tower-window {
+    width: min(880px, calc(100vw - 36px));
+    height: min(760px, calc(100vh - 58px));
+}
+
+.hermit-tower-screen {
+    background: #06101d;
+}
+
+#hermit-tower-canvas {
+    object-fit: fill;
+}
+
+
+/* =========================================================
+   HERMIT TOWER — EXACT REFERENCE PIXEL-MAP PRESENTATION
+========================================================= */
+
+#hermit-tower-window {
+    width: min(900px, calc(100vw - 36px));
+    height: min(820px, calc(100vh - 58px));
+}
+
+.hermit-tower-body {
+    height: calc(100% - 28px) !important;
+    padding: 8px !important;
+}
+
+.hermit-tower-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #050811 !important;
+}
+
+#hermit-tower-canvas {
+    width: 100%;
+    height: 100%;
+    object-fit: contain !important;
+
+    image-rendering: pixelated !important;
+    image-rendering: crisp-edges !important;
+
+    background: #050811 !important;
+}
+
+@media (max-width: 700px) {
+    #hermit-tower-window {
+        width: calc(100vw - 12px);
+        height: calc(100dvh - 48px);
+    }
+}
+
+
+/* =========================================================
+   HERMIT TOWER — EXACT HIGH-RES ART + CANVAS ANIMATION
+========================================================= */
+
+#hermit-tower-window {
+    width: min(1120px, calc(100vw - 36px)) !important;
+    height: min(920px, calc(100vh - 58px)) !important;
+    min-width: 620px !important;
+    min-height: 500px !important;
+}
+
+.hermit-tower-body {
+    height: calc(100% - 28px) !important;
+    min-height: 0 !important;
+    padding: 5px !important;
+    overflow: hidden !important;
+    background: #050811 !important;
+}
+
+.hermit-tower-screen {
+    position: relative !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    overflow: hidden !important;
+    background: #020611 !important;
+    border: 1px solid rgba(120, 132, 170, 0.85) !important;
+    border-radius: 2px !important;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12) !important;
+}
+
+#hermit-tower-canvas {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: #020611 !important;
+    outline: none !important;
+    object-fit: contain !important;
+
+    /* The source artwork is already high-resolution pixel art.
+       Let the canvas perform high-quality scaling instead of forcing
+       nearest-neighbor enlargement of the entire scene. */
+    image-rendering: auto !important;
+}
+
+/* The exact reference does not contain a text badge over the artwork. */
+#hermit-tower-status.hermit-tower-message {
+    display: none !important;
+}
+
+/* Keep the old scanline pseudo-layer from washing out the detailed art. */
+.hermit-tower-screen::after {
+    opacity: 0.20 !important;
+    mix-blend-mode: soft-light !important;
+}
+
+@media (max-width: 700px) {
+    #hermit-tower-window {
+        width: calc(100vw - 12px) !important;
+        height: calc(100dvh - 48px) !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+    }
+
+    .hermit-tower-body {
+        padding: 3px !important;
+    }
+}
+
+
+/* =========================================================
+   HERMIT TOWER — WIND + MOONLIGHT MOTION PASS
+========================================================= */
+
+#hermit-tower-canvas {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    will-change: contents;
+}
+
+.hermit-tower-screen {
+    isolation: isolate;
+}
+
+/* Preserve the exact artwork while avoiding a heavy scanline veil
+   over the new low-contrast moonlight and wind layers. */
+.hermit-tower-screen::after {
+    opacity: 0.12 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #hermit-tower-canvas {
+        will-change: auto;
+    }
+}
+
+
+/* =========================================================
+   2026-08-07: MAGICAL LAKE — FULL MOBILE SCENE ON DESKTOP
+   Desktop now uses the same tall composition as mobile so the
+   moonlit path, extended lake, dancers, orbiting fairies and
+   lower-scene details remain visible instead of being cropped.
+========================================================= */
+@media (min-width: 701px) {
+    #magical-lake-window {
+        width: min(640px, calc(100vw - 64px), calc((100vh - 64px) * 0.78));
+        height: min(860px, calc(100vh - 64px));
+        min-width: 500px;
+        min-height: min(600px, calc(100vh - 64px));
+    }
+
+    .magical-lake-body {
+        padding: 6px !important;
+    }
+
+    .magical-lake-screen {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+/* Hermit Tower is intentionally disabled. The old CSS/assets can remain in
+   the project for easy restoration, but no UI entry/window is exposed. */
+.hermit-tower-desktop-icon,
+#hermit-tower-window {
+    display: none !important;
+}
+
+
+/* Haunted Mansion is intentionally disabled. The old code/assets remain in
+   the project for easy restoration, but no UI entry/window is exposed. */
+.haunted-mansion-desktop-icon,
+#haunted-mansion-window {
+    display: none !important;
+}
+
+/* =========================================================
+   PHOTOGRAPHY — 6 ALBUMS PER SCREEN
+   1 2 3   |   7 8 9
+   4 5 6   |  10 11 12
+========================================================= */
+
+@media (min-width: 701px) {
+
+    #photography-window > .window-body {
+        padding: 0 !important;
+        overflow: hidden !important;
+    }
+
+    /* Main horizontally scrolling area */
+    #photography-window .photo-gallery {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+
+        align-items: flex-start;
+        justify-content: flex-start;
+
+        gap: 28px;
+
+        width: 100%;
+        height: 100%;
+
+        padding: 20px 20px 10px 20px !important;
+        box-sizing: border-box;
+
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+
+        scrollbar-gutter: stable;
+    }
+
+
+    /* Each group contains exactly 6 albums */
+    #photography-window .photo-album-page {
+        display: grid;
+
+        grid-template-columns:
+            repeat(3, 150px);
+
+        grid-template-rows:
+            repeat(2, auto);
+
+        grid-auto-flow: row;
+
+        column-gap: 25px;
+        row-gap: 20px;
+
+        flex: 0 0 auto;
+    }
+
+
+    /* Album cards */
+    #photography-window .photo-folder {
+        width: 150px !important;
+        margin: 0 !important;
+    }
+
+
+    #photography-window .photo-folder img {
+        width: 150px !important;
+        height: 110px !important;
+
+        object-fit: cover;
+    }
+
+
+    /* =====================================================
+       PURPLE WINDOWS-STYLE SCROLLBAR
+    ===================================================== */
+
+    #photography-window .photo-gallery::-webkit-scrollbar {
+        height: 16px;
+    }
+
+
+    #photography-window .photo-gallery::-webkit-scrollbar-track {
+        background:
+            linear-gradient(
+                to bottom,
+                rgba(32, 17, 45, 0.60),
+                rgba(71, 42, 91, 0.50)
+            );
+
+        border-top:
+            1px solid rgba(225, 194, 244, 0.28);
+
+        box-shadow:
+            inset 0 1px 3px rgba(0, 0, 0, 0.38);
+    }
+
+
+    #photography-window .photo-gallery::-webkit-scrollbar-thumb {
+        background:
+            linear-gradient(
+                to bottom,
+                rgba(224, 195, 243, 0.86) 0%,
+                rgba(190, 151, 219, 0.80) 48%,
+                rgba(137, 94, 170, 0.82) 52%,
+                rgba(180, 137, 209, 0.84) 100%
+            );
+
+        border:
+            1px solid rgba(84, 49, 108, 0.92);
+
+        border-radius: 3px;
+
+        box-shadow:
+            inset 1px 1px 0 rgba(255,255,255,.44),
+            inset -1px -1px 0 rgba(51,27,69,.38);
+    }
+
+
+    #photography-window .photo-gallery::-webkit-scrollbar-thumb:hover {
+        background:
+            linear-gradient(
+                to bottom,
+                rgba(239, 217, 252, 0.92),
+                rgba(207, 171, 231, 0.90) 48%,
+                rgba(156, 109, 188, 0.92) 52%,
+                rgba(197, 151, 224, 0.92)
+            );
+    }
+
+
+    #photography-window .photo-gallery::-webkit-scrollbar-thumb:active {
+        background:
+            linear-gradient(
+                to bottom,
+                rgba(171, 128, 201, 0.90),
+                rgba(120, 77, 151, 0.92)
+            );
+    }
+
+}
+
+/* =========================================================
+   HANEKAWA — MATCH OTHER PHOTOGRAPHY GALLERIES
+========================================================= */
+
+#hanekawa-window {
+    width: min(1100px, calc(100vw - 40px));
+    height: min(900px, calc(100vh - 60px));
+
+    min-width: 0;
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* Hidden state must override display:flex */
+#hanekawa-window.hidden {
+    display: none;
+}
+
+
+#hanekawa-window > .title-bar {
+    flex-shrink: 0;
+}
+
+
+#hanekawa-window > .window-body {
+    min-width: 0;
+    min-height: 0;
+
+    height: auto;
+    flex: 1;
+
+    padding: 0;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+
+/* Same vertical gallery behavior as In My Room */
+#hanekawa-window .hanekawa-gallery {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 18px;
+
+    align-items: stretch;
+}
+
+
+/* Each photo fills its single row */
+#hanekawa-window .hanekawa-gallery img {
+    display: block;
+
+    width: 100%;
+    height: auto;
+
+    max-width: 100%;
+
+    object-fit: contain;
+
+    cursor: pointer;
+}
+
+
+/* Keep both rows as one-photo rows on mobile too */
+@media (max-width: 720px) {
+
+    #hanekawa-window .project-gallery {
+        gap: 10px;
+        padding: 10px;
+    }
+
+}
+
+/* =========================================================
+   ABOUT ME — DESKTOP
+   ORIGINAL TEXT SIZE + LARGER WINDOW
+========================================================= */
+
+@media (min-width: 701px) {
+
+    #about-window {
+        width: min(860px, calc(100vw - 40px)) !important;
+        height: min(620px, calc(100vh - 58px)) !important;
+
+        min-width: 0 !important;
+        min-height: 0 !important;
+    }
+
+
+    #about-window > .title-bar {
+        flex: 0 0 auto !important;
+    }
+
+
+    #about-window .notepad-body {
+        flex: 1 1 auto !important;
+
+        min-width: 0 !important;
+        min-height: 0 !important;
+
+        padding: 3px 3px 0 !important;
+
+        overflow: hidden !important;
+    }
+
+
+    #about-window .notepad-content {
+        width: 100% !important;
+        height: 100% !important;
+
+        min-width: 0 !important;
+        min-height: 0 !important;
+
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: stretch !important;
+
+        overflow: hidden !important;
+    }
+
+
+    /* PHOTO SIDE */
+    #about-window .about-me-picture {
+        flex: 0 0 44% !important;
+
+        width: 44% !important;
+        min-width: 0 !important;
+        max-width: 380px !important;
+
+        height: 100% !important;
+        max-height: 100% !important;
+
+        object-fit: contain !important;
+        object-position: center center !important;
+
+        border-right:
+            1px solid var(--bibi-dark-border) !important;
+
+        background:
+            rgba(22, 8, 35, 0.20);
+    }
+
+
+    /* TEXT SIDE — ORIGINAL SIZE */
+    #about-window .about-me-text {
+        flex: 1 1 0 !important;
+
+        width: auto !important;
+        min-width: 0 !important;
+        height: 100% !important;
+
+        padding: 18px !important;
+
+        overflow: hidden !important;
+
+        font-family:
+            "Lucida Console",
+            Consolas,
+            monospace !important;
+
+        font-size: 13px !important;
+        line-height: 1.6 !important;
+
+        color: #ffffff !important;
+    }
+
+
+    #about-window .about-me-text p {
+        margin: 0 0 18px !important;
+    }
+
+
+    #about-window .about-me-text p:last-child {
+        margin-bottom: 0 !important;
+    }
+
+
+    /* ORIGINAL CAT SIZE */
+    #about-window .about-cat-art {
+        font-size: 13px !important;
+        line-height: 1.1 !important;
+
+        margin: 16px auto 4px 0 !important;
+    }
+
+
+    /* ORIGINAL WHALE SIZE */
+    #about-window .about-whale-art {
+        font-size: 8px !important;
+        line-height: 1 !important;
+
+        margin: 2px 0 0 auto !important;
+    }
+
+
+    /* NO SCROLLBAR */
+    #about-window .notepad-body,
+    #about-window .notepad-content,
+    #about-window .about-me-text {
+        overflow: hidden !important;
+
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+    }
+
+
+    #about-window .notepad-body::-webkit-scrollbar,
+    #about-window .notepad-content::-webkit-scrollbar,
+    #about-window .about-me-text::-webkit-scrollbar {
+        display: none !important;
+    }
+
+}
+
+/* Smaller decorative ASCII only in About Me */
+@media (min-width: 701px) {
+
+    #about-window .about-star-art {
+        font-size: 5px !important;
+        line-height: 1 !important;
+    }
+
+}
+
+/* =========================================================
+   ABOUT ME — KEEP LARGE ASCII ART FULLY INSIDE WINDOW
+========================================================= */
+
+@media (min-width: 701px) {
+
+    /* This becomes the positioning container */
+    #about-window .about-me-text {
+        position: relative !important;
+
+        /*
+         * Leave space at the bottom for the large ASCII artwork.
+         * This does NOT change the text font size.
+         */
+        padding-bottom: 118px !important;
+
+        overflow: hidden !important;
+    }
+
+
+    /* Large Braille / star artwork only */
+    #about-window .about-star-art {
+        position: absolute !important;
+
+        left: 80px !important;
+        bottom: 55px !important;
+
+        width: max-content !important;
+        max-width: none !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        font-size: 9px !important;
+        line-height: 1 !important;
+
+        white-space: pre !important;
+
+        overflow: visible !important;
+
+        transform: none !important;
+    }
+
+}
+
+/* =========================================================
+   v45 — BIOS UNLOCK + ASCII SIZE MATCH
+   ASCII uses the exact responsive font size of the BIOS.
+========================================================= */
+#startup-boot-screen .bios-text .bios-ascii-line {
+    font-size: 1em !important;
+}
+
+
+/* =========================================================
+   v46 — CRT / PC POWER-ON VIDEO BEFORE BIOS
+   Plays the supplied turn-on-pc.mp4 full-screen, then hands
+   control to the existing BIOS sequence.
+========================================================= */
+
+#startup-power-video-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 1000008;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100vw;
+    height: 100dvh;
+
+    overflow: hidden;
+    background: #000;
+
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+#startup-power-video-screen.power-video-finished {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+#startup-power-video {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    object-position: center center;
+
+    background: #000;
+}
+
+/* Keep the BIOS black and ready underneath, but do not animate it
+   until JavaScript completes the video hand-off. */
+body.powering-on #startup-boot-screen {
+    background: #000 !important;
+}
+
+/* Final authority: ASCII always follows the BIOS's responsive type size. */
+#startup-boot-screen .bios-text .bios-ascii-line {
+    font-size: 1em !important;
+}
+
+
+/* =========================================================
+   v47 — RELIABLE VIDEO PLAYBACK / VISIBILITY
+   Both MP4s are painted before playback begins.
+========================================================= */
+
+/* Power-on: keep the overlay black, but do not expose an unpainted video. */
+#startup-power-video {
+    opacity: 0;
+    visibility: hidden;
+}
+
+#startup-power-video-screen.power-video-ready #startup-power-video,
+#startup-power-video-screen.power-video-playing #startup-power-video {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Keep this transition effectively instant; the clip itself provides the effect. */
+#startup-power-video-screen.power-video-finished {
+    display: none !important;
+}
+
+/* Trojan: make the real MP4 clearly visible below the terminal text. */
+#trojan-window .trojan-binary-video {
+    z-index: 0 !important;
+    display: block !important;
+    opacity: 0 !important;
+    visibility: visible !important;
+    background: #020503 !important;
+    filter: brightness(0.96) contrast(1.06) saturate(0.92) !important;
+}
+
+#trojan-window .trojan-binary-video.trojan-video-active {
+    opacity: 0.82 !important;
+}
+
+/* Lighter overlays so the MP4 is unmistakably visible. */
+#trojan-window > .trojan-body::before {
+    background:
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.10)),
+        radial-gradient(ellipse at center, rgba(3, 13, 6, 0) 0%, rgba(0, 0, 0, 0.12) 82%, rgba(0, 0, 0, 0.22) 100%) !important;
+}
+
+#trojan-window .trojan-terminal {
+    background: linear-gradient(to bottom, rgba(1, 7, 3, 0.08), rgba(1, 6, 3, 0.16)) !important;
+}
+
+/* =========================================================
+   v48 — OLD CRT GRAIN + SCANLINES ON POWER-ON VIDEO ONLY
+   Pure visual overlay. Does not alter video playback logic.
+========================================================= */
+
+#startup-power-video-screen {
+    isolation: isolate;
+}
+
+#startup-power-video-screen #startup-power-video {
+    position: relative;
+    z-index: 0;
+}
+
+/* Fine horizontal CRT scanlines + dark curved-screen vignette. */
+#startup-power-video-screen::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            rgba(255,255,255,0) 48%,
+            rgba(0,0,0,0.10) 72%,
+            rgba(0,0,0,0.34) 100%
+        ),
+        repeating-linear-gradient(
+            to bottom,
+            rgba(255,255,255,0.030) 0px,
+            rgba(255,255,255,0.030) 1px,
+            rgba(0,0,0,0.14) 1px,
+            rgba(0,0,0,0.14) 3px
+        );
+
+    box-shadow:
+        inset 0 0 70px rgba(0,0,0,0.34),
+        inset 0 0 150px rgba(0,0,0,0.20);
+}
+
+/* Moving analog grain. Small layered dots avoid a heavy digital-noise look. */
+#startup-power-video-screen::after {
+    content: "";
+    position: absolute;
+    inset: -12%;
+    z-index: 3;
+    pointer-events: none;
+
+    background-image:
+        radial-gradient(circle, rgba(255,255,255,0.18) 0 0.55px, transparent 0.75px),
+        radial-gradient(circle, rgba(0,0,0,0.24) 0 0.65px, transparent 0.85px),
+        radial-gradient(circle, rgba(255,255,255,0.10) 0 0.5px, transparent 0.8px);
+    background-size:
+        5px 5px,
+        7px 7px,
+        11px 11px;
+    background-position:
+        0 0,
+        2px 3px,
+        5px 1px;
+
+    opacity: 0.22;
+    mix-blend-mode: screen;
+
+    animation:
+        crtStartupGrain 130ms steps(2, end) infinite,
+        crtStartupFlicker 170ms steps(2, end) infinite;
+}
+
+@keyframes crtStartupGrain {
+    0%   { transform: translate3d(-1.5%, -1%, 0); }
+    20%  { transform: translate3d(1%, 0.5%, 0); }
+    40%  { transform: translate3d(-0.5%, 1.5%, 0); }
+    60%  { transform: translate3d(1.5%, -0.5%, 0); }
+    80%  { transform: translate3d(0.5%, 1%, 0); }
+    100% { transform: translate3d(-1%, -1.5%, 0); }
+}
+
+@keyframes crtStartupFlicker {
+    0%, 100% { opacity: 0.18; }
+    35%      { opacity: 0.26; }
+    58%      { opacity: 0.20; }
+    76%      { opacity: 0.29; }
+}
+
+@media (max-width: 700px) {
+    #startup-power-video-screen::before {
+        background:
+            radial-gradient(
+                ellipse at center,
+                rgba(255,255,255,0) 46%,
+                rgba(0,0,0,0.10) 73%,
+                rgba(0,0,0,0.32) 100%
+            ),
+            repeating-linear-gradient(
+                to bottom,
+                rgba(255,255,255,0.025) 0px,
+                rgba(255,255,255,0.025) 1px,
+                rgba(0,0,0,0.12) 1px,
+                rgba(0,0,0,0.12) 3px
+            );
+    }
+
+    #startup-power-video-screen::after {
+        opacity: 0.18;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #startup-power-video-screen::after {
+        animation: none;
+        opacity: 0.18;
+    }
+}
+
+/* =========================================================
+   v49 — PASTEL BIOS ROWS + ASCII PAINT HELPERS
+   Visual only: no boot/video JavaScript changes.
+========================================================= */
+
+:root {
+    --bios-pastel-pink: #ffc9df;
+    --bios-pastel-peach: #ffd7bd;
+    --bios-pastel-yellow: #fff0b8;
+    --bios-pastel-mint: #c9f4dc;
+    --bios-pastel-blue: #c9e7ff;
+    --bios-pastel-lavender: #ddceff;
+    --bios-pastel-lilac: #efccff;
+    --bios-pastel-rose: #ffced2;
+}
+
+/* Each visible BIOS row receives a soft pastel color.
+   The pattern restarts naturally inside each BIOS block. */
+#startup-boot-screen .bios-text .bios-section p:nth-child(8n + 1) {
+    color: var(--bios-pastel-pink) !important;
+}
+
+#startup-boot-screen .bios-text .bios-section p:nth-child(8n + 2) {
+    color: var(--bios-pastel-peach) !important;
+}
+
+#startup-boot-screen .bios-text .bios-section p:nth-child(8n + 3) {
+    color: var(--bios-pastel-yellow) !important;
+}
+
+#startup-boot-screen .bios-text .bios-section p:nth-child(8n + 4) {
+    color: var(--bios-pastel-mint) !important;
+}
+
+#startup-boot-screen .bios-text .bios-section p:nth-child(8n + 5) {
+    color: var(--bios-pastel-blue) !important;
+}
+
+#startup-boot-screen .bios-text .bios-section p:nth-child(8n + 6) {
+    color: var(--bios-pastel-lavender) !important;
+}
+
+#startup-boot-screen .bios-text .bios-section p:nth-child(8n + 7) {
+    color: var(--bios-pastel-lilac) !important;
+}
+
+#startup-boot-screen .bios-text .bios-section p:nth-child(8n) {
+    color: var(--bios-pastel-rose) !important;
+}
+
+/* Keep the pastel text luminous but still BIOS-sharp. */
+#startup-boot-screen .bios-text p,
+#startup-boot-screen .bios-bottom-text p {
+    text-shadow:
+        0 0 2px rgba(255, 255, 255, 0.26),
+        0 0 5px rgba(224, 205, 255, 0.12) !important;
+}
+
+/* Bottom prompt / build number get their own alternating pastels. */
+#startup-boot-screen .bios-bottom-text p:nth-child(odd) {
+    color: var(--bios-pastel-lilac) !important;
+}
+
+#startup-boot-screen .bios-bottom-text p:nth-child(even) {
+    color: var(--bios-pastel-blue) !important;
+}
+
+/* The little Award BIOS dot follows the pastel palette too. */
+#startup-boot-screen .bios-award-icon {
+    color: var(--bios-pastel-pink) !important;
+    text-shadow: 0 0 5px rgba(255, 201, 223, 0.55) !important;
+}
+
+/* ---------------------------------------------------------
+   ASCII PAINT HELPERS
+   Wrap any characters/words in one of these span classes.
+   Example: <span class="ascii-pink">text</span>
+--------------------------------------------------------- */
+#startup-boot-screen .ascii-pink {
+    color: var(--bios-pastel-pink) !important;
+}
+
+#startup-boot-screen .ascii-peach {
+    color: var(--bios-pastel-peach) !important;
+}
+
+#startup-boot-screen .ascii-yellow {
+    color: var(--bios-pastel-yellow) !important;
+}
+
+#startup-boot-screen .ascii-mint {
+    color: var(--bios-pastel-mint) !important;
+}
+
+#startup-boot-screen .ascii-blue {
+    color: var(--bios-pastel-blue) !important;
+}
+
+#startup-boot-screen .ascii-lavender {
+    color: var(--bios-pastel-lavender) !important;
+}
+
+#startup-boot-screen .ascii-lilac {
+    color: var(--bios-pastel-lilac) !important;
+}
+
+#startup-boot-screen .ascii-rose {
+    color: var(--bios-pastel-rose) !important;
+}
+
+/* Miku turquoise used only where explicitly wrapped in the BIOS ASCII art. */
+#startup-boot-screen .ascii-miku {
+    color: #8ee8df !important;
+}
+
+/* Custom deep pink for selected ASCII character. */
+#startup-boot-screen .ascii-deep-pink {
+    color: #dd3e90 !important;
+}
+
